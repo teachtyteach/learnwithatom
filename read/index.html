@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k3d84c1"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k8267b4"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -9975,7 +9975,7 @@ window.AtomStatLooks = (function () {
       hfont: IMPACT, hx: "text-transform:uppercase;letter-spacing:.03em;color:#e8282b;-webkit-text-stroke:1px #111", nfont: IMPACT, num: "#1e88e5", nx: "-webkit-text-stroke:1px #111", r: ["#e8282b", "#1e88e5", "#ffcc00"], trk: "#ececec", on: "#fff",
       x: "{S} .tile:nth-child(2n){transform:rotate(1deg)}{S} .tile:nth-child(2n+1){transform:rotate(-1deg)}" },
     { id: "neon", name: "Neon arcade", lvl: 13, dark: 1, bg: "#12052a", surface: "#1e0a44", ink: "#fbe9ff", muted: "#c79cff", line: "#5a2a9a",
-      art: "linear-gradient(180deg,transparent 62%,rgba(255,62,165,.18) 62%,transparent 100%),repeating-linear-gradient(90deg,transparent 0 46px,rgba(62,240,255,.12) 46px 47px),radial-gradient(circle 28px at 50% 64%,#ff7a3e 0 27px,transparent 28px),linear-gradient(#12052a,#2a0a52)",
+      art: "linear-gradient(180deg,transparent 62%,rgba(255,62,165,.18) 62%,transparent 100%),repeating-linear-gradient(90deg,transparent 0 46px,rgba(62,240,255,.12) 46px 47px),radial-gradient(ellipse 80% 22% at 50% 62%,rgba(255,122,62,.28),transparent 70%),linear-gradient(#12052a,#2a0a52)",
       card: "rgba(30,8,62,.82)", border: "1.5px solid #ff3ea5", rad: "12px", shadow: "0 0 12px rgba(255,62,165,.45),inset 0 0 14px rgba(255,62,165,.12)",
       hfont: BOLD, hx: "text-transform:uppercase;font-style:italic;letter-spacing:.06em;color:#3ef0ff;text-shadow:0 0 10px rgba(62,240,255,.8)", nfont: BOLD, num: "#ffe14d", nx: "text-shadow:0 0 10px rgba(255,225,77,.7);font-style:italic", r: ["#ff3ea5", "#3ef0ff", "#ffe14d"], trk: "rgba(255,62,165,.16)", on: "#12052a" },
     { id: "glass", name: "Stained glass", lvl: 18, dark: 1, bg: "#18142a", surface: "#231d3a", ink: "#fff4dc", muted: "#cfc3e6", line: "#3a3256",
@@ -10052,7 +10052,7 @@ window.AtomStatLooks = (function () {
   function css(L, S, H) {
     const o = [], orn = ORN[L.id];
     o.push(`${S}{--bg:${L.bg};--surface:${L.surface};--ink:${L.ink};--muted:${L.muted};--line:${L.line};--accent:${L.r[0]};--btn:${L.r[0]};--btn-ink:${L.on};color:${L.ink};background-color:${L.bg}!important;background-image:${L.art || "none"}!important;background-size:${L.size || "auto"}!important;background-attachment:fixed!important;color-scheme:${L.dark ? "dark" : "light"}}`);
-    o.push(`${S} :is(.card,.tile){background:${L.card}!important;border:${L.border}!important;border-radius:${L.rad}!important;box-shadow:${L.shadow || "none"}!important;color:${L.ink}}`);
+    o.push(`${S} :is(.card,.tile,#app .card,#app .tile){background:${L.card}!important;border:${L.border}!important;border-radius:${L.rad}!important;box-shadow:${L.shadow || "none"}!important;color:${L.ink}}`);
     o.push(`${S} :is(h1,h2,.ah1){font-family:${L.hfont}!important;color:${L.ink};${L.hx || ""}}`);
     o.push(`${S} :is(.tile b,#life b,.life b,.lapseHead b,.dayrow b,.cardt b){font-family:${L.nfont}!important;color:${L.num};${L.nx || ""}}`);
     o.push(`${S} .tile b{font-size:30px!important;line-height:1.12}`);
@@ -10074,7 +10074,7 @@ window.AtomStatLooks = (function () {
       `<span style="color:${L.num};font:700 13px/1 ${L.nfont.replace(/"/g, "'")}">42</span><span style="display:block;height:4px;border-radius:9px;background:${L.trk}"><i style="display:block;width:62%;height:100%;border-radius:inherit;background:${L.r[0]}"></i></span></span>` +
       (orn ? `<span style="position:absolute;right:3px;top:3px;width:22px;height:22px;background:${U(orn).replace(/"/g, "'")} center/contain no-repeat"></span>` : "") + `</span>`;
   }
-  return { READ, MATH, css, thumb, byId: id => READ.concat(MATH).find(l => l.id === id) };
+  return { READ, MATH, css, thumb, orn: id => ORN[id] ? U(ORN[id]) : "", byId: id => READ.concat(MATH).find(l => l.id === id) };
 })();
 
 /* ===================== Shared rewards with Atom Math (Atom Locker) =====================
@@ -10466,6 +10466,14 @@ window.AtomStatLooks = (function () {
   const st = document.createElement("style"); st.id = "atomStatLooks";
   st.textContent = SL.READ.map(L => SL.css(L, `:root[data-stat="${L.id}"] body[data-screen=stats]`, "#stats>header")).join("\n") +
     "\nbody[data-screen=stats]{min-height:100dvh}\n.tile b>span{font-size:inherit;color:inherit}\n.xth .stthumb{border-radius:inherit}";
+  /* Rewards live preview: the "Your stats" box wears the picked look */
+  const q = v => String(v).replace(/"/g, "'");
+  st.textContent += "\n" + SL.READ.map(L => { const P = `:root[data-stat="${L.id}"] .pvstat`, orn = SL.orn(L.id);
+    return `${P}{background-color:${L.bg}!important;background-image:${q(L.art || "none")}!important;background-size:${L.size || "auto"}!important;color:${L.ink}!important;border:${L.border}!important;border-radius:${String(L.rad).replace(/ \/.*/, "")}!important;box-shadow:${L.shadow || "none"}!important;font-family:${q(L.hfont)}!important;position:relative;padding-right:64px!important;min-height:58px;text-shadow:none}` +
+      `${P} b{font-family:${q(L.nfont)}!important;color:${L.num}!important;${L.nx || ""}}${P} #pvStatTxt{color:${L.muted}!important}` +
+      `${P} .bar{background:${L.trk}!important;border:0!important}${P} .bar i{background:${L.r[0]}!important;box-shadow:none!important}` +
+      (orn ? `${P}::after{content:"";position:absolute;right:10px;top:50%;width:44px;height:44px;transform:translateY(-50%);background:${q(orn)} center/contain no-repeat}` : "");
+  }).join("\n");
   document.head.append(st);
   const xt0 = xThumb;
   xThumb = function (kind, id) {
