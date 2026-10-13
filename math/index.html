@@ -7199,10 +7199,10 @@ window.AtomStatLooks = (function () {
     const key=['p',hat,ac,face,neck].join('|');if(dressCache[key])return dressCache[key];
     const rh=hat&&/^r_/.test(hat)?hat.slice(2):null,p=ac&&ACOL[ac];
     const layers=(neck?gearOf('gneck',neck.slice(2)):'')+(face?gearOf('gface',face.slice(2)):'')+(rh?gearOf('ghat',rh):(hat&&HAT_ART[hat]?`<g transform="${HAT_XF}">${HAT_ART[hat]()}</g>`:''));
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${VBP}"><defs>${tintDefs(p)}${RA.defs}</defs><image href="${MASCOT}" xlink:href="${MASCOT}" width="256" height="246"${p?' filter="url(#t)"':''}/>${layers}</svg>`;
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${VBP}" width="792" height="858"><defs>${tintDefs(p)}${RA.defs}</defs><image href="${MASCOT}" xlink:href="${MASCOT}" width="256" height="246"${p?' filter="url(#t)"':''}/>${layers}</svg>`;
     return dressCache[key]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
   };
-  {const st=document.createElement('style');st.textContent='img.atall{scale:1.1626;transform-origin:50% 100%}';document.head.appendChild(st)}
+  {const st=document.createElement('style');st.textContent='img.atall{scale:1.1626;transform-origin:50% 100%}.flyin img{animation-name:atomFlyUp!important}@keyframes atomFlyUp{from{transform:translate(-60vw,60vh) rotate(-30deg)}to{transform:none}}';document.head.appendChild(st)}
   const curOf=c=>{const k=lkId(c);return k==='none'?null:k};
   dressAll=function(){
     const hat=curHat(),ac=curAc(),fa=curOf('face'),ne=curOf('neck');
@@ -7215,7 +7215,7 @@ window.AtomStatLooks = (function () {
     });
   };
   /* Close-up tiles for hats, glasses and neckwear, so the item is easy to see */
-  const VB={hat:'92 -46 176 168',wide:'40 -12 216 206',face:'62 30 180 160',neck:'38 76 180 160'},thumbCache={};
+  const VB={hat:'78 -30 170 160',wide:'40 -12 216 206',face:'62 30 180 160',neck:'38 76 180 160'},thumbCache={};
   function thumbSrc(cat,id){
     const key=cat+'|'+id;if(thumbCache[key])return thumbCache[key];
     let layer='',vb=VB[cat];
@@ -7228,7 +7228,7 @@ window.AtomStatLooks = (function () {
   }
   { const s0=swatch;swatch=function(cat,it){
       if(cat==='face'||cat==='neck'||cat==='hat'){if(it[0]==='none')return `<span class="sw nsw">None</span>`;
-        return `<span class="sw hsw"><img src="${thumbSrc(cat,it[0])}" width="46" height="44" alt=""></span>`}
+        return `<span class="sw hsw"><img src="${thumbSrc(cat,it[0])}" width="56" height="54" alt=""></span>`}
       return s0(cat,it)} }
   REW_CATS.push(['face','Atom glasses','From Atom Reading'],['neck','Atom neckwear','From Atom Reading']);
   CAT_LABEL.face='Atom glasses';CAT_LABEL.neck='Atom neckwear';
@@ -7438,7 +7438,7 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
   /* ---------- the bottom sheet ---------- */
   function cardHTML(cat,it){
     const on=unlocked(it),eq=(S.look[cat]||'')===it[0]||(it[0]==='none'&&lkId(cat)==='none'&&cat!=='theme');
-    const nm=cat==='title'?'':`<span>${hwEsc(it[1])}</span>`;
+    const nm=`<span>${hwEsc(it[1])}</span>`;
     const tag=on?(eq?'In use':''):reqLabel(it[2]);
     return `<button class="xcard${on?'':' locked'}" type="button" data-x="${cat}:${it[0]}" aria-pressed="${on&&eq}"><span class="xth">${itemSwatch(cat,it)}</span>${nm}${tag?`<span class="xtag">${tag}</span>`:''}</button>`;
   }
@@ -7454,7 +7454,7 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
         return `<details class="tg" data-g="${hwEsc(g)}"${its.some(i=>i[0]===cur)?' open':''}><summary>${hwEsc(g)}<span>${got} of ${its.length}</span></summary><div class="xgrid">${its.map(i=>cardHTML(cat,i)).join('')}</div></details>`}).join('');
     }
     const note=cat==='icon'?`<p class="fine" style="margin:-2px 2px 8px">One icon for every Atom site. Pick it, then add the site to your home screen.</p>`:'';
-    return `<p class="xlab" id="rws-${cat}">${LABEL[cat]||cat}<span>${n} of ${v.length}</span></p>${note}<div class="xgrid${cat==='title'?' wide':''}">${items.map(i=>cardHTML(cat,i)).join('')}</div>`;
+    return `<p class="xlab" id="rws-${cat}">${LABEL[cat]||cat}<span>${n} of ${v.length}</span></p>${note}<div class="xgrid">${items.map(i=>cardHTML(cat,i)).join('')}</div>`;
   }
   function collectHTML(){
     const row=(ic,t,s,k)=>`<button class="rwrow" type="button" data-rcat="${k}"><span class="xart">${XI[ic]}</span><span class="clt"><b>${t}</b><span class="fine">${s}</span></span><span class="chev">›</span></button>`;
@@ -7720,6 +7720,35 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
   try { mark(); } catch (e) {}
 })();
 WHATS.unshift(['Stats looks','Restyle your Stats page: Graph paper, Calculator, Proof board, Pi day, Fractal, Scoreboard and more. Earn them by ranking up, passing unit tests and reaching Master. Find them in Rewards › Looks.']);
+
+/* ===================== Reward pictures in Atom Math match Atom Reading ===================== */
+(function () {
+  const G = {
+    bell: '<path d="M12 3.5c-3.3 0-5.5 2.6-5.5 6v4L4.5 17h15l-2-3.5v-4c0-3.4-2.2-6-5.5-6zM10 19a2 2 0 0 0 4 0"/>', pix: '<path d="M4 15h4v4H4zM10 10h4v9h-4zM16 5h4v14h-4z"/>',
+    harp: '<path d="M6 21V4c6 0 12 5 12 13v4zM9 7v12M12 8.5V19M15 12v7" fill="none" stroke-width="1.8"/>',
+    coin: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M14.5 9.5c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.8-2.5 1.9 0 2.6 5 1.3 5 3.8 0 1.1-1.1 1.9-2.5 1.9-1 0-2-.4-2.5-1.2" fill="none" stroke="#fff" stroke-width="1.6"/>',
+    bars: '<rect x="3" y="6" width="3.2" height="12" rx="1"/><rect x="7.6" y="7.5" width="3.2" height="9" rx="1"/><rect x="12.2" y="9" width="3.2" height="6" rx="1"/><rect x="16.8" y="10.5" width="3.2" height="3" rx="1"/>',
+    spark: '<path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+    ribbon: '<circle cx="12" cy="9" r="6"/><path d="M8.5 13.5L7 21l5-2.5 5 2.5-1.5-7.5"/>'
+  };
+  const glyph = (g, col, n) => `<svg viewBox="0 0 24 24" width="${n || 30}" height="${n || 30}" fill="${col}" stroke="${col}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${g}</svg>`;
+  const SND = { classic: ['#f2b824', 'coin'], soft: ['#e8a50c', 'bell'], blip: ['#2fbf71', 'pix'], space: ['#5fb8ff', 'spark'], bell: ['#3fb8c2', 'bars'], harp: ['#b07cf0', 'harp'] };
+  const RCOL = { copper: '#b8733a', bronze: '#c98b3c', silver: '#97a3b0', gold: '#e0a915', platinum: '#3fb8c2', emerald: '#2fbf71', diamond: '#5f9dff', champion: '#c455ff', master: '#c455ff' };
+  const titleCol = req => { const k = String(req || '').split(/[ |]/)[0].toLowerCase(); return RCOL[k] || 'var(--ink)'; };
+  const NONE = `<span class="sw mxth xnone"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 17.5l11-11" stroke="currentColor" stroke-width="2"/></svg></span>`;
+  const is0 = itemSwatch;
+  itemSwatch = function (cat, it) {
+    if (it[0] === 'none' && cat !== 'theme' && cat !== 'accent' && cat !== 'mstat') return NONE;
+    if (cat === 'title') return `<span class="sw mxth"><span class="mttl" style="color:${titleCol(it[2])}">${hwEsc(it[1])}</span></span>`;
+    if (cat === 'sound') { const m = SND[it[0]] || ['var(--accent)', 'bell']; return `<span class="sw mxth">${glyph(G[m[1]], m[0])}</span>`; }
+    return is0.apply(this, arguments);
+  };
+  const st = document.createElement('style');
+  st.textContent = '.sw.mxth{display:grid!important;place-items:center;background:transparent!important;border:0!important;width:100%;height:100%;min-height:0;box-shadow:none!important;border-radius:inherit}.mttl{white-space:normal;overflow-wrap:anywhere;font:700 11.5px/1.15 Georgia,"Iowan Old Style",serif;text-align:center;padding:0 4px;letter-spacing:.02em;color-scheme:normal;filter:saturate(1.1)}'+'.hsw img[width="56"]{width:56px;height:54px}.xnone{color:var(--muted)}' +
+    '.tpill{display:flex;align-items:center;gap:4px;font:700 9.5px system-ui,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 8px 3px 4px;max-width:92%;white-space:nowrap;overflow:hidden}.tpill svg{flex:none}' +
+    '.xcard.locked .mxth{opacity:.55;filter:grayscale(.4)}';
+  document.head.appendChild(st);
+})();
 
 /*/ATOM-SHARED:JS*/
 window.__G={G,gen,startRanked,genEasy,rampLevel,applyShields,parseNum,close,UNITS};

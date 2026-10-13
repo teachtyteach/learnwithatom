@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k8267b4"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k9a3d36"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -10216,7 +10216,7 @@ window.AtomStatLooks = (function () {
       if (!mascotData) { const b = await (await fetch("mascot.png")).blob(); mascotData = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }
       if (gearKey2 !== key) return;
       const fl = at && at !== "rainbow" ? cssToSvg(TINTS[at] || "") : "";
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${VBP}" width="264" height="286"><defs>${gearDefs()}${fl ? `<filter id="atint" color-interpolation-filters="sRGB" x="-25%" y="-25%" width="150%" height="150%">${fl}</filter>` : ""}</defs><image href="${mascotData}" xlink:href="${mascotData}" width="256" height="246"${fl ? ' filter="url(#atint)"' : ""}/>${gearLayers(pick)}</svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${VBP}" width="792" height="858"><defs>${gearDefs()}${fl ? `<filter id="atint" color-interpolation-filters="sRGB" x="-25%" y="-25%" width="150%" height="150%">${fl}</filter>` : ""}</defs><image href="${mascotData}" xlink:href="${mascotData}" width="256" height="246"${fl ? ' filter="url(#atint)"' : ""}/>${gearLayers(pick)}</svg>`;
       const old = MASCOT_URL; MASCOT_URL = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
       if (old.startsWith("blob:")) setTimeout(() => URL.revokeObjectURL(old), 3000);
     } catch (e) { MASCOT_URL = "mascot.png"; }
@@ -10224,7 +10224,7 @@ window.AtomStatLooks = (function () {
   };
   { const st = document.createElement("style");
     // the color is now inside the picture, so the page doesn't tint it again; the bigger picture is scaled so Atom keeps his size
-    st.textContent = 'body:not(.mrb) :is(img.mascot,img.tm)[src^="blob:"]{--mt:grayscale(0)}:is(img.mascot,img.tm)[src^="blob:"]{scale:1.1626;transform-origin:50% 100%}';
+    st.textContent = 'body:not(.mrb) :is(img.mascot,img.tm)[src^="blob:"]{--mt:grayscale(0)}:is(img.mascot,img.tm)[src^="blob:"]{scale:1.1626;transform-origin:50% 100%}#splash .spin{animation-name:atomFlyIn!important}@keyframes atomFlyIn{0%{transform:translate(-60vw,60vh) rotate(-25deg)}70%{transform:translate(6px,-8px) rotate(4deg)}100%{transform:none}}';
     document.head.append(st); }
   try { applyGear(); } catch (e) {}
 
