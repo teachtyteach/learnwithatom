@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k9a3d36"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-kb029ad"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -1811,7 +1811,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -10175,7 +10175,7 @@ window.AtomStatLooks = (function () {
   setTimeout(() => { try { publishLook(); } catch (e) {} }, 1600); setInterval(() => { try { publishLook(); } catch (e) {} }, 30000);
 
   /* ---------- what you wear, the same on every page ---------- */
-  const FIELDS = { ghat: "hat", gface: "fc", gneck: "nk", atomc: "co", title: "tl", nflair: "nf", pframe: "pf", stamp: "sm" };
+  const FIELDS = { ghat: "hat", gface: "fc", gneck: "nk", atomc: "co", title: "tl", nflair: "nf", pframe: "pf", stamp: "sm", tflair: "tf" };
   const toCanon = (k, id) => !id ? "" : /^m_/.test(id) ? id : (REV[k] && REV[k][id] ? "r_" + id : "r_" + id);
   const fromCanon = (k, c) => { if (!c) return ""; if (/^r_/.test(c)) return c.slice(2); if (/^m_/.test(c)) { const mid = c.slice(2), rid = LK.alias[k] && LK.alias[k][mid]; return rid || c; } return null; };
   const valid = (k, id) => { const c = X(k); return !!c && c.opts.some(o => o[0] === id); };
