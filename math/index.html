@@ -6937,24 +6937,26 @@ WHATS.unshift(
   // Reading hats sit where Math's own hats sit (except big ones like headphones that wrap Atom's head)
   const txOf=(k,g)=>k==='ghat'&&g[3]===RA.hatT?HAT_XF:g[3];
   const gearOf=(k,id)=>{const g=RA.gear[k].find(x=>x[0]===id);return g?`<g transform="${txOf(k,g)}">${g[2]}</g>`:''};
-  const d0=dressSrc;
+  /* Atom with his gear. Extra room above his head so tall hats are never cut off;
+     the picture is scaled back up (CSS "scale", bottom-anchored) so Atom stays the same size. */
+  const VBP='-4 -40 264 286';
   dressSrc=function(hat,ac,face,neck){
-    const rh=hat&&/^r_/.test(hat)?hat.slice(2):null;
-    if(!rh&&!face&&!neck)return d0(hat,ac);
-    const key=['x',hat,ac,face,neck].join('|');if(dressCache[key])return dressCache[key];
-    const p=ac&&ACOL[ac];
+    const key=['p',hat,ac,face,neck].join('|');if(dressCache[key])return dressCache[key];
+    const rh=hat&&/^r_/.test(hat)?hat.slice(2):null,p=ac&&ACOL[ac];
     const layers=(neck?gearOf('gneck',neck.slice(2)):'')+(face?gearOf('gface',face.slice(2)):'')+(rh?gearOf('ghat',rh):(hat&&HAT_ART[hat]?`<g transform="${HAT_XF}">${HAT_ART[hat]()}</g>`:''));
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 256 246"><defs>${tintDefs(p)}${RA.defs}</defs><image href="${MASCOT}" xlink:href="${MASCOT}" width="256" height="246"${p?' filter="url(#t)"':''}/>${layers}</svg>`;
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${VBP}"><defs>${tintDefs(p)}${RA.defs}</defs><image href="${MASCOT}" xlink:href="${MASCOT}" width="256" height="246"${p?' filter="url(#t)"':''}/>${layers}</svg>`;
     return dressCache[key]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
   };
+  {const st=document.createElement('style');st.textContent='img.atall{scale:1.1626;transform-origin:50% 100%}';document.head.appendChild(st)}
   const curOf=c=>{const k=lkId(c);return k==='none'?null:k};
   dressAll=function(){
     const hat=curHat(),ac=curAc(),fa=curOf('face'),ne=curOf('neck');
     document.querySelectorAll('img').forEach(im=>{
       const orig=im.getAttribute('src')===MASCOT,mine=im.dataset.m==='1';if(!orig&&!mine)return;
-      if(!hat&&!ac&&!fa&&!ne){if(mine){im.src=MASCOT;delete im.dataset.m;im.classList.remove('rb')}return}
+      if(im.closest('.xth,.lockitem,.rwsheet'))return;
       const w=+im.getAttribute('width')||im.clientWidth||0,big=w>=38;
-      im.dataset.m='1';im.src=dressSrc(big?hat:null,ac,big?fa:null,big?ne:null);im.classList.toggle('rb',ac==='ac_rainbow');
+      im.dataset.m='1';const src=dressSrc(big?hat:null,ac,big?fa:null,big?ne:null);if(im.getAttribute('src')!==src)im.src=src;
+      im.classList.add('atall');im.classList.toggle('rb',ac==='ac_rainbow');
     });
   };
   /* Close-up tiles for hats, glasses and neckwear, so the item is easy to see */
@@ -7279,8 +7281,11 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
   const RACC=['blue','green','orange','purple','pink'],acToShared=id=>!id||id==='theme'?'':(/^a_/.test(id)&&RACC.includes(id.slice(2))?id.slice(2):'m_'+id), acFromShared=id=>!id?'theme':/^m_/.test(id)?id.slice(2):'a_'+id;
   const tokens=()=>{try{const c=getComputedStyle(document.documentElement),v=k=>c.getPropertyValue(k).trim();return ['--bg','--surface','--ink','--muted','--line','--accent'].map(v).join(',')+','+(document.documentElement.dataset.scheme==='dark'?1:0)}catch(e){return ''}};
   const mine=()=>{const o=Object.assign(window.__atomLook?window.__atomLook.mine():{},{n:S.name||'',th:thToShared(S.look.theme||'auto'),f:['lexend','dyslexic'].includes(S.pref.font)?S.pref.font:'',sp:S.pref.space?1:0,so:S.sound?1:0,tk:tokens()});const a=acToShared(S.look.accent);if(a!==null)o.ac=a;return o};
-  let last='',applying=false;
-  function pushProfile(){if(applying||S.teacher)return;const m=mine(),k=JSON.stringify(m);if(k===last)return;last=k;if(L.setProfile(m)){S.pAt=L.profile().at;save()}}
+  // Only what changed here is shared, so an item this app can't use never wipes out what you picked elsewhere.
+  let last='',lastObj=null,applying=false;
+  function pushProfile(){if(applying)return;const m=mine(),k=JSON.stringify(m);if(k===last)return;last=k;
+    const part={};Object.keys(m).forEach(f=>{if(!lastObj||JSON.stringify(m[f])!==JSON.stringify(lastObj[f]))part[f]=m[f]});lastObj=m;
+    if(Object.keys(part).length&&L.setProfile(part)){S.pAt=L.profile().at;save()}}
   function takeProfile(){
     const p=L.profile();if(!p.at||p.at<=(S.pAt||0))return false;
     applying=true;
@@ -7294,9 +7299,11 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
       if(window.__atomLook)window.__atomLook.take(p);
       S.pAt=p.at;save();applyLook();try{applyFont()}catch(e){}
     }finally{applying=false}
-    last=JSON.stringify(mine());return true;
+    lastObj=mine();last=JSON.stringify(lastObj);
+    {const fill={};Object.keys(lastObj).forEach(k=>{if((p[k]===undefined||(k==='n'&&!p[k]))&&lastObj[k]!==''&&lastObj[k]!==undefined)fill[k]=lastObj[k]});if(Object.keys(fill).length&&L.setProfile(fill)){S.pAt=L.profile().at;save()}}
+    return true;
   }
-  if(!takeProfile())setTimeout(pushProfile,900);
+  if(!takeProfile()){if(L.profile().at){lastObj=mine();last=JSON.stringify(lastObj)}setTimeout(pushProfile,900)}
   setInterval(pushProfile,2500);
 
   /* ---------- 2. switch between apps ---------- */
@@ -7406,6 +7413,16 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
   L.mover('math',async()=>{const o=await askOther({atom:'export'});return {math:JSON.parse(JSON.stringify(S)),read:o&&o.data}},()=>{try{backupScreen()}catch(e){}return bkFile()},()=>!!(S.welcomed||S.rp>0||Object.keys(S.days||{}).length));
   /* ---------- 10. scrolling: popups lock the page behind them; Settings tabs start at the top ---------- */
   {const ov=document.getElementById('overlay');if(ov){const sync=()=>document.documentElement.classList.toggle('atomovl',!ov.hidden&&!!ov.querySelector('.ovbox'));new MutationObserver(sync).observe(ov,{attributes:true,attributeFilter:['hidden'],childList:true});sync()}}
+  // Short pages never scroll: if everything fits above the tab bar, the page stays put.
+  {const app=document.getElementById('app'),H=document.documentElement;let q=false;
+   const fit=()=>{q=false;if(!app||H.classList.contains('atomlock')||H.classList.contains('atomovl'))return;
+     const tb=document.getElementById('tabbar'),tr=tb&&getComputedStyle(tb).display!=='none'?tb.getBoundingClientRect():null,vis=tr&&tr.height?tr.top:innerHeight,y=window.scrollY;
+     let bottom=0;for(const c of app.children){const cs=getComputedStyle(c);if(cs.position==='fixed'||cs.display==='none')continue;const r=c.getBoundingClientRect();if(r.height)bottom=Math.max(bottom,r.bottom+y)}
+     const fits=bottom>0&&bottom<=vis+2;H.classList.toggle('atomfit',fits);if(fits&&y)window.scrollTo(0,0)};
+   const later=()=>{if(!q){q=true;requestAnimationFrame(fit)}};
+   if(app&&window.ResizeObserver)new ResizeObserver(later).observe(app);
+   if(app)new MutationObserver(later).observe(app,{childList:true});
+   addEventListener('resize',later);later()}
   {const ss0=settingsScreen;settingsScreen=function(tab){const was=st.screen==='settings',prev=st.setTab;const r=ss0.apply(this,arguments);if(was&&tab&&tab!==prev)window.scrollTo(0,0);return r}}
 })();
 
@@ -7426,7 +7443,7 @@ setTimeout(checkBadges,600);
 html{overscroll-behavior-y:none;scrollbar-width:none;-ms-overflow-style:none}
 *{scrollbar-width:none}
 *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}
-html.atomlock,html.atomovl,html:has(dialog[open]){overflow:hidden!important}
+html.atomlock,html.atomovl,html.atomfit,html:has(dialog[open]){overflow:hidden!important}
 dialog,#overlay,#overlay .ovbox,.rwsheet,.rwsheet .shb{overscroll-behavior:contain}
 /* small phones: Atom Reading's empty home fits without scrolling */
 @media (max-height:700px){#library .emptybox .mascot{width:56px}#library .madeby{padding-top:4px}}
