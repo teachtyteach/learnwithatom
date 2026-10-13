@@ -66,7 +66,7 @@
   @keyframes bump { 40% { transform: scale(1.12); } }
 
   .hero { text-align: center; margin: clamp(28px, 7vh, 64px) 0 clamp(22px, 5vh, 40px); }
-  .mascot { width: 92px; height: 92px; object-fit: contain; display: block; margin: 0 auto 14px; }
+  .mascot { width: 120px; height: 120px; object-fit: contain; display: block; margin: 0 auto 14px; }
   h1 {
     font-family: Fraunces, Georgia, serif; font-weight: 800; letter-spacing: -.025em;
     font-size: clamp(38px, 9vw, 62px); line-height: 1; margin: 0 0 12px; text-wrap: balance;
@@ -202,7 +202,157 @@
   </footer>
 </div>
 
-<script src="atom-locker.js"></script>
+<script>
+/* Atom Locker — shared rewards for every learnwithatom.org app.
+   Made by Mr. Lovrien 2026.
+
+   The rule
+   - Math rewards can only be UNLOCKED in Atom Math.
+   - Reading rewards can only be UNLOCKED in Atom Reading.
+   - Anything unlocked can be USED in both apps.
+
+   How it works
+   - The locker lives in ONE small cookie scoped to learnwithatom.org, so
+     read., math., and the main page all see the same rewards on the same
+     device. No accounts. No database. Nothing leaves the device.
+   - Each reward is one bit in a list, so the cookie stays tiny.
+   - Each app also keeps a local copy. Copies are merged, so unlocks are never
+     lost, and the cookie rebuilds itself if it is cleared.
+   - On learnwithatom.org, each app can only unlock its own rewards.
+   - On github.io test addresses it still works, but only inside that one site.
+
+   KEYS below must stay APPEND-ONLY: never remove or reorder a key, only add new
+   ones at the end, or students' saved rewards will shift.
+*/
+(function () {
+  var KEYS = {"read":["h~cap","h~tophat","h~cowboy","h~chef","h~souwester","h~pirate","h~wizard","h~headph","h~crown","h~bellhop","h~halo","h~pumpkin","h~leafcrown","h~earmuffs","h~flowers","h~sgh0","h~sgh1","h~sgh2","h~sgh3","h~sgc0","h~sgc1","h~sgc2","h~sgc3","h~bdayhat","h~bucket","h~viking","h~space","h~goldcrown","h~flamecrown","f~round","f~shades","f~star","f~heart","f~monocle","f~goggles","f~sandgog","f~d3","f~stache","f~sparkle","f~snorkel","f~sgf0","f~sgf1","f~sgf2","f~sgf3","f~tape","f~nerd","f~visor","f~diamond","n~bowtie","n~scarf","n~tie","n~bandana","n~vine","n~medal","n~lei","n~badge","n~vampire","n~heartbow","n~earth","n~sgn0","n~sgn1","n~sgn2","n~sgn3","n~ribbon","t~pager","t~bookworm","t~finisher","t~explorer","t~bronze","t~owl","t~bird","t~sunday","t~keeper","t~silver","t~shelf","t~hunter","t~gold","t~marathon","t~agent","t~platinum","t~warden","t~emerald","t~diamond","t~hundred","t~champ","t~t1","t~t2","t~t3","t~t4","t~tc0","t~tc1","t~tc2","t~tc3","t~trail","t~lkeeper","t~survivor","t~wander","t~caretaker","t~ta30","t~ta100","t~ta365","c~parchment","c~butter","c~mint","c~sky","c~rose","c~lavender","c~newsprint","c~sunset","c~matcha","c~bubblegum","c~midnight","c~forest","c~slate","c~coffee","c~ocean","c~grape","c~terminal","c~frontier","c~overgrown","c~noir","c~synthwave","c~season","c~autumn","c~winter","c~spring","c~summer","c~pumpkin","c~spooky","c~harvest","c~snowfall","c~fireworks","c~valentine","c~blossom","c~earthday","c~beach","c~stem","c~aurora","c~neon","c~goldleaf","c~fog","c~cosmos","c~deepsea","c~peaks","c~city","c~campfire","c~clouds","c~dunes","c~harbor","c~lodge","c~sandsea","c~reclaimed","c~plains","c~rain","c~nlake","c~cherry","c~ember","c~ringed","c~maple","c~lavender2","c~hollow","c~palms","c~lanterns","c~alley","c~pixel","c~manor","c~falls","c~glacier","c~nebula","c~bamboo","c~reef","c~savanna","c~morning","c~storm","c~castle","c~study","c~balloons","c~koi","c~sunflower","c~fsteps","c~rising","c~twist","c~final"],"math":["h~h_u1","h~h_u2","h~h_u3","h~h_u4","h~h_u5","h~h_u6","h~h_u7","h~h_u7_5","h~h_u8","h~h_u9","h~h_u10","h~grad","h~crown","h~pi","h~e_witch","h~e_acorn","h~e_beanie","h~e_hearts","h~e_bloom","h~sh1","h~sh2","h~sh3","h~sh4","t~cadet","t~recruit","t~specialist","t~veteran","t~elite","t~legend","t~champion","t~unstoppable","t~solver","t~shifter","t~hunter","t~sniper","t~breaker","t~phantom","t~operator","t~prodigy","t~architect","t~detective","t~halfway","t~fullclear","t~grandmaster","t~pilot","t~ninja","t~rocketsci","t~brainiac","t~mathlete","t~pipion","t~whiz","t~calc","t~wizard","t~nolie","t~triple","t~lucky","t~ninelives","t~halloween_m1","t~halloween_s2","t~thanksgiving_m1","t~thanksgiving_s2","t~winter_m1","t~winter_s2","t~piday_m1","t~piday_s2","t~spring_m1","t~spring_s2","t~streaker","t~flame14","t~ironwill","t~zone","t~chall1","t~chall3","t~chall6","t~crusher","t~k1","t~machine","t~sleuth","t~casecracker","t~mastermind","t~bx_cruncher","t~bx_pencil","t~bx_gains","t~bx_whisper","t~bx_prime","t~bx_golden","t~bx_hyp","t~bx_inf","t~bx_unsolv","t~qp15","t~qp25","t~qp35","t~ls15","t~ls30","t~ls50","t~rk3","t~rk6","t~rk10","t~boss1","t~boss4","t~boss10","t~dn5","t~dn20","t~ti_s1","t~ti_s2","t~ti_s3","t~ti_s4","t~ti_w3","t~ti_w9","t~ti_w15","t~ti_w21","t~ti_w27","t~ti_w33","c~sunset","c~mint","c~rose","c~matcha","c~butter","c~newsprint","c~bubblegum","c~sky","c~lavender","c~parchment","c~midnight","c~frontier","c~noir","c~terminal","c~overgrown","c~coffee","c~synthwave","c~forest","c~ocean","c~grape","c~slate","c~winter","c~spring","c~autumn","c~summer","c~season","c~falls","c~stem","c~aurora","c~valentine","c~neon","c~goldleaf","c~earthday","c~prism","c~pumpkin","c~spooky","c~witching","c~harvest","c~cider","c~cranberry","c~snowfall","c~frost","c~evergreen","c~fireworks","c~blueberry","c~midnightpi","c~blossom","c~beach","c~meadow","c~bx_bubble","c~bx_mango","c~bx_aurora","c~bx_royal","c~bx_molten","c~m_sea1","c~m_sea2","c~m_sea3","c~m_sea4","c~th_s1","c~th_s2","c~th_s3","c~th_s4","c~m_balance","c~m_mirror","c~m_rails","c~m_slope","c~m_factory","c~m_cross","c~m_trend","c~m_launch","c~m_pyramid","c~m_vault","c~m_sails","c~m_blueprint","c~m_fractal","c~m_spiral","c~m_pimoon","c~m_honey","c~m_bridge","c~m_neon","c~m_sine","c~m_lowpoly","c~m_circuit","c~m_snow","c~m_planes","c~m_observe","c~m_tangram"]};
+  var NAME = 'atom_locker', LOCAL = 'atom_locker_copy';
+  var MAX_AGE = 60 * 60 * 24 * 400; // 400 days (browser max); refreshed on every save
+  var APPS = ['read', 'math'];
+  var B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+  var host = location.hostname;
+  var shared = /(^|\.)learnwithatom\.org$/.test(host);
+  var sub = host.split('.')[0];
+  var hereApp = shared && (sub === 'read' || sub === 'math') ? sub : '';
+
+  function dec(s) { var a = []; s = s || ''; for (var i = 0; i < s.length; i++) { var v = B64.indexOf(s.charAt(i)); if (v < 0) v = 0; for (var j = 0; j < 6; j++) a.push((v >> j) & 1); } return a; }
+  function enc(a) { var s = ''; for (var i = 0; i < a.length; i += 6) { var v = 0; for (var j = 0; j < 6; j++) if (a[i + j]) v |= 1 << j; s += B64.charAt(v); } return s.replace(/A+$/, ''); }
+  function bitsOr(x, y) { var a = dec(x), b = dec(y), n = Math.max(a.length, b.length), o = []; for (var i = 0; i < n; i++) o.push(a[i] || b[i] ? 1 : 0); return enc(o); }
+
+  function blank() { return { v: 2, rev: 0, b: { read: '', math: '' }, s: { read: '', math: '' }, last: '' }; }
+  function clean(w) {
+    var o = blank();
+    if (!w || typeof w !== 'object' || w.v !== 2) return o;
+    o.rev = +w.rev || 0;
+    APPS.forEach(function (a) {
+      o.b[a] = enc(dec(String((w.b || {})[a] || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 300)));
+      o.s[a] = String((w.s || {})[a] || '').slice(0, 30);
+    });
+    o.last = APPS.indexOf(w.last) > -1 ? w.last : '';
+    return o;
+  }
+  function merge(a, b) {
+    var m = clean(a.rev >= b.rev ? a : b), other = a.rev >= b.rev ? b : a;
+    APPS.forEach(function (x) { m.b[x] = bitsOr(m.b[x], other.b[x]); });
+    m.rev = Math.max(a.rev, b.rev);
+    return m;
+  }
+  function sameBits(a, b) { return a.b.read === b.b.read && a.b.math === b.b.math; }
+
+  function readCookie() {
+    var parts = document.cookie ? document.cookie.split('; ') : [];
+    for (var i = 0; i < parts.length; i++) {
+      var eq = parts[i].indexOf('=');
+      if (parts[i].slice(0, eq) === NAME) { try { return JSON.parse(decodeURIComponent(parts[i].slice(eq + 1))); } catch (e) { return null; } }
+    }
+    return null;
+  }
+  function readLocal() { try { return JSON.parse(localStorage.getItem(LOCAL)); } catch (e) { return null; } }
+  function keepLocal(w) { try { localStorage.setItem(LOCAL, JSON.stringify(w)); } catch (e) {} }
+
+  var listeners = [], lastSeen = -1;
+  function fire(w) { listeners.forEach(function (fn) { try { fn(w); } catch (e) {} }); }
+
+  function write(w) {
+    w.rev = (w.rev || 0) + 1;
+    var c = NAME + '=' + encodeURIComponent(JSON.stringify(w)) + '; Path=/; Max-Age=' + MAX_AGE + '; SameSite=Lax';
+    if (shared) c += '; Domain=learnwithatom.org';
+    if (location.protocol === 'https:') c += '; Secure';
+    try { document.cookie = c; } catch (e) {}
+    keepLocal(w);
+    lastSeen = w.rev;
+    fire(w);
+    return w;
+  }
+
+  function get() {
+    var c = readCookie(), l = readLocal();
+    c = c && c.v === 2 ? clean(c) : null;
+    l = l && l.v === 2 ? clean(l) : null;
+    if (!c && !l) return blank();
+    if (c && !l) { keepLocal(c); return c; }
+    if (!c && l) return write(l);              // cookie was cleared: rebuild it
+    var m = merge(c, l);
+    if (!sameBits(m, c)) return write(m);      // this app had unlocks the cookie lost
+    keepLocal(c);
+    return c;
+  }
+
+  function check() { var w = get(); if (w.rev !== lastSeen) { lastSeen = w.rev; fire(w); } }
+  // The other app may have unlocked something; recheck when we come back.
+  window.addEventListener('focus', check);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+  setInterval(check, 4000);
+
+  function idx(app, key) { return APPS.indexOf(app) > -1 ? KEYS[app].indexOf(String(key)) : -1; }
+  function canUnlock(app) { return APPS.indexOf(app) > -1 && (!shared || hereApp === app); }
+
+  window.AtomLocker = {
+    keys: KEYS,
+    isShared: shared,
+    app: hereApp,
+    get: get,
+
+    // Add many unlocks in one save. Returns how many were new.
+    unlockMany: function (app, keys) {
+      if (!canUnlock(app)) return 0;
+      var w = get(), bits = dec(w.b[app]), n = 0;
+      (keys || []).forEach(function (k) { var i = idx(app, k); if (i > -1 && !bits[i]) { while (bits.length <= i) bits.push(0); bits[i] = 1; n++; } });
+      if (n) { w.b[app] = enc(bits); w.last = app; write(w); }
+      return n;
+    },
+    unlock: function (app, key) { return this.unlockMany(app, [key]) > 0; },
+
+    has: function (app, key) { var i = idx(app, key); return i > -1 && !!dec(get().b[app])[i]; },
+    owned: function (app) { var bits = dec(get().b[app]); return (KEYS[app] || []).filter(function (k, i) { return !!bits[i]; }); },
+    count: function (app) {
+      var w = get(), n = 0;
+      (app ? [app] : APPS).forEach(function (a) { var bits = dec(w.b[a]); for (var i = 0; i < KEYS[a].length; i++) if (bits[i]) n++; });
+      return n;
+    },
+    total: function (app) { return app ? KEYS[app].length : KEYS.read.length + KEYS.math.length; },
+
+    // Short status line for the main page, like "Gold III". Only this app's own line.
+    setSummary: function (app, text) {
+      if (!canUnlock(app)) return;
+      text = String(text || '').slice(0, 30);
+      var w = get();
+      if (w.s[app] === text) return;
+      w.s[app] = text; w.last = app; write(w);
+    },
+
+    exportData: function () { return get(); },
+    // Restoring a backup only ADDS unlocks; it never removes any.
+    importData: function (obj) { var cur = get(), m = merge(cur, clean(obj)); m.rev = cur.rev; return write(m); },
+
+    onChange: function (fn) { listeners.push(fn); try { fn(get()); } catch (e) {} }
+  };
+
+  lastSeen = get().rev;
+})();
+
+</script>
 <script>
   (function () {
     if (!window.AtomLocker) return;
@@ -219,21 +369,19 @@
     }
 
     AtomLocker.onChange(function (w) {
-      var total = w.items.read.length + w.items.math.length;
+      var nr = AtomLocker.count('read'), nm = AtomLocker.count('math'), total = nr + nm;
       if (shown !== null && shown !== total) {
         pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');
       }
       shown = total;
       totalEl.textContent = total;
-
-      ['read', 'math'].forEach(function (a) {
-        var n = w.items[a].length;
-        document.getElementById('unl-' + a).textContent =
-          n ? n + (n === 1 ? ' reward' : ' rewards') + ' unlocked here' : '';
-        document.getElementById('app-' + a).classList.toggle('last', w.last === a);
+      [['read', nr], ['math', nm]].forEach(function (x) {
+        document.getElementById('unl-' + x[0]).textContent =
+          x[1] ? x[1] + (x[1] === 1 ? ' reward' : ' rewards') + ' unlocked here' : '';
+        document.getElementById('app-' + x[0]).classList.toggle('last', w.last === x[0]);
       });
-      if (w.summary.read) setText('sum-read', 'Reading: ', w.summary.read);
-      if (w.summary.math) setText('sum-math', 'Rank: ', w.summary.math);
+      if (w.s.read) setText('sum-read', 'Rank: ', w.s.read);
+      if (w.s.math) setText('sum-math', 'Rank: ', w.s.math);
     });
   })();
 </script>
