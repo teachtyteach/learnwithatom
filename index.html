@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn with Atom</title>
+<meta name="description" content="Atom Reading and Atom Math — made for STEM Launch.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23161412'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='40' text-anchor='middle' fill='%23f4ede0'%3Ea%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #f4ede0;
+    --card: #fbf7ef;
+    --ink: #161412;
+    --soft: #6b645a;
+    --line: #e2d8c6;
+    --pill: #161412;
+    --pill-ink: #f4ede0;
+    --read: #2f6f5e;
+    --math: #b5562e;
+    --spark: #c99a1e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151311; --card: #1e1b18; --ink: #f1e9da; --soft: #a59c8d;
+      --line: #322d27; --pill: #f1e9da; --pill-ink: #151311;
+      --read: #6fb8a2; --math: #e58a5f; --spark: #e8bd45;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151311; --card: #1e1b18; --ink: #f1e9da; --soft: #a59c8d;
+    --line: #322d27; --pill: #f1e9da; --pill-ink: #151311;
+    --read: #6fb8a2; --math: #e58a5f; --spark: #e8bd45;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; min-height: 100dvh;
+    background: var(--bg); color: var(--ink);
+    font-family: Inter, system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    scrollbar-width: none;
+  }
+  body::-webkit-scrollbar { display: none; }
+  .wrap { width: 100%; max-width: 760px; display: flex; flex-direction: column; flex: 1; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .logo {
+    width: 38px; height: 38px; border-radius: 11px; background: var(--pill); color: var(--pill-ink);
+    display: grid; place-items: center; font-family: Fraunces, Georgia, serif; font-size: 26px; line-height: 1; padding-bottom: 4px;
+  }
+  .brand b { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
+
+  .wallet {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 7px 14px 7px 10px; font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums;
+  }
+  .wallet svg { width: 18px; height: 18px; color: var(--spark); }
+  .wallet.bump { animation: bump .5s ease; }
+  @keyframes bump { 40% { transform: scale(1.12); } }
+
+  .hero { text-align: center; margin: clamp(28px, 7vh, 64px) 0 clamp(22px, 5vh, 40px); }
+  .mascot { width: 92px; height: 92px; object-fit: contain; display: block; margin: 0 auto 14px; }
+  h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 800; letter-spacing: -.025em;
+    font-size: clamp(38px, 9vw, 62px); line-height: 1; margin: 0 0 12px; text-wrap: balance;
+  }
+  .hero p { margin: 0; color: var(--soft); font-size: 17px; }
+
+  .apps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .apps { grid-template-columns: 1fr; } }
+
+  .app {
+    position: relative; display: flex; flex-direction: column; gap: 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    padding: 20px; text-decoration: none; color: var(--ink);
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .app:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .app:active { transform: scale(.985); }
+  .app:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .app.read { --accent: var(--read); }
+  .app.math { --accent: var(--math); }
+
+  .app-top { display: flex; align-items: center; gap: 14px; }
+  .emblem {
+    width: 56px; height: 56px; flex: none; border-radius: 16px;
+    background: var(--accent); color: var(--card); display: grid; place-items: center;
+  }
+  .emblem svg { width: 30px; height: 30px; }
+  .app h2 { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 24px; margin: 0; letter-spacing: -.01em; }
+  .app .sub { color: var(--soft); font-size: 14px; margin-top: 2px; }
+
+  .stat {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    border-top: 1px dashed var(--line); padding-top: 12px; font-size: 14px; color: var(--soft);
+  }
+  .stat strong { color: var(--ink); font-weight: 600; }
+  .go {
+    display: inline-flex; align-items: center; gap: 6px; background: var(--pill); color: var(--pill-ink);
+    border-radius: 999px; padding: 9px 16px; font-weight: 600; font-size: 14px; white-space: nowrap;
+  }
+  .badge {
+    position: absolute; top: -10px; right: 16px; background: var(--accent); color: var(--card);
+    font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 10px; display: none;
+  }
+  .app.last .badge { display: block; }
+
+  .unlocks { font-size: 13px; color: var(--accent); font-weight: 600; margin-top: -4px; }
+  .unlocks:empty { display: none; }
+  .how {
+    margin-top: 16px; background: transparent; border: 1px solid var(--line); border-radius: 18px;
+    padding: 14px 18px; display: flex; gap: 12px; align-items: center; font-size: 14px; color: var(--soft);
+  }
+  .how svg { width: 22px; height: 22px; flex: none; color: var(--spark); }
+  .how b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: auto; padding-top: 28px; text-align: center; font-size: 13px; color: var(--soft);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  footer .lock { display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+  footer svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a class="brand" href="./" aria-label="Learn with Atom home">
+      <span class="logo" aria-hidden="true">a</span>
+      <b>Learn with Atom</b>
+    </a>
+    <div class="wallet" id="wallet" title="Rewards you can use in Reading and Math">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg>
+      <span id="total">0</span><span style="position:absolute;left:-9999px">rewards unlocked</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <!-- Put Atom's picture in the repo as atom.png and it will show here. -->
+    <img class="mascot" src="atom.png" alt="Atom the STEM Launch robot" onerror="this.remove()">
+    <h1>What are we doing today?</h1>
+    <p>Pick one. Your rewards come with you.</p>
+  </section>
+
+  <main class="apps">
+    <a class="app read" id="app-read" href="https://read.learnwithatom.org">
+      <span class="badge">Last played</span>
+      <div class="app-top">
+        <div class="emblem" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5z"/><path d="M12 6v13.5"/></svg>
+        </div>
+        <div>
+          <h2>Atom Reading</h2>
+          <div class="sub">Read faster, one word at a time</div>
+        </div>
+      </div>
+      <div class="unlocks" id="unl-read"></div>
+      <div class="stat">
+        <span id="sum-read">Start reading</span>
+        <span class="go">Read &rarr;</span>
+      </div>
+    </a>
+
+    <a class="app math" id="app-math" href="https://math.learnwithatom.org">
+      <span class="badge">Last played</span>
+      <div class="app-top">
+        <div class="emblem" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 3v6M3 6h6"/><path d="M15 6h6"/><path d="M4 15l4 4M8 15l-4 4"/><path d="M15 15.5h6M15 19h6"/></svg>
+        </div>
+        <div>
+          <h2>Atom Math</h2>
+          <div class="sub">Practice, rank up, beat the bosses</div>
+        </div>
+      </div>
+      <div class="unlocks" id="unl-math"></div>
+      <div class="stat">
+        <span id="sum-math">Start practicing</span>
+        <span class="go">Play &rarr;</span>
+      </div>
+    </a>
+  </main>
+
+  <div class="how">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg>
+    <span><b>Unlock rewards in each app. Use them in both.</b> Math rewards come from Math. Reading rewards come from Reading.</span>
+  </div>
+
+  <footer>
+    <span class="lock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      Everything stays on this device.
+    </span>
+    <span>Made for STEM Launch &middot; Made by Mr. Lovrien 2026</span>
+  </footer>
+</div>
+
+<script src="atom-locker.js"></script>
+<script>
+  (function () {
+    if (!window.AtomLocker) return;
+    var totalEl = document.getElementById('total');
+    var pill = document.getElementById('wallet');
+    var shown = null;
+
+    function setText(id, label, value) {
+      var el = document.getElementById(id);
+      el.textContent = label;
+      var b = document.createElement('strong');
+      b.textContent = value;
+      el.appendChild(b);
+    }
+
+    AtomLocker.onChange(function (w) {
+      var total = w.items.read.length + w.items.math.length;
+      if (shown !== null && shown !== total) {
+        pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');
+      }
+      shown = total;
+      totalEl.textContent = total;
+
+      ['read', 'math'].forEach(function (a) {
+        var n = w.items[a].length;
+        document.getElementById('unl-' + a).textContent =
+          n ? n + (n === 1 ? ' reward' : ' rewards') + ' unlocked here' : '';
+        document.getElementById('app-' + a).classList.toggle('last', w.last === a);
+      });
+      if (w.summary.read) setText('sum-read', 'Reading: ', w.summary.read);
+      if (w.summary.math) setText('sum-math', 'Rank: ', w.summary.math);
+    });
+  })();
+</script>
+</body>
+</html>
