@@ -372,6 +372,57 @@
       };
     },
 
+    /* ---------- backups without hidden frames (iPhone Safari is picky about those) ---------- */
+    // A note left for the next page: "restore this backup". Kept in IndexedDB because backups can be large.
+    xfer: (function () {
+      function db() { return new Promise(function (ok, bad) { try { var r = indexedDB.open('atom-xfer', 1); r.onupgradeneeded = function () { r.result.createObjectStore('x'); }; r.onsuccess = function () { ok(r.result); }; r.onerror = function () { bad(r.error); }; } catch (e) { bad(e); } }); }
+      function op(mode, fn) { return db().then(function (d) { return new Promise(function (ok, bad) { var tx = d.transaction('x', mode), q = fn(tx.objectStore('x')); tx.oncomplete = function () { ok(q && q.result); }; tx.onerror = function () { bad(tx.error); }; }); }); }
+      return { put: function (v) { return op('readwrite', function (st) { return st.put(v, 'pending'); }); },
+               get: function () { return op('readonly', function (st) { return st.get('pending'); }).catch(function () { return null; }); },
+               clear: function () { return op('readwrite', function (st) { return st.delete('pending'); }).catch(function () {}); } };
+    })(),
+    // The same backup Atom Reading makes, read straight from this site's storage.
+    readBackup: async function () {
+      var g = function (k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } };
+      var lib = g('pace:lib', []); if (!Array.isArray(lib)) lib = [];
+      var all = await new Promise(function (res) {
+        var r; try { r = indexedDB.open('pace', 1); } catch (e) { return res({}); }
+        r.onupgradeneeded = function () { try { r.result.createObjectStore('books', { keyPath: 'id' }); } catch (e) {} };
+        r.onerror = function () { res({}); };
+        r.onsuccess = function () { try { var out = {}, c = r.result.transaction('books', 'readonly').objectStore('books').openCursor(); c.onsuccess = function () { var cur = c.result; if (cur) { out[cur.value.id] = cur.value; cur.continue(); } else res(out); }; c.onerror = function () { res(out); }; } catch (e) { res({}); } };
+      });
+      var books = [], pos = {}, bm = {}, rd = {}, hq = {};
+      lib.forEach(function (m) {
+        if (all[m.id]) books.push(all[m.id]);
+        var p = g('pace:pos:' + m.id, null); if (p !== null) pos[m.id] = p;
+        var b = g('pace:bm:' + m.id, null); if (b && b.length) bm[m.id] = b;
+        var q = g('pace:rd:' + m.id, null); if (q && q.length) rd[m.id] = q;
+        if (all['cv:' + m.id] && all['cv:' + m.id].img) hq[m.id] = all['cv:' + m.id].img;
+      });
+      var settings = g('pace:settings', {}) || {};
+      if (!g('pace:welcomed', false) && !lib.length && !g('pace:stats', null)) return null;
+      var extra = {}; ['ev', 'sp', 'sr2', 'sec', 'arc', 'cl', 'since', 'qb', 'evp', 'sth', 'sgf', 'pr', 'bday', 'tt', 'jd', 'box', 'unlock'].forEach(function (k) { extra[k] = g('pace:' + k, null); });
+      return { format: 'pace-backup', version: 1, name: settings.name || '', saved: new Date().toISOString(), lib: lib, books: books, pos: pos, bm: bm, rd: rd, hq: hq,
+        stats: g('pace:stats', { days: {}, books: {}, finished: 0 }), settings: settings, wpm: g('pace:wpm', null), fs: g('pace:fs', null), badges: g('pace:badges', {}), wk: g('pace:wk', {}), extra: extra };
+    },
+    mathSave: function () { try { return JSON.parse(localStorage.getItem('launchpad-math-v1') || 'null'); } catch (e) { return null; } },
+    setMathSave: function (m) { if (!m || !m.topics) return false; try { localStorage.setItem('launchpad-math-v1', JSON.stringify(Object.assign({ topics: {}, days: {} }, m))); return true; } catch (e) { return false; } },
+    // One backup file for all of Atom
+    makeAll: async function () {
+      var read = await this.readBackup(), math = this.mathSave();
+      if (!read && !math) return null;
+      return read ? Object.assign(read, math ? { atomAll: 1, math: math } : {}, { locker: get() }) : { format: 'atom-math', math: math, locker: get() };
+    },
+    fileName: function () { var d = new Date(), p = function (x) { return String(x).padStart(2, '0'); }; var nm = String(this.profile().n || 'Backup').replace(/[^\p{L}\p{N} _-]/gu, '').trim().replace(/\s+/g, '-').slice(0, 30) || 'Backup'; return nm + ' ' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + p(d.getMinutes()) + '.Atom'; },
+    // Split a backup file into its Reading part and Math part
+    splitBackup: function (data) {
+      var read = null, math = null; if (!data || typeof data !== 'object') return null;
+      if (data.format === 'pace-backup') { read = data; math = data.math && data.math.topics ? data.math : null; }
+      else if (data.format === 'atom-math' && data.math) math = data.math;
+      else if (data.topics) math = data;
+      return read || math ? { read: read, math: math, locker: data.locker || null, name: (read && ((read.settings && read.settings.name) || read.name)) || (math && math.name) || '' } : null;
+    },
+
     exportData: function () { return get(); },
     // Restoring a backup only ADDS unlocks; it never removes any.
     importData: function (obj) { var cur = get(), m = merge(cur, clean(obj)); m.rev = cur.rev; return write(m); },
@@ -7381,9 +7432,10 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
     let done=false;const fin=v=>{if(done)return;done=true;window.removeEventListener('message',on);setTimeout(()=>f.remove(),50);res(v)};
     const on=e=>{if(e.source!==f.contentWindow||e.origin!==new URL(READ_URL,location.href).origin)return;const d=e.data||{};if(d.atom==='ready')f.contentWindow.postMessage(msg,e.origin);else if(d.atom==='reply')fin(d)};
     window.addEventListener('message',on);setTimeout(()=>fin(null),msg.atom==='export'?25000:20000);document.body.appendChild(f)})}
+  const ONE=L.isShared&&!L.oldHost;
   bkFile=async function(){
     const name=bkName(),m=document.getElementById('bkmsg');if(m)m.textContent='Getting your Reading progress too…';
-    const other=await askOther({atom:'export'});S.lastBackup=today();save();
+    const other=ONE?{data:await L.readBackup()}:await askOther({atom:'export'});S.lastBackup=today();save();
     const both=other&&other.data;const data=both?JSON.stringify(Object.assign({},other.data,{atomAll:1,math:S,locker:L.exportData()})):JSON.stringify(S);
     const dd=new Date(),pp=x=>String(x).padStart(2,'0'),stamp=`${pp(dd.getMonth()+1)}-${pp(dd.getDate())} ${pp(dd.getHours())}${pp(dd.getMinutes())}`;
     const fn=both?`${name} ${stamp}.Atom`:`${name} ${stamp}.launchpad`;
@@ -7397,6 +7449,8 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
       if(o.math&&o.math.topics){S=Object.assign({topics:{},days:{}},o.math);migrateUnits();ensureS();save();applyLook()}
       if(o.locker)L.importData(o.locker);
       if(m)m.textContent='Loading your Reading progress too…';
+      if(ONE){if(!(o.lib||o.books||o.stats)){home();toast('Math restored','up');return}
+        const rd=Object.assign({},o);delete rd.math;delete rd.atomAll;await L.xfer.put({read:rd,locker:o.locker||null});location.href=L.urls.read+'?atomrestore=1&back=math';return}
       const r=await askOther({atom:'import',data:o});
       home();toast(o.math?(r&&r.ok?'Math and Reading restored':'Math restored. Open Atom Reading and restore there too.'):(r&&r.ok?'Reading restored':'Open Atom Reading to load this file'),'up');return;
     }
