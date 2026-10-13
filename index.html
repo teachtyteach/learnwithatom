@@ -4,201 +4,228 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Learn with Atom</title>
-<meta name="description" content="Atom Reading and Atom Math — made for STEM Launch.">
-<meta name="theme-color" content="#f4ede0">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23161412'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='40' text-anchor='middle' fill='%23f4ede0'%3Ea%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Atom Reading and Atom Math, made for STEM Launch.">
+<meta name="theme-color" content="#f3f5fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121433" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="https://read.learnwithatom.org/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="https://read.learnwithatom.org/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
 <style>
+  /* Colors come from Atom himself: STEM Launch indigo, steel body, visor blue, rocket flame. */
   :root {
-    --bg: #f4ede0;
-    --card: #fbf7ef;
-    --ink: #161412;
-    --soft: #6b645a;
-    --line: #e2d8c6;
-    --pill: #161412;
-    --pill-ink: #f4ede0;
-    --read: #2f6f5e;
-    --math: #b5562e;
-    --spark: #c99a1e;
+    --paper: #f3f5fb;
+    --surface: #ffffff;
+    --ink: #1a1c3f;
+    --soft: #5a5f80;
+    --line: #dde1ee;
+    --indigo: #1f2266;
+    --visor: #c9dcf5;
+    --flame: #f05a28;
+    --flame-2: #ffb21f;
+    --read: #136b5f;
+    --read-ink: #ffffff;
+    --read-tint: #e3f2ee;
+    --math: #2c3192;
+    --math-ink: #ffffff;
+    --math-tint: #e6e8fa;
+    --track: #e7eaf4;
+    --focus: #f05a28;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #151311; --card: #1e1b18; --ink: #f1e9da; --soft: #a59c8d;
-      --line: #322d27; --pill: #f1e9da; --pill-ink: #151311;
-      --read: #6fb8a2; --math: #e58a5f; --spark: #e8bd45;
+      --paper: #121433; --surface: #1b1e45; --ink: #eef0ff; --soft: #a9add3; --line: #2c3065;
+      --indigo: #c9dcf5; --visor: #2c3065; --read: #1c8c7c; --read-tint: #173b42; --math: #4a50c8; --math-tint: #252a66;
+      --track: #2a2e63; color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #151311; --card: #1e1b18; --ink: #f1e9da; --soft: #a59c8d;
-    --line: #322d27; --pill: #f1e9da; --pill-ink: #151311;
-    --read: #6fb8a2; --math: #e58a5f; --spark: #e8bd45;
+    --paper: #121433; --surface: #1b1e45; --ink: #eef0ff; --soft: #a9add3; --line: #2c3065;
+    --indigo: #c9dcf5; --visor: #2c3065; --read: #1c8c7c; --read-tint: #173b42; --math: #4a50c8; --math-tint: #252a66;
+    --track: #2a2e63; color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; min-height: 100dvh;
-    background: var(--bg); color: var(--ink);
-    font-family: Inter, system-ui, sans-serif;
+    margin: 0; min-height: 100dvh; background: var(--paper); color: var(--ink);
+    font: 400 17px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
     display: flex; flex-direction: column; align-items: center;
-    padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    padding: max(18px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
     scrollbar-width: none;
   }
   body::-webkit-scrollbar { display: none; }
-  .wrap { width: 100%; max-width: 760px; display: flex; flex-direction: column; flex: 1; }
+  .wrap { width: 100%; max-width: 860px; display: flex; flex-direction: column; flex: 1; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 10px; }
 
-  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
-  .logo {
-    width: 38px; height: 38px; border-radius: 11px; background: var(--pill); color: var(--pill-ink);
-    display: grid; place-items: center; font-family: Fraunces, Georgia, serif; font-size: 26px; line-height: 1; padding-bottom: 4px;
+  /* ---------- top bar ---------- */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .mark {
+    width: 36px; height: 36px; border-radius: 11px; background: var(--indigo); color: var(--paper);
+    display: grid; place-items: center; font: 400 25px/1 Georgia, serif; padding-bottom: 4px;
   }
-  .brand b { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
-
-  .wallet {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
-    padding: 7px 14px 7px 10px; font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums;
+  img.mark { padding: 0; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
+  .brand span { font: 800 19px/1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.01em; }
+  .count {
+    display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--line); background: var(--surface);
+    border-radius: 999px; padding: 6px 13px 6px 9px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;
   }
-  .wallet svg { width: 18px; height: 18px; color: var(--spark); }
-  .wallet.bump { animation: bump .5s ease; }
-  @keyframes bump { 40% { transform: scale(1.12); } }
+  .count svg { width: 18px; height: 18px; color: var(--flame-2); }
 
-  .hero { text-align: center; margin: clamp(28px, 7vh, 64px) 0 clamp(22px, 5vh, 40px); }
-  .mascot { width: 120px; height: 120px; object-fit: contain; display: block; margin: 0 auto 14px; }
+  /* ---------- hero: Atom on the launch pad ---------- */
+  .hero { display: grid; justify-items: center; text-align: center; margin: clamp(18px, 5vh, 48px) 0 clamp(22px, 4.5vh, 40px); }
+  .pad { position: relative; width: 150px; height: 150px; margin-bottom: 8px; }
+  .pad::after {
+    content: ""; position: absolute; left: 18px; right: 18px; bottom: 2px; height: 14px; border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--indigo) 22%, transparent), transparent);
+  }
+  .atom { position: absolute; inset: 0 0 12px; width: 100%; height: calc(100% - 12px); object-fit: contain; animation: lift 1.1s cubic-bezier(.2,.8,.25,1) both; }
+  @keyframes lift { from { transform: translateY(26px) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
   h1 {
-    font-family: Fraunces, Georgia, serif; font-weight: 800; letter-spacing: -.025em;
-    font-size: clamp(38px, 9vw, 62px); line-height: 1; margin: 0 0 12px; text-wrap: balance;
+    font: 800 clamp(34px, 7.4vw, 56px)/1.02 "Bricolage Grotesque", system-ui, sans-serif;
+    letter-spacing: -.03em; margin: 0 0 10px; text-wrap: balance; max-width: 15ch;
   }
   .hero p { margin: 0; color: var(--soft); font-size: 17px; }
 
-  .apps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 560px) { .apps { grid-template-columns: 1fr; } }
-
+  /* ---------- the two apps ---------- */
+  .apps { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 620px) { .apps { grid-template-columns: 1fr; } }
   .app {
-    position: relative; display: flex; flex-direction: column; gap: 14px;
-    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
-    padding: 20px; text-decoration: none; color: var(--ink);
-    transition: transform .15s ease, border-color .15s ease;
+    position: relative; overflow: hidden; isolation: isolate;
+    display: grid; gap: 18px; padding: 22px 22px 20px; border-radius: 26px;
+    background: var(--c); color: var(--c-ink); text-decoration: none;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 1px 0 rgba(255,255,255,.12) inset, 0 14px 30px -18px color-mix(in srgb, var(--c) 80%, #000);
   }
-  .app:hover { transform: translateY(-2px); border-color: var(--accent); }
-  .app:active { transform: scale(.985); }
-  .app:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .app.read { --accent: var(--read); }
-  .app.math { --accent: var(--math); }
+  .app:hover { transform: translateY(-3px); }
+  .app:active { transform: translateY(0) scale(.99); }
+  .read { --c: var(--read); --c-ink: var(--read-ink); }
+  .math { --c: var(--math); --c-ink: var(--math-ink); }
+  /* subject texture: ruled notebook lines for reading, graph paper for math */
+  .app::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .16; pointer-events: none; }
+  .read::before { background: repeating-linear-gradient(to bottom, transparent 0 27px, #fff 27px 28px); mask: linear-gradient(115deg, transparent 30%, #000 85%); -webkit-mask: linear-gradient(115deg, transparent 30%, #000 85%); }
+  .math::before { background: linear-gradient(#fff 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, #fff 1px, transparent 1px) 0 0/22px 22px; mask: linear-gradient(115deg, transparent 30%, #000 85%); -webkit-mask: linear-gradient(115deg, transparent 30%, #000 85%); }
 
-  .app-top { display: flex; align-items: center; gap: 14px; }
-  .emblem {
-    width: 56px; height: 56px; flex: none; border-radius: 16px;
-    background: var(--accent); color: var(--card); display: grid; place-items: center;
+  .app-head { display: flex; align-items: center; gap: 14px; }
+  .glyph {
+    width: 54px; height: 54px; flex: none; border-radius: 16px; display: grid; place-items: center;
+    background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.22);
   }
-  .emblem svg { width: 30px; height: 30px; }
-  .app h2 { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 24px; margin: 0; letter-spacing: -.01em; }
-  .app .sub { color: var(--soft); font-size: 14px; margin-top: 2px; }
+  .glyph svg { width: 30px; height: 30px; }
+  .app h2 { font: 800 27px/1.05 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.02em; margin: 0; }
+  .app .what { margin: 3px 0 0; font-size: 15px; opacity: .85; }
 
-  .stat {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    border-top: 1px dashed var(--line); padding-top: 12px; font-size: 14px; color: var(--soft);
-  }
-  .stat strong { color: var(--ink); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: auto 1fr; gap: 4px 18px; align-items: end; }
+  .stat-label { font-size: 13px; opacity: .78; }
+  .rank { font: 800 21px/1.1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.01em; }
+  .got { font-weight: 700; font-size: 15px; justify-self: end; font-variant-numeric: tabular-nums; }
+  .bar { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: rgba(255,255,255,.18); overflow: hidden; margin-top: 6px; }
+  .bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--flame-2), #fff3c4); transition: width .8s cubic-bezier(.2,.8,.25,1); }
+
   .go {
-    display: inline-flex; align-items: center; gap: 6px; background: var(--pill); color: var(--pill-ink);
-    border-radius: 999px; padding: 9px 16px; font-weight: 600; font-size: 14px; white-space: nowrap;
+    justify-self: start; display: inline-flex; align-items: center; gap: 10px; min-height: 48px;
+    padding: 12px 20px; border-radius: 999px; background: #fff; color: var(--c);
+    font-weight: 700; font-size: 16px;
   }
-  .badge {
-    position: absolute; top: -10px; right: 16px; background: var(--accent); color: var(--card);
-    font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 10px; display: none;
-  }
-  .app.last .badge { display: block; }
+  .go svg { width: 18px; height: 18px; }
 
-  .unlocks { font-size: 13px; color: var(--accent); font-weight: 600; margin-top: -4px; }
-  .unlocks:empty { display: none; }
-  .how {
-    margin-top: 16px; background: transparent; border: 1px solid var(--line); border-radius: 18px;
-    padding: 14px 18px; display: flex; gap: 12px; align-items: center; font-size: 14px; color: var(--soft);
+  /* ---------- shared locker ---------- */
+  .locker {
+    margin-top: 16px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 22px;
+    padding: 18px 20px; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; align-items: center;
   }
-  .how svg { width: 22px; height: 22px; flex: none; color: var(--spark); }
-  .how b { color: var(--ink); font-weight: 600; }
+  .locker h3 { margin: 0; font: 800 18px/1.2 "Bricolage Grotesque", system-ui, sans-serif; }
+  .locker p { margin: 0; color: var(--soft); font-size: 15px; grid-column: 1 / -1; max-width: 62ch; }
+  .split { grid-column: 1 / -1; display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--track); margin: 6px 0 2px; }
+  .split i { display: block; height: 100%; transition: width .8s cubic-bezier(.2,.8,.25,1); width: 0; }
+  .split .r { background: var(--read); }
+  .split .m { background: var(--math); }
+  .key { justify-self: end; display: flex; gap: 14px; font-size: 14px; color: var(--soft); }
+  .key span { display: inline-flex; align-items: center; gap: 6px; }
+  .key span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--k); }
 
-  footer {
-    margin-top: auto; padding-top: 28px; text-align: center; font-size: 13px; color: var(--soft);
-    display: flex; flex-direction: column; gap: 4px;
+  footer { margin-top: auto; padding-top: 30px; text-align: center; font-size: 14px; color: var(--soft); display: grid; gap: 3px; }
+  footer .lock { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  footer svg { width: 15px; height: 15px; }
+
+  @media (max-width: 420px) {
+    .locker { grid-template-columns: 1fr; }
+    .key { justify-self: start; }
   }
-  footer .lock { display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
-  footer svg { width: 14px; height: 14px; }
+  @media (prefers-reduced-motion: reduce) {
+    .atom, .bar i, .split i { animation: none; transition: none; }
+    .app { transition: none; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
+  <header class="top">
     <a class="brand" href="./" aria-label="Learn with Atom home">
-      <span class="logo" aria-hidden="true">a</span>
-      <b>Learn with Atom</b>
+      <img class="mark" id="appIcon" src="https://read.learnwithatom.org/apple-touch-icon.png" alt="" width="36" height="36" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'mark',textContent:'a'}))"><span>Learn with Atom</span>
     </a>
-    <div class="wallet" id="wallet" title="Rewards you can use in Reading and Math">
+    <div class="count" title="Rewards you've unlocked in both apps">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg>
-      <span id="total">0</span><span style="position:absolute;left:-9999px">rewards unlocked</span>
+      <span id="total">0</span><span class="sr" style="position:absolute;left:-9999px"> rewards unlocked</span>
     </div>
   </header>
 
   <section class="hero">
-    <!-- Put Atom's picture in the repo as atom.png and it will show here. -->
-    <img class="mascot" src="atom.png" alt="Atom the STEM Launch robot" onerror="this.remove()">
-    <h1>What are we doing today?</h1>
-    <p>Pick one. Your rewards come with you.</p>
+    <div class="pad"><img class="atom" src="atom.png" alt="Atom, the STEM Launch robot" width="226" height="240"></div>
+    <h1>What do you want to work on?</h1>
+    <p>Pick an app. Your rewards come with you.</p>
   </section>
 
   <main class="apps">
-    <a class="app read" id="app-read" href="https://read.learnwithatom.org">
-      <span class="badge">Last played</span>
-      <div class="app-top">
-        <div class="emblem" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5z"/><path d="M12 6v13.5"/></svg>
-        </div>
-        <div>
-          <h2>Atom Reading</h2>
-          <div class="sub">Read faster, one word at a time</div>
-        </div>
+    <a class="app read" href="https://read.learnwithatom.org">
+      <div class="app-head">
+        <span class="glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5.5C5 4 8.5 4 12 6c3.5-2 7-2 9.5-.5V19c-2.5-1.5-6-1.5-9.5.5-3.5-2-7-2-9.5-.5z"/><path d="M12 6v13.5"/></svg>
+        </span>
+        <div><h2>Atom Reading</h2><p class="what">Read faster, one word at a time.</p></div>
       </div>
-      <div class="unlocks" id="unl-read"></div>
-      <div class="stat">
-        <span id="sum-read">Start reading</span>
-        <span class="go">Read &rarr;</span>
+      <div class="stats">
+        <span class="stat-label">Rank</span><span class="stat-label" style="justify-self:end">Rewards</span>
+        <span class="rank" id="rank-read">Not started</span><span class="got" id="got-read">0</span>
+        <span class="bar"><i id="bar-read"></i></span>
       </div>
+      <span class="go">Open Atom Reading <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </a>
 
-    <a class="app math" id="app-math" href="https://math.learnwithatom.org">
-      <span class="badge">Last played</span>
-      <div class="app-top">
-        <div class="emblem" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 3v6M3 6h6"/><path d="M15 6h6"/><path d="M4 15l4 4M8 15l-4 4"/><path d="M15 15.5h6M15 19h6"/></svg>
-        </div>
-        <div>
-          <h2>Atom Math</h2>
-          <div class="sub">Practice, rank up, beat the bosses</div>
-        </div>
+    <a class="app math" href="https://math.learnwithatom.org">
+      <div class="app-head">
+        <span class="glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6.5 3.5v6M3.5 6.5h6M14.5 6.5h6M4 15l5 5M9 15l-5 5M14.5 15.5h6M14.5 19.5h6"/></svg>
+        </span>
+        <div><h2>Atom Math</h2><p class="what">Practice, rank up, beat the bosses.</p></div>
       </div>
-      <div class="unlocks" id="unl-math"></div>
-      <div class="stat">
-        <span id="sum-math">Start practicing</span>
-        <span class="go">Play &rarr;</span>
+      <div class="stats">
+        <span class="stat-label">Rank</span><span class="stat-label" style="justify-self:end">Rewards</span>
+        <span class="rank" id="rank-math">Not started</span><span class="got" id="got-math">0</span>
+        <span class="bar"><i id="bar-math"></i></span>
       </div>
+      <span class="go">Open Atom Math <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </a>
   </main>
 
-  <div class="how">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg>
-    <span><b>Unlock rewards in each app. Use them in both.</b> Math rewards come from Math. Reading rewards come from Reading.</span>
-  </div>
+  <section class="locker" aria-labelledby="lk">
+    <h3 id="lk">Your locker</h3>
+    <div class="key"><span style="--k:var(--read)">Reading <b id="k-read">0</b></span><span style="--k:var(--math)">Math <b id="k-math">0</b></span></div>
+    <div class="split" aria-hidden="true"><i class="r" id="sp-read"></i><i class="m" id="sp-math"></i></div>
+    <p>Unlock rewards in each app. Use them in both. Math rewards come from Math, and reading rewards come from Reading.</p>
+  </section>
 
   <footer>
     <span class="lock">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
       Everything stays on this device.
     </span>
-    <span>Made for STEM Launch &middot; Made by Mr. Lovrien 2026</span>
+    <span>Made for STEM Launch by Mr. Lovrien, 2026</span>
   </footer>
 </div>
 
@@ -225,7 +252,9 @@
    ones at the end, or students' saved rewards will shift.
 */
 (function () {
-  var KEYS = {"read":["h~cap","h~tophat","h~cowboy","h~chef","h~souwester","h~pirate","h~wizard","h~headph","h~crown","h~bellhop","h~halo","h~pumpkin","h~leafcrown","h~earmuffs","h~flowers","h~sgh0","h~sgh1","h~sgh2","h~sgh3","h~sgc0","h~sgc1","h~sgc2","h~sgc3","h~bdayhat","h~bucket","h~viking","h~space","h~goldcrown","h~flamecrown","f~round","f~shades","f~star","f~heart","f~monocle","f~goggles","f~sandgog","f~d3","f~stache","f~sparkle","f~snorkel","f~sgf0","f~sgf1","f~sgf2","f~sgf3","f~tape","f~nerd","f~visor","f~diamond","n~bowtie","n~scarf","n~tie","n~bandana","n~vine","n~medal","n~lei","n~badge","n~vampire","n~heartbow","n~earth","n~sgn0","n~sgn1","n~sgn2","n~sgn3","n~ribbon","t~pager","t~bookworm","t~finisher","t~explorer","t~bronze","t~owl","t~bird","t~sunday","t~keeper","t~silver","t~shelf","t~hunter","t~gold","t~marathon","t~agent","t~platinum","t~warden","t~emerald","t~diamond","t~hundred","t~champ","t~t1","t~t2","t~t3","t~t4","t~tc0","t~tc1","t~tc2","t~tc3","t~trail","t~lkeeper","t~survivor","t~wander","t~caretaker","t~ta30","t~ta100","t~ta365","c~parchment","c~butter","c~mint","c~sky","c~rose","c~lavender","c~newsprint","c~sunset","c~matcha","c~bubblegum","c~midnight","c~forest","c~slate","c~coffee","c~ocean","c~grape","c~terminal","c~frontier","c~overgrown","c~noir","c~synthwave","c~season","c~autumn","c~winter","c~spring","c~summer","c~pumpkin","c~spooky","c~harvest","c~snowfall","c~fireworks","c~valentine","c~blossom","c~earthday","c~beach","c~stem","c~aurora","c~neon","c~goldleaf","c~fog","c~cosmos","c~deepsea","c~peaks","c~city","c~campfire","c~clouds","c~dunes","c~harbor","c~lodge","c~sandsea","c~reclaimed","c~plains","c~rain","c~nlake","c~cherry","c~ember","c~ringed","c~maple","c~lavender2","c~hollow","c~palms","c~lanterns","c~alley","c~pixel","c~manor","c~falls","c~glacier","c~nebula","c~bamboo","c~reef","c~savanna","c~morning","c~storm","c~castle","c~study","c~balloons","c~koi","c~sunflower","c~fsteps","c~rising","c~twist","c~final"],"math":["h~h_u1","h~h_u2","h~h_u3","h~h_u4","h~h_u5","h~h_u6","h~h_u7","h~h_u7_5","h~h_u8","h~h_u9","h~h_u10","h~grad","h~crown","h~pi","h~e_witch","h~e_acorn","h~e_beanie","h~e_hearts","h~e_bloom","h~sh1","h~sh2","h~sh3","h~sh4","t~cadet","t~recruit","t~specialist","t~veteran","t~elite","t~legend","t~champion","t~unstoppable","t~solver","t~shifter","t~hunter","t~sniper","t~breaker","t~phantom","t~operator","t~prodigy","t~architect","t~detective","t~halfway","t~fullclear","t~grandmaster","t~pilot","t~ninja","t~rocketsci","t~brainiac","t~mathlete","t~pipion","t~whiz","t~calc","t~wizard","t~nolie","t~triple","t~lucky","t~ninelives","t~halloween_m1","t~halloween_s2","t~thanksgiving_m1","t~thanksgiving_s2","t~winter_m1","t~winter_s2","t~piday_m1","t~piday_s2","t~spring_m1","t~spring_s2","t~streaker","t~flame14","t~ironwill","t~zone","t~chall1","t~chall3","t~chall6","t~crusher","t~k1","t~machine","t~sleuth","t~casecracker","t~mastermind","t~bx_cruncher","t~bx_pencil","t~bx_gains","t~bx_whisper","t~bx_prime","t~bx_golden","t~bx_hyp","t~bx_inf","t~bx_unsolv","t~qp15","t~qp25","t~qp35","t~ls15","t~ls30","t~ls50","t~rk3","t~rk6","t~rk10","t~boss1","t~boss4","t~boss10","t~dn5","t~dn20","t~ti_s1","t~ti_s2","t~ti_s3","t~ti_s4","t~ti_w3","t~ti_w9","t~ti_w15","t~ti_w21","t~ti_w27","t~ti_w33","c~sunset","c~mint","c~rose","c~matcha","c~butter","c~newsprint","c~bubblegum","c~sky","c~lavender","c~parchment","c~midnight","c~frontier","c~noir","c~terminal","c~overgrown","c~coffee","c~synthwave","c~forest","c~ocean","c~grape","c~slate","c~winter","c~spring","c~autumn","c~summer","c~season","c~falls","c~stem","c~aurora","c~valentine","c~neon","c~goldleaf","c~earthday","c~prism","c~pumpkin","c~spooky","c~witching","c~harvest","c~cider","c~cranberry","c~snowfall","c~frost","c~evergreen","c~fireworks","c~blueberry","c~midnightpi","c~blossom","c~beach","c~meadow","c~bx_bubble","c~bx_mango","c~bx_aurora","c~bx_royal","c~bx_molten","c~m_sea1","c~m_sea2","c~m_sea3","c~m_sea4","c~th_s1","c~th_s2","c~th_s3","c~th_s4","c~m_balance","c~m_mirror","c~m_rails","c~m_slope","c~m_factory","c~m_cross","c~m_trend","c~m_launch","c~m_pyramid","c~m_vault","c~m_sails","c~m_blueprint","c~m_fractal","c~m_spiral","c~m_pimoon","c~m_honey","c~m_bridge","c~m_neon","c~m_sine","c~m_lowpoly","c~m_circuit","c~m_snow","c~m_planes","c~m_observe","c~m_tangram"]};
+  var KEYS = {"read":["h~cap","h~tophat","h~cowboy","h~chef","h~souwester","h~pirate","h~wizard","h~headph","h~crown","h~bellhop","h~halo","h~pumpkin","h~leafcrown","h~earmuffs","h~flowers","h~sgh0","h~sgh1","h~sgh2","h~sgh3","h~sgc0","h~sgc1","h~sgc2","h~sgc3","h~bdayhat","h~bucket","h~viking","h~space","h~goldcrown","h~flamecrown","f~round","f~shades","f~star","f~heart","f~monocle","f~goggles","f~sandgog","f~d3","f~stache","f~sparkle","f~snorkel","f~sgf0","f~sgf1","f~sgf2","f~sgf3","f~tape","f~nerd","f~visor","f~diamond","n~bowtie","n~scarf","n~tie","n~bandana","n~vine","n~medal","n~lei","n~badge","n~vampire","n~heartbow","n~earth","n~sgn0","n~sgn1","n~sgn2","n~sgn3","n~ribbon","t~pager","t~bookworm","t~finisher","t~explorer","t~bronze","t~owl","t~bird","t~sunday","t~keeper","t~silver","t~shelf","t~hunter","t~gold","t~marathon","t~agent","t~platinum","t~warden","t~emerald","t~diamond","t~hundred","t~champ","t~t1","t~t2","t~t3","t~t4","t~tc0","t~tc1","t~tc2","t~tc3","t~trail","t~lkeeper","t~survivor","t~wander","t~caretaker","t~ta30","t~ta100","t~ta365","c~parchment","c~butter","c~mint","c~sky","c~rose","c~lavender","c~newsprint","c~sunset","c~matcha","c~bubblegum","c~midnight","c~forest","c~slate","c~coffee","c~ocean","c~grape","c~terminal","c~frontier","c~overgrown","c~noir","c~synthwave","c~season","c~autumn","c~winter","c~spring","c~summer","c~pumpkin","c~spooky","c~harvest","c~snowfall","c~fireworks","c~valentine","c~blossom","c~earthday","c~beach","c~stem","c~aurora","c~neon","c~goldleaf","c~fog","c~cosmos","c~deepsea","c~peaks","c~city","c~campfire","c~clouds","c~dunes","c~harbor","c~lodge","c~sandsea","c~reclaimed","c~plains","c~rain","c~nlake","c~cherry","c~ember","c~ringed","c~maple","c~lavender2","c~hollow","c~palms","c~lanterns","c~alley","c~pixel","c~manor","c~falls","c~glacier","c~nebula","c~bamboo","c~reef","c~savanna","c~morning","c~storm","c~castle","c~study","c~balloons","c~koi","c~sunflower","c~fsteps","c~rising","c~twist","c~final","i~gold","i~diamond","i~a-blue","i~a-green","i~a-orange","i~a-purple","i~a-pink","i~a-teal","i~fern","i~hat","i~moth","i~stag","i~flame","i~owl","i~ghost"],"math":["h~h_u1","h~h_u2","h~h_u3","h~h_u4","h~h_u5","h~h_u6","h~h_u7","h~h_u7_5","h~h_u8","h~h_u9","h~h_u10","h~grad","h~crown","h~pi","h~e_witch","h~e_acorn","h~e_beanie","h~e_hearts","h~e_bloom","h~sh1","h~sh2","h~sh3","h~sh4","t~cadet","t~recruit","t~specialist","t~veteran","t~elite","t~legend","t~champion","t~unstoppable","t~solver","t~shifter","t~hunter","t~sniper","t~breaker","t~phantom","t~operator","t~prodigy","t~architect","t~detective","t~halfway","t~fullclear","t~grandmaster","t~pilot","t~ninja","t~rocketsci","t~brainiac","t~mathlete","t~pipion","t~whiz","t~calc","t~wizard","t~nolie","t~triple","t~lucky","t~ninelives","t~halloween_m1","t~halloween_s2","t~thanksgiving_m1","t~thanksgiving_s2","t~winter_m1","t~winter_s2","t~piday_m1","t~piday_s2","t~spring_m1","t~spring_s2","t~streaker","t~flame14","t~ironwill","t~zone","t~chall1","t~chall3","t~chall6","t~crusher","t~k1","t~machine","t~sleuth","t~casecracker","t~mastermind","t~bx_cruncher","t~bx_pencil","t~bx_gains","t~bx_whisper","t~bx_prime","t~bx_golden","t~bx_hyp","t~bx_inf","t~bx_unsolv","t~qp15","t~qp25","t~qp35","t~ls15","t~ls30","t~ls50","t~rk3","t~rk6","t~rk10","t~boss1","t~boss4","t~boss10","t~dn5","t~dn20","t~ti_s1","t~ti_s2","t~ti_s3","t~ti_s4","t~ti_w3","t~ti_w9","t~ti_w15","t~ti_w21","t~ti_w27","t~ti_w33","c~sunset","c~mint","c~rose","c~matcha","c~butter","c~newsprint","c~bubblegum","c~sky","c~lavender","c~parchment","c~midnight","c~frontier","c~noir","c~terminal","c~overgrown","c~coffee","c~synthwave","c~forest","c~ocean","c~grape","c~slate","c~winter","c~spring","c~autumn","c~summer","c~season","c~falls","c~stem","c~aurora","c~valentine","c~neon","c~goldleaf","c~earthday","c~prism","c~pumpkin","c~spooky","c~witching","c~harvest","c~cider","c~cranberry","c~snowfall","c~frost","c~evergreen","c~fireworks","c~blueberry","c~midnightpi","c~blossom","c~beach","c~meadow","c~bx_bubble","c~bx_mango","c~bx_aurora","c~bx_royal","c~bx_molten","c~m_sea1","c~m_sea2","c~m_sea3","c~m_sea4","c~th_s1","c~th_s2","c~th_s3","c~th_s4","c~m_balance","c~m_mirror","c~m_rails","c~m_slope","c~m_factory","c~m_cross","c~m_trend","c~m_launch","c~m_pyramid","c~m_vault","c~m_sails","c~m_blueprint","c~m_fractal","c~m_spiral","c~m_pimoon","c~m_honey","c~m_bridge","c~m_neon","c~m_sine","c~m_lowpoly","c~m_circuit","c~m_snow","c~m_planes","c~m_observe","c~m_tangram"]};
+  // Home screen icons live on the Reading site; every site uses the student's pick.
+  var ICONS = {"classic":"apple-touch-icon.png","cream":"ico-cream.png","coral":"ico-coral.png","robot":"ico-robot.png","gold":"ico-gold.png","diamond":"ico-diamond.png","a-blue":"ico-a-blue.png","a-green":"ico-a-green.png","a-orange":"ico-a-orange.png","a-purple":"ico-a-purple.png","a-pink":"ico-a-pink.png","a-teal":"ico-a-teal.png","fern":"ico-fern.png","hat":"ico-hat.png","moth":"ico-moth.png","stag":"ico-stag.png","flame":"ico-flame.png","owl":"ico-owl.png","ghost":"ico-ghost.png"}, ICON_BASE = 'https://read.learnwithatom.org/';
   var NAME = 'atom_locker', LOCAL = 'atom_locker_copy';
   var MAX_AGE = 60 * 60 * 24 * 400; // 400 days (browser max); refreshed on every save
   var APPS = ['read', 'math'];
@@ -240,7 +269,7 @@
   function enc(a) { var s = ''; for (var i = 0; i < a.length; i += 6) { var v = 0; for (var j = 0; j < 6; j++) if (a[i + j]) v |= 1 << j; s += B64.charAt(v); } return s.replace(/A+$/, ''); }
   function bitsOr(x, y) { var a = dec(x), b = dec(y), n = Math.max(a.length, b.length), o = []; for (var i = 0; i < n; i++) o.push(a[i] || b[i] ? 1 : 0); return enc(o); }
 
-  function blank() { return { v: 2, rev: 0, b: { read: '', math: '' }, s: { read: '', math: '' }, last: '' }; }
+  function blank() { return { v: 2, rev: 0, b: { read: '', math: '' }, s: { read: '', math: '' }, last: '', ic: '' }; }
   function clean(w) {
     var o = blank();
     if (!w || typeof w !== 'object' || w.v !== 2) return o;
@@ -250,6 +279,7 @@
       o.s[a] = String((w.s || {})[a] || '').slice(0, 30);
     });
     o.last = APPS.indexOf(w.last) > -1 ? w.last : '';
+    o.ic = ICONS[w.ic] ? w.ic : '';
     return o;
   }
   function merge(a, b) {
@@ -342,6 +372,20 @@
       w.s[app] = text; w.last = app; write(w);
     },
 
+    // The home screen icon the student picked (shared by every site)
+    icon: function () { return get().ic || 'classic'; },
+    setIcon: function (id) { if (!ICONS[id]) return false; var w = get(); if (w.ic === id) return true; w.ic = id; write(w); return true; },
+    iconURL: function (id) { var f = ICONS[id] || ICONS.classic; return (hereApp === 'read' ? '' : ICON_BASE) + f; },
+    applyIcon: function () {
+      var u = this.iconURL(this.icon());
+      ['apple-touch-icon', 'icon'].forEach(function (rel) {
+        var l = document.querySelector('link[rel="' + rel + '"]');
+        if (!l) { l = document.createElement('link'); l.rel = rel; document.head.appendChild(l); }
+        if (l.getAttribute('href') !== u) { l.removeAttribute('type'); l.href = u; }
+      });
+      return u;
+    },
+
     exportData: function () { return get(); },
     // Restoring a backup only ADDS unlocks; it never removes any.
     importData: function (obj) { var cur = get(), m = merge(cur, clean(obj)); m.rev = cur.rev; return write(m); },
@@ -350,38 +394,33 @@
   };
 
   lastSeen = get().rev;
+  // Main page and Atom Math follow the shared icon on their own. Atom Reading handles it in its own settings.
+  if (hereApp !== 'read' && !window.ATOM_OWN_ICON) {
+    window.AtomLocker.applyIcon();
+    var lastIc = get().ic;
+    listeners.push(function (w) { if (w.ic !== lastIc) { lastIc = w.ic; window.AtomLocker.applyIcon(); } });
+  }
 })();
 
 </script>
 <script>
   (function () {
     if (!window.AtomLocker) return;
-    var totalEl = document.getElementById('total');
-    var pill = document.getElementById('wallet');
-    var shown = null;
-
-    function setText(id, label, value) {
-      var el = document.getElementById(id);
-      el.textContent = label;
-      var b = document.createElement('strong');
-      b.textContent = value;
-      el.appendChild(b);
-    }
-
+    var $ = function (id) { return document.getElementById(id); };
     AtomLocker.onChange(function (w) {
-      var nr = AtomLocker.count('read'), nm = AtomLocker.count('math'), total = nr + nm;
-      if (shown !== null && shown !== total) {
-        pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');
-      }
-      shown = total;
-      totalEl.textContent = total;
-      [['read', nr], ['math', nm]].forEach(function (x) {
-        document.getElementById('unl-' + x[0]).textContent =
-          x[1] ? x[1] + (x[1] === 1 ? ' reward' : ' rewards') + ' unlocked here' : '';
-        document.getElementById('app-' + x[0]).classList.toggle('last', w.last === x[0]);
-      });
-      if (w.s.read) setText('sum-read', 'Rank: ', w.s.read);
-      if (w.s.math) setText('sum-math', 'Rank: ', w.s.math);
+      var nr = AtomLocker.count('read'), nm = AtomLocker.count('math'), tr = AtomLocker.total('read'), tm = AtomLocker.total('math');
+      $('total').textContent = nr + nm;
+      $('got-read').textContent = nr + ' of ' + tr;
+      $('got-math').textContent = nm + ' of ' + tm;
+      $('bar-read').style.width = (tr ? Math.max(nr ? 3 : 0, 100 * nr / tr) : 0) + '%';
+      $('bar-math').style.width = (tm ? Math.max(nm ? 3 : 0, 100 * nm / tm) : 0) + '%';
+      $('k-read').textContent = nr; $('k-math').textContent = nm;
+      var all = tr + tm;
+      $('sp-read').style.width = (100 * nr / all) + '%';
+      $('sp-math').style.width = (100 * nm / all) + '%';
+      var ic = $('appIcon'); if (ic && ic.tagName === 'IMG') { var u = AtomLocker.iconURL(AtomLocker.icon()); if (ic.getAttribute('src') !== u) ic.src = u; }
+      if (w.s.read) $('rank-read').textContent = w.s.read;
+      if (w.s.math) $('rank-math').textContent = w.s.math;
     });
   })();
 </script>
