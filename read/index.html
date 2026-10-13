@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-kc90d7b"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k3d84c1"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -8410,8 +8410,9 @@ async function openClass() {
 $("#pgGo").onclick = pgSearch; $("#pgQ").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); pgSearch(); } }); $("#pgQ").addEventListener("input", () => { if (!$("#pgQ").value.trim()) pgReset(); });
 $("#classBtn").onclick = openClass; $("#classCard").onclick = openClass; $("#classCard2").onclick = openClass; $("#classBtn2").onclick = openClass;
 
-const WHATS_VER = "2026-10-20c"/*ATOM-SHARED:V*/+".atom4"/*/ATOM-SHARED:V*/, WHATS = [
+const WHATS_VER = "2026-10-20c"/*ATOM-SHARED:V*/+".atom5"/*/ATOM-SHARED:V*/, WHATS = [
 /*ATOM-SHARED:W*/
+  ["New stats looks", "Every stats look got a full makeover: new backgrounds, cards, lettering and a little picture by the title. Plus 7 new ones to earn: Library card, Comic book, Neon arcade, Stained glass, Deep sea, Constellations and Pixel quest."],
   ["Smoother scrolling", "No scroll bars, no side-to-side wiggle, and popups never scroll the page behind them. Same in Atom Math and on learnwithatom.org."],
   ["Your look, everywhere", "Hats, glasses, Atom colors, titles, name styles, frames and stamps from Atom Math now work here too. What you wear stays the same in Reading, Math and on learnwithatom.org, where you can change it too."],
   ["One Atom", "Reading and Math now share more: your name and look, one Atom streak (keep your streak in both on the same day), daily missions from both apps, one season level, one mystery box track and one backup file."],
@@ -9873,6 +9874,209 @@ window.atomUpdate = updShow;
 (function () { try { const g = new URLSearchParams(location.search).get("go"); if (!g) return; history.replaceState(null, "", location.pathname); setTimeout(() => { if (g === "continue") { const m = libSorted()[0]; if (m) openBook(m.id); } else if (g === "class") openClass(); else if (g === "library") openShelf(); }, 600); } catch (e) {} })();
 if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) window.__pace = { toastLater, gearDefs: () => ({ svg: GEAR_SVG, t: GEAR_T, tx: GEAR_TX, layers: p => gearLayers(p) }), setIdle(ms) { lastAct = performance.now() - ms; }, timeSecrets, confetti, seasonNow, seasonWords, seasonSync, seasonEndCheck, setSeasonDate(d) { seasonOv = d; seasonSync(true); }, showCeremony, rankInfo, startPreview, endPreview, updCheck, updShow, ambStart, ambStop, ambObj: () => [AMB, actx], get ambOn() { return !!AMB.node; }, plateSvg, seasonBest, lvlNow, isLocked, unlockList, peekNow(d) { if (d) evOverride = d; peekMaybe(true); }, hatSvg, hatFor, HAT_WINDOWS, setEvDate(d) { evOverride = d; checkEvent(false); updateEventUI(); }, setEyeMs(ms) { eyeMs = ms; }, get cur() { return cur; }, get sw() { return sessionWords; }, get shown() { return shownWords; }, get rd() { return readRanges; }, set rd(v) { readRanges = v; }, get n() { return tokens.length; }, play, pause, seek, setWpm, get lib() { return lib; }, get stats() { return stats; }, get chapters() { return chapters; }, setTimerMs(ms) { timerOn = true; timerLeft = ms; }, get settings() { return settings; }, streakInfo, backupName, makeLink } ;
 /*ATOM-SHARED:JS*/
+/* ===================== Stats looks: each one restyles the whole Stats page =====================
+   Atom Reading and Atom Math each have their own set (earned in that app). A look changes the page
+   background, cards, lettering, number style, rings, bars, tabs, and adds a small picture by the title. */
+window.AtomStatLooks = (function () {
+  const U = s => `url("data:image/svg+xml,${encodeURIComponent(s.replace(/\s+/g, " "))}")`;
+  const V = (inner, vb) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb || "0 0 64 64"}">${inner}</svg>`;
+  const R = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join("");
+  const MONO = 'ui-monospace,"SF Mono",Menlo,Consolas,monospace', SERIF = 'Georgia,"Iowan Old Style","Palatino Linotype",serif',
+    HAND = '"Bradley Hand","Segoe Print","Chalkboard SE","Comic Sans MS",cursive', CHALK = '"Chalkboard SE","Chalkduster","Bradley Hand","Segoe Print",cursive',
+    TYPE = '"American Typewriter","Courier New",Courier,monospace', BOLD = '"Avenir Next Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif',
+    IMPACT = 'Impact,"Arial Black","Helvetica Neue",sans-serif', SANS = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+
+  /* ---------- little pictures by the page title ---------- */
+  const leaves = (cx, cy, r, a0, a1, n, col) => R(n, i => { const a = (a0 + (a1 - a0) * i / (n - 1)) * Math.PI / 180, x = cx + r * Math.cos(a), y = cy + r * Math.sin(a), d = a * 180 / Math.PI + 90; return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="3.2" ry="6.5" fill="${col}" transform="rotate(${d.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`; });
+  const ORN = {
+    blueprint: V(`<g fill="none" stroke="#dff3ff" stroke-width="2" stroke-linecap="round"><circle cx="32" cy="11" r="5"/><path d="M29 15 17 55M35 15l12 40M21 40h22"/><path d="M6 59h52" stroke-dasharray="3 3" opacity=".7"/><path d="M50 8l8 8M58 8l-8 8" opacity=".6"/></g>`),
+    chalk: V(`<g fill="none" stroke="#f4f0e2" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".92"><path d="M32 7l6 14 15 1-12 9 4 15-13-8-13 8 4-15-12-9 15-1z"/><path d="M8 56c12-6 32-6 48 0" stroke-dasharray="7 3"/></g>`),
+    paper: V(`<g transform="rotate(-35 32 32)"><rect x="12" y="26" width="34" height="12" rx="2" fill="#f6c933" stroke="#1f4fa8" stroke-width="2"/><path d="M46 26l10 6-10 6z" fill="#f7d9b0" stroke="#1f4fa8" stroke-width="2" stroke-linejoin="round"/><path d="M53 30.3l3 1.7-3 1.7z" fill="#1f4fa8"/><rect x="5" y="26" width="8" height="12" rx="2" fill="#e8513a" stroke="#1f4fa8" stroke-width="2"/></g><path d="M10 54c6-5 10 3 16-2s9-4 14 0" fill="none" stroke="#1f4fa8" stroke-width="1.8" stroke-linecap="round"/>`),
+    terminal: V(`<rect x="3" y="9" width="58" height="44" rx="5" fill="#031a09" stroke="#7dff9a" stroke-width="2"/><path d="M12 24l8 6-8 6" fill="none" stroke="#7dff9a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="25" y="34" width="14" height="4" fill="#7dff9a"/>`),
+    gold: V(`<g fill="none" stroke="#c9962a" stroke-width="1.6"><path d="M32 58C14 52 7 36 12 16"/><path d="M32 58C50 52 57 36 52 16"/></g>${leaves(32, 34, 22, 105, 205, 6, "#e8be4a")}${leaves(32, 34, 22, 75, -25, 6, "#e8be4a")}<circle cx="32" cy="34" r="7" fill="#ffe27a" stroke="#a8740a" stroke-width="1.5"/>`),
+    ssA0: V(`<path d="M32 60C30 40 34 20 40 4" fill="none" stroke="#2f6b3a" stroke-width="2.4" stroke-linecap="round"/>${R(7, i => { const y = 52 - i * 7, x = 31.5 + i * 1.2; return `<path d="M${x} ${y}c-8-1-13-5-15-10 6 0 11 3 15 9z" fill="#6a9a45"/><path d="M${x + 1} ${y - 1}c8-2 12-7 13-12-6 1-10 5-13 11z" fill="#4e8a3a"/>`; })}`),
+    ssA1: V(`<g transform="rotate(35 32 32)"><path d="M32 4c9 8 12 20 10 34H22C20 24 23 12 32 4z" fill="#e8f1ff" stroke="#4cc9f0" stroke-width="2"/><circle cx="32" cy="22" r="5" fill="#0b1226" stroke="#4cc9f0" stroke-width="2"/><path d="M22 30l-8 12 9-2zM42 30l8 12-9-2z" fill="#ff9f1c"/><path d="M26 40c2 8 4 12 6 18 2-6 4-10 6-18z" fill="#ff9f1c"/><path d="M29 40c1 5 2 8 3 11 1-3 2-6 3-11z" fill="#ffe14d"/></g>`),
+    ssA2: V(`<rect x="14" y="30" width="30" height="5" rx="2" fill="#2a1650" stroke="#f2c14e" stroke-width="2"/><rect x="18" y="10" width="22" height="22" rx="3" fill="#2a1650" stroke="#f2c14e" stroke-width="2"/><rect x="18" y="24" width="22" height="4" fill="#e879f9"/><path d="M42 50l14-20" stroke="#fdf0ff" stroke-width="3" stroke-linecap="round"/><path d="M56 30l2-2" stroke="#f2c14e" stroke-width="3" stroke-linecap="round"/>${[[10, 48], [50, 12], [30, 52]].map(([x, y]) => `<path d="M${x} ${y - 5}l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#f2c14e"/>`).join("")}`),
+    ssA3: V(`<circle cx="32" cy="32" r="24" fill="#f7e9c6" stroke="#7a5a35" stroke-width="2"/><circle cx="32" cy="32" r="18" fill="none" stroke="#7a5a35" stroke-width="1" stroke-dasharray="2 3"/><path d="M32 8l5 24-5 24-5-24z" fill="#b03a2e"/><path d="M8 32l24-5 24 5-24 5z" fill="#3b2510"/><path d="M32 8l5 24h-5z" fill="#7a2018"/><circle cx="32" cy="32" r="3" fill="#f7e9c6" stroke="#3b2510" stroke-width="1.5"/>`),
+    libcard: V(`<g transform="rotate(-14 32 32)"><circle cx="32" cy="32" r="24" fill="none" stroke="#b8322a" stroke-width="3"/><circle cx="32" cy="32" r="19" fill="none" stroke="#b8322a" stroke-width="1.5"/><text x="32" y="38" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="16" fill="#b8322a">DUE</text></g>`),
+    comic: V(`<path d="M32 2l6 14 14-8-4 15 15 3-13 8 10 12-15-3 1 15-11-10-9 13-2-15-15 6 8-13-14-6 15-5-6-14 15 5z" fill="#ffd600" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/><text x="32" y="38" text-anchor="middle" font-family="Impact,Arial Black,sans-serif" font-size="15" fill="#e8282b" stroke="#111" stroke-width=".8">POW!</text>`),
+    neon: V(`<g fill="none" stroke-linejoin="round"><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17-13-11 17-2z" stroke="#ff3ea5" stroke-width="7" opacity=".28"/><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17-13-11 17-2z" stroke="#ff9fd2" stroke-width="2.2"/></g><path d="M6 58h52" stroke="#3ef0ff" stroke-width="2"/><path d="M6 58h52" stroke="#3ef0ff" stroke-width="6" opacity=".25"/>`),
+    glass: V(`<circle cx="32" cy="32" r="27" fill="#2a2438"/>${R(8, i => { const a = i * 45; return `<path d="M32 32L32 8A24 24 0 0 1 49 15z" fill="${["#e94560", "#3fa7d6", "#f6c445", "#5cc46e", "#9b6bd8", "#f08a3c", "#3fd6c4", "#ff7aa8"][i]}" stroke="#2a2438" stroke-width="2" transform="rotate(${a} 32 32)"/>`; })}<circle cx="32" cy="32" r="8" fill="#ffe7a3" stroke="#2a2438" stroke-width="2.5"/>`),
+    ocean: V(`<path d="M14 30c0-12 8-20 18-20s18 8 18 20c-3 2-6-1-9 1s-6-1-9 1-6-1-9 1-6-1-9-3z" fill="#a8f0ff" opacity=".9"/><path d="M14 30c0-12 8-20 18-20s18 8 18 20" fill="none" stroke="#e8fbff" stroke-width="1.5"/>${R(5, i => `<path d="M${19 + i * 6.5} 33c-3 6 3 9 0 15s3 8 1 12" fill="none" stroke="#7fe0f0" stroke-width="2" stroke-linecap="round" opacity=".85"/>`)}<circle cx="26" cy="20" r="2" fill="#fff"/><circle cx="52" cy="10" r="2.5" fill="none" stroke="#a8f0ff" stroke-width="1.2"/><circle cx="57" cy="20" r="1.6" fill="none" stroke="#a8f0ff" stroke-width="1.2"/>`),
+    stars: V(`<g stroke="#c7b8ff" stroke-width="1.2" opacity=".85"><path d="M8 46L20 34 34 38 44 20 56 12M34 38l10 14"/></g>${[[8, 46, 2.2], [20, 34, 2.8], [34, 38, 2.2], [44, 20, 3.2], [56, 12, 2.4], [44, 52, 2]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/><circle cx="${x}" cy="${y}" r="${r * 2.4}" fill="#c7b8ff" opacity=".18"/>`).join("")}`),
+    pixel: V(`${[[2, 1], [3, 1], [5, 1], [6, 1], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [3, 5], [4, 5], [5, 5], [4, 6]].map(([x, y]) => `<rect x="${x * 7}" y="${y * 7 + 4}" width="7" height="7" fill="#ff5e5e"/>`).join("")}<rect x="14" y="18" width="7" height="7" fill="#fff" opacity=".8"/>`),
+    /* Math */
+    m_graph: V(`<path d="M8 56h50M14 60V6" stroke="#2c5aa0" stroke-width="2" stroke-linecap="round"/><path d="M14 52Q30 56 36 34T56 8" fill="none" stroke="#e8513a" stroke-width="3" stroke-linecap="round"/>${[[24, 51], [36, 34], [48, 18]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#2c5aa0"/>`).join("")}`),
+    m_calc: V(`<rect x="12" y="4" width="40" height="56" rx="6" fill="#2b2f36" stroke="#111" stroke-width="2"/><rect x="17" y="9" width="30" height="13" rx="2" fill="#b8c9a0"/><text x="44" y="20" text-anchor="end" font-family="monospace" font-weight="700" font-size="11" fill="#283018">3.14</text>${R(12, i => `<rect x="${17 + (i % 3) * 11}" y="${26 + Math.floor(i / 3) * 8}" width="8" height="6" rx="1.5" fill="${i % 3 === 2 ? "#ff9f1c" : "#5a606b"}"/>`)}`),
+    m_proof: V(`<g fill="none" stroke="#f4f0e2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".92"><path d="M10 52L32 14l22 38z"/><path d="M14 46h6v6" stroke-width="1.8"/></g><g fill="#ffe27a"><circle cx="26" cy="38" r="2.6"/><circle cx="38" cy="38" r="2.6"/><circle cx="32" cy="28" r="2.6"/></g>`),
+    m_protractor: V(`<path d="M6 46a26 26 0 0 1 52 0z" fill="#fff3d0" fill-opacity=".85" stroke="#8a5a12" stroke-width="2"/><path d="M18 46a14 14 0 0 1 28 0" fill="none" stroke="#8a5a12" stroke-width="1.5"/>${R(13, i => { const a = Math.PI * i / 12, x1 = 32 - 26 * Math.cos(a), y1 = 46 - 26 * Math.sin(a), k = i % 3 ? 4 : 7, x2 = 32 - (26 - k) * Math.cos(a), y2 = 46 - (26 - k) * Math.sin(a); return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#8a5a12" stroke-width="1.4"/>`; })}<path d="M32 46L50 22" stroke="#c4421a" stroke-width="2.4" stroke-linecap="round"/><circle cx="32" cy="46" r="2.5" fill="#8a5a12"/>`),
+    m_pi: V(`<text x="32" y="50" text-anchor="middle" font-family="Georgia,serif" font-size="54" font-weight="700" fill="#ffd166" stroke="#7a3db8" stroke-width="1.5">π</text>`),
+    m_fractal: V((() => { const out = []; const tri = (x, y, s, d) => { if (d === 0) { out.push(`<path d="M${x} ${y}l${s / 2} ${-s * .866}l${s / 2} ${s * .866}z" fill="#9dff6b"/>`); return; } tri(x, y, s / 2, d - 1); tri(x + s / 2, y, s / 2, d - 1); tri(x + s / 4, y - s * .433, s / 2, d - 1); }; tri(4, 58, 56, 3); return out.join(""); })()),
+    m_score: V(`<path d="M20 8h24v14a12 12 0 0 1-24 0z" fill="#ffb400" stroke="#7a4b00" stroke-width="2"/><path d="M20 12h-8c0 8 4 12 9 12M44 12h8c0 8-4 12-9 12" fill="none" stroke="#ffb400" stroke-width="3"/><rect x="28" y="34" width="8" height="10" fill="#ffb400"/><rect x="20" y="44" width="24" height="8" rx="2" fill="#ffb400" stroke="#7a4b00" stroke-width="2"/><path d="M28 16l4-4 4 4-4 8z" fill="#fff3c4"/>`),
+    m_golden: V(`<g fill="none" stroke="#e0b13a" stroke-width="2.2"><path d="M40 40A8 8 0 0 1 32 32 13 13 0 0 1 45 19a21 21 0 0 1 21 21" transform="translate(-6 0)"/><path d="M60 40A34 34 0 0 1 26 74" transform="translate(-6 -16)"/><rect x="4" y="6" width="56" height="34" stroke-width="1" opacity=".55"/><path d="M38 6v34M38 27h22" stroke-width="1" opacity=".55"/></g>`),
+    m_matrix: V(`${R(5, c => R(5, r => `<text x="${6 + c * 12}" y="${12 + r * 12}" font-family="monospace" font-weight="700" font-size="11" fill="#39ff7a" opacity="${(0.25 + ((c * 7 + r * 3) % 8) / 10).toFixed(2)}">${(c * 3 + r * 5) % 10}</text>`))}`),
+    m_tess: V(`${[[20, 18], [44, 18], [32, 39], [8, 39], [56, 39], [20, 60], [44, 60]].map(([x, y], i) => `<path d="M${x} ${y - 12}l10.4 6v12L${x} ${y + 12}l-10.4-6v-12z" fill="${["#ff6b6b", "#4ecdc4", "#ffd166", "#5a8dee", "#c77dff", "#06d6a0", "#ff9f1c"][i]}" stroke="#1d1b18" stroke-width="1.6"/>`).join("")}`),
+    m_space: V(`<path d="M6 32h52M32 6v52" stroke="#7fb4ff" stroke-width="1.6" opacity=".7"/><path d="M58 32l-5-3v6zM32 6l-3 5h6z" fill="#7fb4ff"/>${[[44, 16, 3], [18, 44, 2.4], [48, 46, 2], [16, 18, 1.8], [40, 26, 1.6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/><circle cx="${x}" cy="${y}" r="${r * 2.6}" fill="#7fb4ff" opacity=".2"/>`).join("")}`),
+    m_master: V(`<path d="M14 22l8 8 10-14 10 14 8-8-4 22H18z" fill="#ffd166" stroke="#7a4b00" stroke-width="2" stroke-linejoin="round"/><path d="M12 54c6-8 14-8 20 0s14 8 20 0-14-8-20 0-14 8-20 0z" fill="none" stroke="#c77dff" stroke-width="3"/>`)
+  };
+
+  /* ---------- the looks ---------- */
+  const grid = (c, big, small) => `linear-gradient(${c[0]} 1px,transparent 1px),linear-gradient(90deg,${c[0]} 1px,transparent 1px),linear-gradient(${c[1]} 1px,transparent 1px),linear-gradient(90deg,${c[1]} 1px,transparent 1px)`;
+  const STARS = U(V(R(40, i => `<circle cx="${(i * 73) % 200}" cy="${(i * 131) % 200}" r="${(i % 4) * .35 + .4}" fill="#fff" opacity="${(.35 + (i % 5) / 8).toFixed(2)}"/>`), "0 0 200 200"));
+  const READ = [
+    { id: "blueprint", name: "Blueprint", dark: 1, bg: "#0e2c66", surface: "#123578", ink: "#eaf6ff", muted: "#a9c7ee", line: "#4e7cc4", art: grid(["rgba(190,225,255,.16)", "rgba(190,225,255,.07)"]), size: "80px 80px,80px 80px,16px 16px,16px 16px",
+      card: "rgba(12,40,96,.72)", border: "1.5px solid rgba(190,225,255,.6)", rad: "2px", shadow: "inset 0 0 0 4px rgba(14,44,102,.9),inset 0 0 0 5px rgba(190,225,255,.25)",
+      hfont: MONO, hx: "text-transform:uppercase;letter-spacing:.12em", nfont: MONO, num: "#ffffff", r: ["#7fd3ff", "#ffd166", "#ffffff"], trk: "rgba(190,225,255,.2)", on: "#0e2c66" },
+    { id: "chalk", name: "Chalkboard", dark: 1, bg: "#22362c", surface: "#2a4034", ink: "#f4f0e2", muted: "#c9cdb8", line: "#5d7a68",
+      art: "radial-gradient(ellipse 60% 35% at 18% 12%,rgba(255,255,255,.09),transparent 70%),radial-gradient(ellipse 55% 40% at 85% 75%,rgba(255,255,255,.07),transparent 70%),radial-gradient(ellipse 40% 25% at 60% 40%,rgba(255,255,255,.04),transparent 70%)",
+      card: "rgba(255,255,255,.035)", border: "2px solid rgba(244,240,226,.55)", rad: "10px 16px 9px 14px", shadow: "0 0 0 1px rgba(0,0,0,.15)",
+      hfont: CHALK, hx: "text-shadow:0 0 1px rgba(255,255,255,.7)", nfont: CHALK, num: "#fff3a8", nx: "text-shadow:0 0 1px rgba(255,243,168,.8)", r: ["#ffe27a", "#ff9fb2", "#9fd8ff"], trk: "rgba(244,240,226,.18)", on: "#22362c",
+      x: "{S} body{border:0}{S} :is(.card,.tile){background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:6px 6px}" },
+    { id: "paper", name: "Notebook", bg: "#fbf8ee", surface: "#fffdf6", ink: "#1d2a4a", muted: "#5a6a8a", line: "#d8cfb4",
+      art: "linear-gradient(90deg,transparent 34px,rgba(214,69,69,.5) 34px 36px,transparent 36px),repeating-linear-gradient(transparent 0 27px,#c9dcf0 27px 28px)",
+      card: "#fffdf6", border: "1px solid #e2d8b8", rad: "3px", shadow: "0 2px 0 #ece4cb,0 8px 14px -10px rgba(0,0,0,.35)",
+      hfont: HAND, hx: "color:#1f4fa8", nfont: HAND, num: "#1f4fa8", r: ["#1f4fa8", "#e8513a", "#f2b705"], trk: "#ebe3cc", on: "#fff",
+      x: "{S} :is(.bar,.pbar) i{background:linear-gradient(transparent 20%,#ffe14d 20% 85%,transparent 85%)!important;height:100%}{S} .tile b{transform:rotate(-1deg);display:inline-block}" },
+    { id: "terminal", name: "Terminal", dark: 1, bg: "#010a03", surface: "#031107", ink: "#b9ffc8", muted: "#5fcf7a", line: "#1d7a3a",
+      art: "radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6)),repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.35) 2px 3px)",
+      card: "rgba(3,22,9,.92)", border: "1px solid #1d7a3a", rad: "2px", shadow: "inset 0 0 22px rgba(125,255,154,.07),0 0 12px -4px rgba(125,255,154,.45)",
+      hfont: MONO, hx: "text-shadow:0 0 8px rgba(125,255,154,.7)", nfont: MONO, num: "#7dff9a", nx: "text-shadow:0 0 10px rgba(125,255,154,.75)", r: ["#7dff9a", "#3fe0d0", "#d2ff6b"], trk: "rgba(125,255,154,.14)", on: "#010a03",
+      x: "{S} :is(h2)::before{content:'> ';color:#7dff9a}{S} {H}::after{animation:atomBlink 1.1s steps(1) infinite}@keyframes atomBlink{50%{opacity:.35}}" },
+    { id: "gold", name: "Gold", dark: 1, bg: "#100b02", surface: "#1d1505", ink: "#fff3d0", muted: "#d8bf86", line: "#6b5214",
+      art: "radial-gradient(ellipse at 50% -10%,rgba(255,210,63,.28),transparent 60%),repeating-linear-gradient(135deg,rgba(255,226,122,.035) 0 2px,transparent 2px 9px)",
+      card: "linear-gradient(#211804,#150f03) padding-box,linear-gradient(135deg,#fff1a8,#a8740a 30%,#ffd23f 55%,#7a5208 80%,#ffe27a) border-box", border: "1.5px solid transparent", rad: "14px", shadow: "0 10px 24px -14px rgba(255,210,63,.55)",
+      hfont: SERIF, hx: "text-transform:uppercase;letter-spacing:.14em;background:linear-gradient(180deg,#fff1a8,#e0a915 60%,#a8740a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent",
+      nfont: SERIF, num: "#ffd23f", nx: "background:linear-gradient(180deg,#fff6c8,#f2c230 50%,#a8740a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent", r: ["#ffd23f", "#f6e7a8", "#c9962a"], trk: "rgba(255,210,63,.16)", on: "#100b02" },
+    { id: "ssA0", name: "Field notes", bg: "#efe7cf", surface: "#fbf6e8", ink: "#23331f", muted: "#5d6b52", line: "#cfc39c",
+      art: U(V(R(6, k => `<path d="M${100 - 16 - k * 13} 100c0-${30 + k * 10} ${30 + k * 8}-${44 + k * 12} ${60 + k * 10}-${34 + k * 10}s${40 + k * 6} ${30 + k * 6} ${20 + k * 6} ${60 + k * 10}-${60 + k * 8} ${30 + k * 6}-${80 + k * 12}-${26 + k * 6}z" fill="none" stroke="#2f6b3a" stroke-opacity=".13" stroke-width="1.3"/>`), "0 0 200 200")), size: "300px 300px",
+      card: "#fbf6e8", border: "1.5px dashed #6a9a45", rad: "8px", shadow: "0 6px 14px -10px rgba(47,107,58,.45)",
+      hfont: SERIF, hx: "font-style:italic;color:#2f6b3a", nfont: SERIF, num: "#2f6b3a", r: ["#2f6b3a", "#c97a2b", "#6a9a45"], trk: "#e3dbc0", on: "#fbf6e8" },
+    { id: "ssA1", name: "Starship console", dark: 1, bg: "#060b1c", surface: "#0f1830", ink: "#e8f1ff", muted: "#8fa6cf", line: "#26365f",
+      art: `radial-gradient(ellipse at 80% -10%,rgba(76,201,240,.18),transparent 55%),${STARS}`, size: "auto,220px 220px",
+      card: "linear-gradient(#4cc9f0,#4cc9f0) 0 0/14px 2px no-repeat,linear-gradient(#4cc9f0,#4cc9f0) 0 0/2px 14px no-repeat,linear-gradient(#4cc9f0,#4cc9f0) 100% 100%/14px 2px no-repeat,linear-gradient(#4cc9f0,#4cc9f0) 100% 100%/2px 14px no-repeat,rgba(15,24,48,.88)",
+      border: "1px solid #26365f", rad: "4px", shadow: "inset 0 0 20px rgba(76,201,240,.06)",
+      hfont: MONO, hx: "text-transform:uppercase;letter-spacing:.1em", nfont: MONO, num: "#4cc9f0", nx: "text-shadow:0 0 10px rgba(76,201,240,.6)", r: ["#4cc9f0", "#ff9f1c", "#e8f1ff"], trk: "rgba(76,201,240,.15)", on: "#060b1c" },
+    { id: "ssA2", name: "Velvet stage", dark: 1, bg: "#1b0f33", surface: "#2a1650", ink: "#fdf0ff", muted: "#cfa8e6", line: "#4b2a7a",
+      art: "radial-gradient(ellipse 70% 45% at 50% -5%,rgba(255,236,170,.25),transparent 70%),repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 12px,rgba(255,255,255,.035) 12px 26px)",
+      card: "rgba(42,22,80,.88)", border: "1px solid #f2c14e", rad: "16px", shadow: "0 0 0 3px rgba(42,22,80,.9),0 0 0 4px rgba(242,193,78,.35),0 14px 28px -16px rgba(232,121,249,.5)",
+      hfont: SERIF, hx: "color:#f2c14e;letter-spacing:.02em", nfont: SERIF, num: "#f2c14e", r: ["#f2c14e", "#e879f9", "#fdf0ff"], trk: "rgba(242,193,78,.16)", on: "#1b0f33" },
+    { id: "ssA3", name: "Captain's log", bg: "#e8d3a2", surface: "#f6e6bf", ink: "#3b2510", muted: "#7a5a35", line: "#c8a86a",
+      art: "radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(122,90,53,.25)),linear-gradient(rgba(122,90,53,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(122,90,53,.09) 1px,transparent 1px)", size: "auto,24px 24px,24px 24px",
+      card: "#f6e6bf", border: "3px double #8a5a2b", rad: "4px", shadow: "0 6px 14px -10px rgba(59,37,16,.5)",
+      hfont: SERIF, hx: "font-style:italic", nfont: SERIF, num: "#7a2e1e", r: ["#b03a2e", "#2b5d7a", "#7a5a35"], trk: "#e2cc98", on: "#f6e6bf" },
+    { id: "libcard", name: "Library card", lvl: 4, bg: "#e7dcc2", surface: "#f7edd2", ink: "#2b2620", muted: "#6e6250", line: "#c9b58a",
+      art: "repeating-linear-gradient(90deg,rgba(110,98,80,.05) 0 1px,transparent 1px 6px)",
+      card: "linear-gradient(#f7edd2,#f7edd2) padding-box", border: "1px solid #c9b58a", rad: "2px", shadow: "inset 0 3px 0 #b8322a,0 4px 10px -6px rgba(43,38,32,.4)",
+      hfont: TYPE, hx: "text-transform:uppercase;letter-spacing:.06em", nfont: TYPE, num: "#2b2620", r: ["#b8322a", "#2b5d7a", "#7a6a45"], trk: "#e6d8b4", on: "#f7edd2",
+      x: "{S} .tile{background-image:repeating-linear-gradient(transparent 0 21px,rgba(43,93,122,.25) 21px 22px)!important}" },
+    { id: "comic", name: "Comic book", lvl: 9, bg: "#fff1b8", surface: "#ffffff", ink: "#111111", muted: "#3a3a3a", line: "#111111",
+      art: "radial-gradient(rgba(232,40,43,.22) 2px,transparent 2.5px),radial-gradient(rgba(30,136,229,.16) 2px,transparent 2.5px)", size: "14px 14px,14px 14px",
+      card: "#ffffff", border: "3px solid #111", rad: "6px", shadow: "5px 5px 0 #111",
+      hfont: IMPACT, hx: "text-transform:uppercase;letter-spacing:.03em;color:#e8282b;-webkit-text-stroke:1px #111", nfont: IMPACT, num: "#1e88e5", nx: "-webkit-text-stroke:1px #111", r: ["#e8282b", "#1e88e5", "#ffcc00"], trk: "#ececec", on: "#fff",
+      x: "{S} .tile:nth-child(2n){transform:rotate(1deg)}{S} .tile:nth-child(2n+1){transform:rotate(-1deg)}" },
+    { id: "neon", name: "Neon arcade", lvl: 13, dark: 1, bg: "#12052a", surface: "#1e0a44", ink: "#fbe9ff", muted: "#c79cff", line: "#5a2a9a",
+      art: "linear-gradient(180deg,transparent 62%,rgba(255,62,165,.18) 62%,transparent 100%),repeating-linear-gradient(90deg,transparent 0 46px,rgba(62,240,255,.12) 46px 47px),radial-gradient(circle 28px at 50% 64%,#ff7a3e 0 27px,transparent 28px),linear-gradient(#12052a,#2a0a52)",
+      card: "rgba(30,8,62,.82)", border: "1.5px solid #ff3ea5", rad: "12px", shadow: "0 0 12px rgba(255,62,165,.45),inset 0 0 14px rgba(255,62,165,.12)",
+      hfont: BOLD, hx: "text-transform:uppercase;font-style:italic;letter-spacing:.06em;color:#3ef0ff;text-shadow:0 0 10px rgba(62,240,255,.8)", nfont: BOLD, num: "#ffe14d", nx: "text-shadow:0 0 10px rgba(255,225,77,.7);font-style:italic", r: ["#ff3ea5", "#3ef0ff", "#ffe14d"], trk: "rgba(255,62,165,.16)", on: "#12052a" },
+    { id: "glass", name: "Stained glass", lvl: 18, dark: 1, bg: "#18142a", surface: "#231d3a", ink: "#fff4dc", muted: "#cfc3e6", line: "#3a3256",
+      art: "conic-gradient(from 45deg at 50% 50%,rgba(233,69,96,.14) 0 25%,rgba(63,167,214,.14) 0 50%,rgba(246,196,69,.14) 0 75%,rgba(92,196,110,.14) 0)", size: "56px 56px",
+      card: "linear-gradient(135deg,rgba(233,69,96,.16),rgba(63,167,214,.14) 50%,rgba(246,196,69,.14)) ,#211b36", border: "3px solid #0d0a18", rad: "18px 18px 6px 6px", shadow: "inset 0 0 0 1px rgba(255,231,163,.25),0 10px 22px -12px rgba(0,0,0,.6)",
+      hfont: SERIF, hx: "letter-spacing:.03em", nfont: SERIF, num: "#ffe7a3", r: ["#e94560", "#3fa7d6", "#f6c445"], trk: "rgba(255,255,255,.1)", on: "#18142a" },
+    { id: "ocean", name: "Deep sea", lvl: 23, dark: 1, bg: "#06213a", surface: "#0b3550", ink: "#e8fbff", muted: "#9fd6e6", line: "#1f5a78",
+      art: `radial-gradient(ellipse at 50% -20%,rgba(120,220,255,.35),transparent 60%),linear-gradient(#0b4f6c,#04152a),${U(V(R(14, i => `<circle cx="${(i * 37) % 120}" cy="${(i * 53) % 160}" r="${1 + (i % 4)}" fill="none" stroke="#bff3ff" stroke-opacity=".35"/>`), "0 0 120 160"))}`, size: "auto,auto,180px 240px",
+      card: "rgba(11,53,80,.6)", border: "1px solid rgba(160,230,255,.35)", rad: "20px", shadow: "inset 0 1px 0 rgba(255,255,255,.12),0 12px 24px -16px rgba(0,0,0,.7)",
+      hfont: SANS, hx: "font-weight:800;letter-spacing:.01em", nfont: SANS, num: "#a8f0ff", nx: "font-weight:800", r: ["#4fd1c5", "#ffd166", "#a8f0ff"], trk: "rgba(168,240,255,.14)", on: "#06213a" },
+    { id: "stars", name: "Constellations", lvl: 27, dark: 1, bg: "#080c22", surface: "#121836", ink: "#f2f0ff", muted: "#aab0de", line: "#2c3466",
+      art: `radial-gradient(ellipse at 20% 0%,rgba(199,184,255,.22),transparent 55%),${U(V(`<g stroke="#c7b8ff" stroke-opacity=".25" stroke-width=".8"><path d="M20 160L60 120 110 135 140 70 185 40M110 135l35 45"/></g>` + R(60, i => `<circle cx="${(i * 67) % 240}" cy="${(i * 113) % 240}" r="${(i % 5) * .3 + .4}" fill="#fff" opacity="${(.3 + (i % 6) / 9).toFixed(2)}"/>`), "0 0 240 240"))}`, size: "auto,260px 260px",
+      card: "rgba(18,24,54,.78)", border: "1px solid rgba(199,184,255,.28)", rad: "16px", shadow: "0 0 24px -12px rgba(199,184,255,.5)",
+      hfont: SERIF, hx: "letter-spacing:.04em", nfont: SERIF, num: "#ffffff", nx: "text-shadow:0 0 12px rgba(199,184,255,.7)", r: ["#c7b8ff", "#ffd166", "#7fd3ff"], trk: "rgba(199,184,255,.14)", on: "#080c22" },
+    { id: "pixel", name: "Pixel quest", lvl: 32, dark: 1, bg: "#22243a", surface: "#33365a", ink: "#fbf7e8", muted: "#b8bce0", line: "#111",
+      art: "linear-gradient(45deg,rgba(255,255,255,.035) 25%,transparent 25% 75%,rgba(255,255,255,.035) 75%),linear-gradient(45deg,rgba(255,255,255,.035) 25%,transparent 25% 75%,rgba(255,255,255,.035) 75%)", size: "24px 24px,24px 24px",
+      card: "#33365a", border: "0", rad: "0", shadow: "0 -4px 0 #111,0 4px 0 #111,-4px 0 0 #111,4px 0 0 #111,inset 0 -4px 0 #24264a,inset 0 4px 0 #4a4e80",
+      hfont: MONO, hx: "text-transform:uppercase;letter-spacing:.08em;color:#ffd23f;text-shadow:3px 3px 0 #111", nfont: MONO, num: "#ffd23f", nx: "text-shadow:2px 2px 0 #111", r: ["#ff5e5e", "#6bd36b", "#ffd23f"], trk: "#1a1c30", on: "#111",
+      x: "{S} .rings .val{stroke-linecap:butt!important}{S} :is(.bar,.pbar),{S} :is(.bar,.pbar) i{border-radius:0!important}" }
+  ];
+  const MATH = [
+    { id: "m_graph", name: "Graph paper", req: null, bg: "#fbfdff", surface: "#ffffff", ink: "#16233d", muted: "#5a6b8a", line: "#c8d8ef",
+      art: grid(["rgba(44,90,160,.22)", "rgba(44,90,160,.09)"]), size: "60px 60px,60px 60px,12px 12px,12px 12px",
+      card: "rgba(255,255,255,.92)", border: "1.5px solid #2c5aa0", rad: "4px", shadow: "3px 3px 0 rgba(44,90,160,.18)",
+      hfont: MONO, hx: "color:#2c5aa0", nfont: MONO, num: "#e8513a", r: ["#2c5aa0", "#e8513a", "#2c9a6a"], trk: "#dde8f6", on: "#fff" },
+    { id: "m_calc", name: "Calculator", req: "Copper III", dark: 1, bg: "#1e2127", surface: "#2b2f36", ink: "#e9edf2", muted: "#a2a9b4", line: "#41464f",
+      art: "linear-gradient(180deg,#2b2f36,#16181c)",
+      card: "#2b2f36", border: "1px solid #111", rad: "14px", shadow: "inset 0 1px 0 rgba(255,255,255,.08),0 6px 0 #111,0 12px 18px -10px rgba(0,0,0,.6)",
+      hfont: SANS, hx: "font-weight:800;letter-spacing:.04em;text-transform:uppercase", nfont: MONO, num: "#283018", r: ["#ff9f1c", "#b8c9a0", "#e9edf2"], trk: "#41464f", on: "#1e2127",
+      x: "{S} .tile b{display:block;background:linear-gradient(#c3d4ab,#a9bb8f);border-radius:6px;padding:4px 10px;text-align:right;box-shadow:inset 0 2px 4px rgba(0,0,0,.35);margin-top:6px}" },
+    { id: "m_proof", name: "Proof board", req: "Units 1", dark: 1, bg: "#1f3a37", surface: "#25453f", ink: "#f4f0e2", muted: "#c3cfc0", line: "#4d6e66",
+      art: `radial-gradient(ellipse 60% 40% at 20% 15%,rgba(255,255,255,.08),transparent 70%),${U(V(`<g font-family="Chalkboard SE,Bradley Hand,cursive" fill="#f4f0e2" fill-opacity=".09" font-size="18"><text x="10" y="40">a²+b²=c²</text><text x="140" y="90">∑ n</text><text x="30" y="150">y = mx + b</text><text x="150" y="200">π r²</text><text x="20" y="230">∠A = 90°</text></g>`, "0 0 240 240"))}`, size: "auto,300px 300px",
+      card: "rgba(255,255,255,.035)", border: "2px solid rgba(244,240,226,.5)", rad: "10px 15px 9px 13px", shadow: "none",
+      hfont: CHALK, hx: "text-shadow:0 0 1px rgba(255,255,255,.7)", nfont: CHALK, num: "#ffe27a", r: ["#ffe27a", "#ff9fb2", "#9fd8ff"], trk: "rgba(244,240,226,.16)", on: "#1f3a37" },
+    { id: "m_protractor", name: "Geometry set", req: "Bronze III", bg: "#fbf3df", surface: "#fffaf0", ink: "#3b2a10", muted: "#7a6440", line: "#e3cf9e",
+      art: U(V(`<g fill="none" stroke="#8a5a12" stroke-opacity=".12" stroke-width="1.2"><circle cx="0" cy="200" r="120"/><circle cx="0" cy="200" r="90"/><circle cx="200" cy="0" r="80"/><path d="M0 200L200 0M0 120l120 80"/></g>`, "0 0 200 200")), size: "320px 320px",
+      card: "#fffaf0", border: "1.5px solid #c9a24a", rad: "0 18px 0 18px", shadow: "0 6px 14px -10px rgba(138,90,18,.5)",
+      hfont: SERIF, hx: "color:#8a5a12", nfont: SERIF, num: "#c4421a", r: ["#c4421a", "#1767a6", "#8a5a12"], trk: "#efe0bc", on: "#fff" },
+    { id: "m_pi", name: "Pi day", req: "Silver V", dark: 1, bg: "#2a1150", surface: "#3a1a6a", ink: "#fff3d6", muted: "#d2b8f0", line: "#5b3394",
+      art: `radial-gradient(ellipse at 50% 0,rgba(255,209,102,.22),transparent 60%),${U(V(`<text x="0" y="22" font-family="monospace" font-size="14" fill="#ffd166" fill-opacity=".1">3.14159265358979323846264338327950288419716939937510582097494</text><text x="-60" y="52" font-family="monospace" font-size="14" fill="#ffd166" fill-opacity=".07">4592307816406286208998628034825342117067982148086513282306647</text>`, "0 0 300 60"))}`, size: "auto,420px 84px",
+      card: "rgba(58,26,106,.85)", border: "2px solid #ffd166", rad: "50% 50% 14px 14px / 22px 22px 14px 14px", shadow: "0 10px 22px -14px rgba(255,209,102,.6)",
+      hfont: SERIF, hx: "color:#ffd166", nfont: SERIF, num: "#ffd166", r: ["#ffd166", "#ff7aa8", "#c7b8ff"], trk: "rgba(255,209,102,.16)", on: "#2a1150" },
+    { id: "m_fractal", name: "Fractal", req: "Units 3", dark: 1, bg: "#0a0f0a", surface: "#111a12", ink: "#eaffdf", muted: "#9fd08a", line: "#2b4a24",
+      art: U(V((() => { const o = []; const t = (x, y, s, d) => { if (!d) { o.push(`<path d="M${x} ${y}l${s / 2} ${-s * .866}l${s / 2} ${s * .866}z" fill="#9dff6b" fill-opacity=".07"/>`); return; } t(x, y, s / 2, d - 1); t(x + s / 2, y, s / 2, d - 1); t(x + s / 4, y - s * .433, s / 2, d - 1); }; t(0, 173, 200, 4); return o.join(""); })(), "0 0 200 173")), size: "240px 208px",
+      card: "rgba(17,26,18,.88)", border: "1px solid #3d7a2e", rad: "3px 18px 3px 18px", shadow: "0 0 18px -8px rgba(157,255,107,.5)",
+      hfont: MONO, hx: "letter-spacing:.08em;text-transform:uppercase;color:#9dff6b", nfont: MONO, num: "#9dff6b", nx: "text-shadow:0 0 10px rgba(157,255,107,.6)", r: ["#9dff6b", "#c77dff", "#eaffdf"], trk: "rgba(157,255,107,.14)", on: "#0a0f0a" },
+    { id: "m_score", name: "Scoreboard", req: "Gold V", dark: 1, bg: "#0b0b0d", surface: "#151518", ink: "#f5f5f5", muted: "#a0a0a8", line: "#2c2c33",
+      art: "radial-gradient(ellipse 50% 30% at 20% 0,rgba(255,255,255,.14),transparent 70%),radial-gradient(ellipse 50% 30% at 80% 0,rgba(255,255,255,.14),transparent 70%),radial-gradient(rgba(255,180,0,.07) 1.2px,transparent 1.6px)", size: "auto,auto,8px 8px",
+      card: "#121215", border: "2px solid #2c2c33", rad: "8px", shadow: "inset 0 0 0 2px #050506,0 10px 20px -12px rgba(0,0,0,.8)",
+      hfont: BOLD, hx: "text-transform:uppercase;letter-spacing:.14em;font-weight:800", nfont: MONO, num: "#ffb400", nx: "text-shadow:0 0 8px rgba(255,180,0,.8),0 0 2px #ffb400;letter-spacing:.06em", r: ["#ffb400", "#ff4d4d", "#4dd2ff"], trk: "#26262c", on: "#0b0b0d" },
+    { id: "m_golden", name: "Golden ratio", req: "Platinum V", dark: 1, bg: "#0e0c08", surface: "#19150d", ink: "#fbf1d8", muted: "#cdb98a", line: "#4a3c1c",
+      art: U(V(`<g fill="none" stroke="#e0b13a" stroke-opacity=".14" stroke-width="1"><rect x="0" y="0" width="324" height="200"/><path d="M200 0v200M200 124h124M276 124v76M200 152h48"/><path d="M200 200A200 200 0 0 1 0 0M200 0A124 124 0 0 1 324 124M324 124A76 76 0 0 1 248 200"/></g>`, "0 0 324 200")), size: "486px 300px",
+      card: "rgba(25,21,13,.9)", border: "1px solid #8a6a1e", rad: "6px", shadow: "inset 0 0 0 4px rgba(25,21,13,1),inset 0 0 0 5px rgba(224,177,58,.3)",
+      hfont: SERIF, hx: "letter-spacing:.12em;text-transform:uppercase;color:#e0b13a", nfont: SERIF, num: "#e0b13a", r: ["#e0b13a", "#fbf1d8", "#8a6a1e"], trk: "rgba(224,177,58,.14)", on: "#0e0c08" },
+    { id: "m_matrix", name: "Number rain", req: "Units 5", dark: 1, bg: "#000a03", surface: "#021407", ink: "#c8ffd6", muted: "#4fd27a", line: "#0f5a26",
+      art: U(V(R(12, c => R(14, r => `<text x="${c * 18 + 2}" y="${r * 18 + 14}" font-family="monospace" font-size="14" fill="#39ff7a" fill-opacity="${(0.03 + ((c * 7 + r * 3) % 9) / 70).toFixed(3)}">${(c * 3 + r * 7) % 10}</text>`)), "0 0 216 252")), size: "216px 252px",
+      card: "rgba(2,20,7,.9)", border: "1px solid #0f5a26", rad: "2px", shadow: "0 0 16px -6px rgba(57,255,122,.5)",
+      hfont: MONO, hx: "color:#39ff7a;text-shadow:0 0 8px rgba(57,255,122,.7)", nfont: MONO, num: "#39ff7a", nx: "text-shadow:0 0 10px rgba(57,255,122,.75)", r: ["#39ff7a", "#b6ff3a", "#c8ffd6"], trk: "rgba(57,255,122,.14)", on: "#000a03" },
+    { id: "m_tess", name: "Tessellation", req: "Emerald V", bg: "#fff8ec", surface: "#ffffff", ink: "#1d1b18", muted: "#5d574c", line: "#1d1b18",
+      art: U(V(`${[[0, 0, "#ff6b6b"], [28, 0, "#4ecdc4"], [14, 24, "#ffd166"], [42, 24, "#5a8dee"]].map(([x, y, c]) => `<path d="M${x + 14} ${y}l14 8v16l-14 8-14-8V${y + 8}z" fill="${c}" fill-opacity=".16" stroke="#1d1b18" stroke-opacity=".12"/>`).join("")}`, "0 0 56 48")), size: "84px 72px",
+      card: "#ffffff", border: "2px solid #1d1b18", rad: "14px", shadow: "4px 4px 0 #ffd166",
+      hfont: BOLD, hx: "font-weight:800;letter-spacing:.02em", nfont: BOLD, num: "#5a8dee", nx: "font-weight:800", r: ["#ff6b6b", "#4ecdc4", "#5a8dee"], trk: "#f0e9dc", on: "#fff" },
+    { id: "m_space", name: "Coordinate space", req: "Diamond V", dark: 1, bg: "#050a1c", surface: "#0c1430", ink: "#eef3ff", muted: "#9fb2e0", line: "#22305e",
+      art: `linear-gradient(rgba(127,180,255,.22),rgba(127,180,255,.22)) 50% 0/1px 100% no-repeat,linear-gradient(90deg,rgba(127,180,255,.22),rgba(127,180,255,.22)) 0 50%/100% 1px no-repeat,${STARS}`, size: "auto,auto,220px 220px",
+      card: "rgba(12,20,48,.82)", border: "1px solid rgba(127,180,255,.35)", rad: "14px", shadow: "0 0 26px -12px rgba(127,180,255,.55)",
+      hfont: MONO, hx: "letter-spacing:.08em", nfont: MONO, num: "#ffffff", nx: "text-shadow:0 0 12px rgba(127,180,255,.8)", r: ["#7fb4ff", "#ffd166", "#ff7aa8"], trk: "rgba(127,180,255,.14)", on: "#050a1c" },
+    { id: "m_master", name: "Master", req: "Master", dark: 1, bg: "#150826", surface: "#22103d", ink: "#fff6e0", muted: "#d6bdf0", line: "#4a2a7a",
+      art: "radial-gradient(ellipse at 50% -10%,rgba(255,209,102,.3),transparent 55%),conic-gradient(from 0deg at 50% 0%,rgba(199,125,255,.12),transparent 20%,rgba(255,209,102,.1) 40%,transparent 60%,rgba(199,125,255,.12) 80%,transparent)",
+      card: "linear-gradient(#22103d,#1a0b30) padding-box,linear-gradient(135deg,#ffd166,#c77dff 50%,#ffd166) border-box", border: "2px solid transparent", rad: "16px", shadow: "0 12px 26px -14px rgba(199,125,255,.7)",
+      hfont: SERIF, hx: "letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,#ffd166,#f6a6ff,#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent", nfont: SERIF, num: "#ffd166", r: ["#ffd166", "#c77dff", "#fff6e0"], trk: "rgba(255,209,102,.14)", on: "#150826" }
+  ];
+
+  /* ---------- CSS for one look. S = the Stats page while this look is on, H = the page title bar ---------- */
+  function css(L, S, H) {
+    const o = [], orn = ORN[L.id];
+    o.push(`${S}{--bg:${L.bg};--surface:${L.surface};--ink:${L.ink};--muted:${L.muted};--line:${L.line};--accent:${L.r[0]};--btn:${L.r[0]};--btn-ink:${L.on};color:${L.ink};background-color:${L.bg}!important;background-image:${L.art || "none"}!important;background-size:${L.size || "auto"}!important;background-attachment:fixed!important;color-scheme:${L.dark ? "dark" : "light"}}`);
+    o.push(`${S} :is(.card,.tile){background:${L.card}!important;border:${L.border}!important;border-radius:${L.rad}!important;box-shadow:${L.shadow || "none"}!important;color:${L.ink}}`);
+    o.push(`${S} :is(h1,h2,.ah1){font-family:${L.hfont}!important;color:${L.ink};${L.hx || ""}}`);
+    o.push(`${S} :is(.tile b,#life b,.life b,.lapseHead b,.dayrow b,.cardt b){font-family:${L.nfont}!important;color:${L.num};${L.nx || ""}}`);
+    o.push(`${S} .tile b{font-size:30px!important;line-height:1.12}`);
+    o.push(`${S} :is(.tile>span,.fine,figcaption,.days span,.tick,.cw){color:${L.muted}!important}`, `${S} .tile b>span{font:inherit!important;color:inherit!important;-webkit-text-fill-color:inherit}`, `${S} .tile b small{color:${L.muted}!important;-webkit-text-fill-color:${L.muted};font-family:${SANS}!important}`);
+    o.push(`${S} .rings .trk{stroke:${L.trk}!important}`, ...L.r.map((c, i) => `${S} .rings figure:nth-child(${i + 1}) .val{stroke:${c}!important}`), `${S} .rings svg text{fill:${L.num}!important;font-family:${L.nfont}!important}`);
+    o.push(`${S} :is(.bar,.pbar){background:${L.trk}!important}`, `${S} :is(.bar,.pbar) i{background:${L.r[0]}!important;box-shadow:none!important}`);
+    o.push(`${S} .barv{background:${L.r[1]}!important}`, `${S} .col.today .barv{background:${L.r[0]}!important}`, `${S} .col .val{color:${L.ink}!important}`);
+    o.push(`${S} :is(#stTabs,.seg) button[aria-pressed=true]{background:${L.r[0]}!important;color:${L.on}!important;border-color:transparent!important}`);
+    o.push(`${S} :is(#stTabs,.seg) button:not([aria-pressed=true]){background:transparent!important;color:${L.ink}!important;border-color:${L.line}!important}`);
+    if (orn) o.push(`${S} ${H}{position:relative}`, `${S} ${H}::after{content:"";position:absolute;right:6px;top:50%;width:56px;height:56px;transform:translateY(-50%);background:${U(orn)} center/contain no-repeat;pointer-events:none;z-index:1}`);
+    if (L.x) o.push(L.x.replace(/\{S\}/g, S).replace(/\{H\}/g, H));
+    return o.join("\n");
+  }
+  /* ---------- a small preview of the look, for reward lists ---------- */
+  function thumb(L) {
+    const orn = ORN[L.id];
+    return `<span class="stthumb" style="display:grid;place-items:center;width:100%;height:100%;background-color:${L.bg};background-image:${(L.art || "none").replace(/"/g, "'")};background-size:${L.size || "auto"};position:relative;overflow:hidden">` +
+      `<span style="display:grid;gap:3px;width:62%;padding:5px 6px;background:${L.card.replace(/"/g, "'")};border:${L.border};border-radius:${String(L.rad).replace(/ \/.*/, "")};box-shadow:${(L.shadow || "none").replace(/"/g, "'")};font:700 9px/1 ${L.hfont.replace(/"/g, "'")};color:${L.ink};text-align:left">` +
+      `<span style="color:${L.num};font:700 13px/1 ${L.nfont.replace(/"/g, "'")}">42</span><span style="display:block;height:4px;border-radius:9px;background:${L.trk}"><i style="display:block;width:62%;height:100%;border-radius:inherit;background:${L.r[0]}"></i></span></span>` +
+      (orn ? `<span style="position:absolute;right:3px;top:3px;width:22px;height:22px;background:${U(orn).replace(/"/g, "'")} center/contain no-repeat"></span>` : "") + `</span>`;
+  }
+  return { READ, MATH, css, thumb, byId: id => READ.concat(MATH).find(l => l.id === id) };
+})();
+
 /* ===================== Shared rewards with Atom Math (Atom Locker) =====================
    Reading rewards unlock only here. Math rewards unlock only in Atom Math.
    Anything unlocked in either app can be used in both. */
@@ -10249,6 +10453,26 @@ if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) window.__pace = { toas
   document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
   { let lastW = ""; L.onChange(w => { const k = JSON.stringify([w.q, w.k, w.a, w.sp, w.bx, w.t, w.p.at]); if (k === lastW) return; lastW = k;
       try { takeProfile(); syncTeacher(); seasonSync(true); renderQuestRow(); renderBoxTile(); } catch (e) {} }); }
+})();
+
+/* ===================== Stats looks in Atom Reading: richer looks, more of them, real previews ===================== */
+(function () {
+  const SL = window.AtomStatLooks; if (!SL) return;
+  const c = XCATS.find(x => x.k === "stat"); if (!c) return;
+  SL.READ.forEach(L => {
+    if (!c.opts.some(o => o[0] === L.id)) c.opts.push([L.id, L.name]);
+    if (L.lvl != null) { UNLOCK.stat = UNLOCK.stat || {}; if (UNLOCK.stat[L.id] == null) UNLOCK.stat[L.id] = L.lvl; }
+  });
+  const st = document.createElement("style"); st.id = "atomStatLooks";
+  st.textContent = SL.READ.map(L => SL.css(L, `:root[data-stat="${L.id}"] body[data-screen=stats]`, "#stats>header")).join("\n") +
+    "\nbody[data-screen=stats]{min-height:100dvh}\n.tile b>span{font-size:inherit;color:inherit}\n.xth .stthumb{border-radius:inherit}";
+  document.head.append(st);
+  const xt0 = xThumb;
+  xThumb = function (kind, id) {
+    if (kind === "stat") { const L = SL.byId(id); if (L) { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.innerHTML = SL.thumb(L); return t; } }
+    return xt0.apply(this, arguments);
+  };
+  try { applyLockUI(); renderExtras(); } catch (e) {}
 })();
 
 
