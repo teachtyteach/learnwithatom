@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k294816"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k4a7a77"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -9892,6 +9892,84 @@ NG.forEach(g=>{GEAR_SVG[g.slot][g.id]=g.svg;const c=XCATS.find(x=>x.k===g.slot);
  EXTRA_SPECIAL[g.slot]=EXTRA_SPECIAL[g.slot]||{};const [k,n]=g.read.split(" ");const desc=k==="words"?"Read "+(+n).toLocaleString()+" words in total":"Read for "+n+" minutes in one day";
  EXTRA_SPECIAL[g.slot][g.id]={desc,test:()=>{try{if(L&&L.has("math",KP[g.slot]+"~"+g.id))return true}catch(e){}return stat()[k]>=+n}}});})();
 
+/* ===================== One update button for all of Atom (home, Reading and Math) =====================
+   Each page knows its own build. This checks all three, shows "Atom has an update" with an Update button,
+   and one tap refreshes every Atom page on this device. */
+(function () {
+  if (window.AtomUpd) return;
+  var APPS = { home: '/', read: '/read/', math: '/math/' };
+  var ME = location.pathname.indexOf('/read/') === 0 ? 'read' : location.pathname.indexOf('/math/') === 0 ? 'math' : 'home';
+  var meta = document.querySelector('meta[name="atom-build"]'), BUILD = meta ? meta.content : '';
+  var KEY = function (k) { return 'atom:b:' + k; };
+  function rec(k, v) { try { localStorage.setItem(KEY(k), v); } catch (e) {} }
+  function got(k) { try { return localStorage.getItem(KEY(k)) || ''; } catch (e) { return ''; } }
+  if (BUILD) rec(ME, BUILD);
+  var stale = {}, bar = null, busy = false, last = 0;
+  var css = document.createElement('style');
+  css.textContent = '#atomUpd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:9999;display:flex;align-items:center;gap:12px;background:#1d1b18;color:#fff;border-radius:99px;padding:8px 8px 8px 18px;box-shadow:0 8px 24px rgba(0,0,0,.35);font:600 14px system-ui,sans-serif;max-width:calc(100vw - 24px)}' +
+    '#atomUpd[hidden]{display:none}#atomUpd span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+    '#atomUpd button{background:#fff;color:#1d1b18;border:0;border-radius:99px;padding:8px 16px;font:600 14px system-ui,sans-serif;min-height:0;cursor:pointer}' +
+    '#atomUpd button:disabled{opacity:.7}' +
+    '#atomUpdT{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:9999;background:#1d1b18;color:#fff;border-radius:99px;padding:10px 18px;font:600 14px system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}';
+  function ready(fn) { if (document.body) fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function () { document.head.appendChild(css); });
+  function say(t) {
+    ready(function () { var x = document.getElementById('atomUpdT'); if (x) x.remove(); x = document.createElement('div'); x.id = 'atomUpdT'; x.setAttribute('role', 'status'); x.textContent = t; document.body.appendChild(x); setTimeout(function () { x.remove(); }, 2600); });
+  }
+  function buildOf(t) { var m = t.match(/name="atom-build" content="([^"]+)"/); return m ? m[1] : ''; }
+  function show() {
+    ready(function () {
+      if (!bar) {
+        bar = document.createElement('div'); bar.id = 'atomUpd'; bar.setAttribute('role', 'status');
+        bar.innerHTML = '<span>Atom has an update.</span><button type="button">Update</button>';
+        bar.querySelector('button').onclick = apply; document.body.appendChild(bar);
+        say('Update ready. Tap Update.');
+      }
+      bar.hidden = false;
+    });
+  }
+  async function check(loud) {
+    if (busy) return 'busy';
+    if (!navigator.onLine) { if (loud) say("You're offline. Atom still works."); return 'offline'; }
+    var any = false, err = false; last = Date.now();
+    for (var k in APPS) {
+      try {
+        var res = await fetch(APPS[k] + '?fresh=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) { err = true; continue; }
+        var t = await res.text(); if (t.indexOf('name="atom-app"') < 0 && k === 'read') { err = true; continue; }
+        var b = buildOf(t); if (!b) continue;
+        var have = k === ME ? BUILD : got(k);
+        if (have && b !== have) { stale[k] = b; any = true; }
+      } catch (e) { err = true; }
+    }
+    if (any) { show(); return 'new'; }
+    if (loud) say(err ? "Couldn't check right now. Try again soon." : "You're up to date.");
+    return err ? 'error' : 'same';
+  }
+  async function apply() {
+    busy = true; var btn = bar && bar.querySelector('button'); if (btn) { btn.disabled = true; btn.textContent = 'Updating…'; }
+    var ks = Object.keys(stale); if (ks.indexOf(ME) < 0) ks.push(ME);
+    for (var i = 0; i < ks.length; i++) {
+      var k = ks[i];
+      try {
+        var r = await navigator.serviceWorker.getRegistration(APPS[k]);
+        if (r) {
+          await r.update();
+          var w = r.active;
+          if (w && k === 'read') await new Promise(function (ok) { var ch = new MessageChannel(), t = setTimeout(ok, 10000); ch.port1.onmessage = function () { clearTimeout(t); ok(); }; w.postMessage({ type: 'atom-refresh' }, [ch.port2]); });
+        }
+      } catch (e) {}
+      if (k !== ME && stale[k]) rec(k, stale[k]);
+    }
+    location.reload();
+  }
+  window.AtomUpd = { check: check, show: show, apply: apply, me: ME };
+  setTimeout(function () { check(false); }, 4000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - last > 120000) check(false); });
+  setInterval(function () { check(false); }, 600000);
+})();
+
+try{updShow=function(){window.AtomUpd.show()};window.atomUpdate=updShow}catch(e){}
 /* ===================== Atom in high resolution, with his color baked in =====================
    iPhones draw color filters inside pictures at low resolution, which made a colored Atom look pixelated.
    Here the color is applied to a 3x Atom picture once (on a canvas), and the result is used directly. */
