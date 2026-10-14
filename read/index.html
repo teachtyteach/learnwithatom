@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k091885"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-keb9e86"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -10906,6 +10906,12 @@ window.AtomFX = (function () {
     } catch (e) {} }
   apply(); setInterval(apply, 60000);
   try { const r0 = renderLibrary; renderLibrary = function () { const r = r0.apply(this, arguments); setTimeout(apply, 0); return r; }; } catch (e) {}
+})();
+/* publish the badge list so the main page can show Reading and Math badges together */
+(function () {
+  const pub = () => { try { const h = store.get("pace:badges", {}); localStorage.setItem('atom:bdg:read', JSON.stringify(BADGES.map(b => [b.id, b.name, b.desc, h[b.id] || '']))); } catch (e) {} };
+  try { const c0 = checkBadges; checkBadges = function () { const r = c0.apply(this, arguments); pub(); return r; }; } catch (e) {}
+  pub();
 })();
 
 
