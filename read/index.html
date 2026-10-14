@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k4a7a77"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k3d1480"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11090,6 +11090,9 @@ window.AtomFX = (function () {
     return r;
   };
 })();
+
+/* Math titles join the list after the first draw, so redraw the greeting chip */
+setTimeout(function () { try { applyExtras(); } catch (e) {} }, 0);
 
 /* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
 window.AtomPolish = (function () {
