@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k819461"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-kcb7edc"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -2203,9 +2203,14 @@ window.AtomFly = (function () {
       try { var c = document.createElement('canvas'); c.width = W; c.height = H; c.getContext('2d').drawImage(im, 0, 0, W, H);
         var u = c.toDataURL('image/webp', .9); if (u.indexOf('data:image/webp') !== 0) u = c.toDataURL('image/png');
         if (u.length < 700000) { store(k, u); return; } } catch (e) {}
-      if (svgText && svgText.length < 700000) store(k, 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText));   // if the picture can't be flattened
+      keepSvg(k, src, svgText);   // Safari won't flatten it: keep the picture itself
     };
+    im.onerror = function () { keepSvg(k, src, svgText); };
     im.src = src;
+  }
+  function keepSvg(k, src, svgText) {
+    var u = svgText ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText) : (String(src).indexOf('data:image/svg') === 0 ? src : '');
+    if (u && u.length < 1800000) store(k, u);
   }
   function use(img) {
     var u = get(); if (!u || !img) return false;
@@ -11307,6 +11312,7 @@ window.AtomPolish = (function () {
   function worn(root) {
     root.querySelectorAll(".ttx:not([data-pw])").forEach(t => {
       if (t.closest(".xth")) return; t.dataset.pw = "1";
+      { const cs = getComputedStyle(t), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3; if (t.getBoundingClientRect().height > lh * 1.5) t.classList.add("wrap"); }
       const L = inkLums(t); if (!L.length) return; const bg = under(t);
       if (bg < .2 && worst(L, bg) < 3.2) t.classList.add("lift");
     });
@@ -11335,7 +11341,7 @@ try { const st = document.createElement("style"); st.id = "atomScenes"; st.textC
 try { if (typeof themeSwatch === "function") { const SC = new Set(["aurora", "bx_aurora", "prism", "bx_molten", "th_s2", "th_s3", "th_s4", "rising", "final", "reef"]), t1 = themeSwatch; themeSwatch = function (id) { const h = t1.apply(this, arguments); if (!SC.has(id)) return h; return h.replace(/style="([^"]*)"/, (m, s) => `style="${s};background-image:var(--sc-${id});background-size:cover;background-position:center bottom;background-repeat:no-repeat"`); }; } } catch (e) {}
 
 /* a title's shine wraps exactly like the title, so a two-line title never shows a ghost copy */
-(function () { const st = document.createElement('style'); st.id = 'ttxWrap'; st.textContent = '.ttx::after{white-space:inherit!important}'; (document.head || document.documentElement).appendChild(st); })();
+(function () { const st = document.createElement('style'); st.id = 'ttxWrap'; st.textContent = '.ttx::after{white-space:inherit!important}.ttx.wrap::after{display:none!important}'; (document.head || document.documentElement).appendChild(st); })();
 
 /* calmer, cleaner chrome in both apps: sentence-case section headers, softer card edges */
 (function () { const st = document.createElement('style'); st.id = 'atomClean';

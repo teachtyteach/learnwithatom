@@ -204,13 +204,14 @@
   @media (prefers-reduced-motion:reduce) { .wbox .wfig img { animation:none; } }
 .ttx::after{white-space:inherit!important}
 .ttx.lift{filter:brightness(1.9) saturate(1.1) drop-shadow(0 0 5px rgba(255,255,255,.18))}
+.ttx.wrap::after{display:none!important}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="fcdea28ea9"></head>
+<meta name="atom-build" content="c65525db88"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
-#hsplash img{width:150px;height:auto;display:block;animation:hsfly .9s cubic-bezier(.2,.9,.25,1.15) both}
+#hsplash img{width:150px;height:auto;display:block;animation:hsfly .9s cubic-bezier(.2,.9,.25,1.15) both}#hsplash .fig img{animation:none!important;width:92.754%}
 #hsplash b{font:700 34px Georgia,serif;color:var(--ink);opacity:0;animation:hsfade .5s .55s ease-out forwards}#hsplash b i{color:var(--accent);font-style:normal}
 @keyframes hsfly{0%{transform:translate(-60vw,60vh) rotate(-25deg) scale(.6)}70%{transform:translate(6px,-8px) rotate(4deg) scale(1.03)}100%{transform:none}}
 @keyframes hsfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -935,9 +936,14 @@ window.AtomFly = (function () {
       try { var c = document.createElement('canvas'); c.width = W; c.height = H; c.getContext('2d').drawImage(im, 0, 0, W, H);
         var u = c.toDataURL('image/webp', .9); if (u.indexOf('data:image/webp') !== 0) u = c.toDataURL('image/png');
         if (u.length < 700000) { store(k, u); return; } } catch (e) {}
-      if (svgText && svgText.length < 700000) store(k, 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText));   // if the picture can't be flattened
+      keepSvg(k, src, svgText);   // Safari won't flatten it: keep the picture itself
     };
+    im.onerror = function () { keepSvg(k, src, svgText); };
     im.src = src;
+  }
+  function keepSvg(k, src, svgText) {
+    var u = svgText ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText) : (String(src).indexOf('data:image/svg') === 0 ? src : '');
+    if (u && u.length < 1800000) store(k, u);
   }
   function use(img) {
     var u = get(); if (!u || !img) return false;
@@ -1040,6 +1046,7 @@ window.AtomFly = (function () {
     var cols = src.match(/rgba?\([^)]+\)/g) || [], lin = function (v) { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
     var dark = cols.length && cols.every(function (c) { var p = c.match(/[\d.]+/g).map(Number); if (p.length > 3 && p[3] < .3) return true; var L = .2126 * lin(p[0]) + .7152 * lin(p[1]) + .0722 * lin(p[2]); return (L + .05) / .08 < 3.2; });
     t.classList.toggle('lift', !!dark);
+    var lh = parseFloat(getComputedStyle(t).lineHeight) || parseFloat(getComputedStyle(t).fontSize) * 1.3; t.classList.toggle('wrap', t.getBoundingClientRect().height > lh * 1.5);
   }
   { var hs = document.getElementById('hsplash'), im = hs && hs.querySelector('img');   // the loading Atom wears your outfit too
     if (im && window.AtomFly && AtomFly.use(im)) im = null;
