@@ -102,7 +102,7 @@
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef', 'gr', 'am'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -178,6 +178,8 @@
   var PAIRS = {
     ce: [['', 'confetti'], ['bubbles', 'bubbles'], ['stars', 'stars'], ['sparks', 'sparks'], ['suns', 'gold'], ['pixels', 'powers'], ['atoms', 'pi'], ['fireworks', 'prism'], ['leaves', ''], ['hearts', '']],
     sd: [['coin', 'classic'], ['bell', 'soft'], ['blip', 'blip'], ['sparkle', 'space'], ['marimba', 'bell'], ['harp', 'harp']],
+    gr: [['', 'none'], ['pirate', 'pirate'], ['western', 'western'], ['space', 'space'], ['spooky', 'spooky'], ['chill', 'chill'], ['fancy', 'fancy']],
+    am: [['', 'none'], ['rain', 'rain'], ['waves', 'waves'], ['harbor', 'harbor'], ['campfire', 'campfire'], ['desert', 'desert'], ['storm', 'storm'], ['wild', 'wild']],
     st: [['', 'none'], ['blueprint', 'm_graph'], ['ssA1', 'm_calc'], ['chalk', 'm_proof'], ['paper', 'm_protractor'], ['neon', 'm_pi'], ['ocean', 'm_fractal'], ['pixel', 'm_score'],
          ['gold', 'm_golden'], ['terminal', 'm_matrix'], ['glass', 'm_tess'], ['stars', 'm_space'], ['ssA2', 'm_master']]
   };
@@ -7463,11 +7465,11 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
   /* Which item lists live in which tile */
   const GROUPS={
     themes:{name:'Themes',sub:'Colors and scenes for the whole app',ic:'theme',cats:['theme']},
-    looks:{name:'Looks',sub:'App icon, titles, frames, stats looks',ic:'look',cats:['icon','title','pframe','nflair','stamp','ncard','accent','celeb','mstat']},
+    looks:{name:'Looks',sub:'App icon, titles, frames, stats looks',ic:'look',cats:['icon','title','pframe','nflair','stamp','ncard','greet','accent','celeb','mstat']},
     atom:{name:'Atom',sub:'Hats, glasses, neckwear, colors',ic:'atom',cats:['hat','face','neck','atomc']},
-    sounds:{name:'Sounds & effects',sub:'Sound packs and right-answer effects',ic:'sound',cats:['sound','afx']},
+    sounds:{name:'Sounds & effects',sub:'Sound packs, effects and background sounds',ic:'sound',cats:['sound','afx','amb']},
   };
-  const LABEL={mstat:'Stats look',ncard:'Name card',afx:'Answer effect',icon:'Home screen icon',theme:'Theme',title:'Title',pframe:'Title frame',nflair:'Name style',stamp:'Stamp',accent:'Accent color',celeb:'Rank-up effect',hat:'Hat',face:'Glasses',neck:'Neckwear',atomc:'Atom color',sound:'Sound pack'};
+  const LABEL={mstat:'Stats look',ncard:'Name card',afx:'Answer effect',greet:'Greeting',amb:'Background sound',icon:'Home screen icon',theme:'Theme',title:'Title',pframe:'Title frame',nflair:'Name style',stamp:'Stamp',accent:'Accent color',celeb:'Rank-up effect',hat:'Hat',face:'Glasses',neck:'Neckwear',atomc:'Atom color',sound:'Sound pack'};
   const groupOf=cat=>Object.keys(GROUPS).find(g=>GROUPS[g].cats.includes(cat));
   const has=c=>!!LOCKER[c];
   const real=c=>(window.atomVis||visItems)(LOCKER[c]).filter(i=>i[0]!=='none'&&!(c==='accent'&&i[0]==='theme'));
@@ -7824,7 +7826,7 @@ WHATS.unshift(['A new Rewards look','Rewards now looks like Atom Reading. Tap a 
       const it=LOCKER[c].items.find(i=>i[0]===id);if(it&&unlocked(it)&&S.look[c]!==id){S.look[c]=id;ch=true}});return ch}
   };
   /* Rank-up effect, sound pack and stats look: Atom Reading has its own versions; picking one picks its partner in the other app */
-  {const PK={ce:'celeb',sd:'sound',st:'mstat',bn:'ncard',ef:'afx'},GR={},ORQ={};
+  {const PK={ce:'celeb',sd:'sound',st:'mstat',bn:'ncard',ef:'afx',gr:'greet',am:'amb'},GR={},ORQ={};
     const grant=(c,id)=>{const it=LOCKER[c]&&LOCKER[c].items.find(i=>i[0]===id);if(!it)return false;
       if(GR[c]&&GR[c]!==id){const o=LOCKER[c].items.find(i=>i[0]===GR[c]);if(o&&ORQ[c]!==undefined)o[2]=ORQ[c]}
       if(GR[c]!==id)ORQ[c]=it[2];GR[c]=id;it[2]=null;return true};
@@ -8267,6 +8269,83 @@ window.AtomFX = (function () {
   // tapping an effect card shows it
   document.addEventListener('click', e => { const c = e.target.closest && e.target.closest('[data-x^="afx:"]'); if (!c) return; const id = c.dataset.x.slice(4); if (id === 'none') return; const r = c.getBoundingClientRect(); FX.play(id, r.left + r.width / 2, r.top + 42); }, true);
   mark();
+  try { if (window.__atomLook && L) window.__atomLook.take(L.profile()); } catch (e) {}
+})();
+
+/* ===================== From Atom Reading, now in Atom Math: greetings and background sounds ===================== */
+(function () {
+  if (typeof LOCKER === 'undefined') return;
+  const L = window.AtomLocker;
+  /* ---------- greetings (same ones as Atom Reading; picking one picks it in both) ---------- */
+  const GREET = {
+    pirate: [["Ahoy, night owl", "Ahoy", "Ahoy there", "Ahoy, matey"], ""],
+    western: [["Still up", "Howdy", "Howdy", "Evenin'"], ""],
+    space: [["Night shift", "Greetings", "Greetings", "Greetings"], "Commander "],
+    spooky: [["Boo", "Rise and haunt", "Spooky afternoon", "Spooky evening"], ""],
+    chill: [["Late one", "Morning", "Hey", "Evening"], ""],
+    fancy: [["Good heavens", "Salutations", "Good day", "Good evening"], ""]
+  };
+  LOCKER.greet = { name: 'Greeting', items: [['none', 'Classic', null], ['chill', 'Chill', 'Bronze III'], ['western', 'Western', 'Silver III'], ['pirate', 'Pirate', 'Gold II'], ['space', 'Space', 'Platinum II'], ['spooky', 'Spooky', 'Emerald II'], ['fancy', 'Fancy', 'Diamond II']] };
+  if (typeof CAT_LABEL !== 'undefined') CAT_LABEL.greet = 'Greeting';
+  const slot = () => { const h = new Date().getHours(); return h < 5 ? 0 : h < 12 ? 1 : h < 17 ? 2 : 3; };
+  const g0 = greeting;
+  greeting = function () { try { const g = GREET[lkId('greet')]; if (g) return g[0][slot()]; } catch (e) {} return g0.apply(this, arguments); };
+  const fixGreet = () => { try { const g = GREET[lkId('greet')], el = app.querySelector('.greet');
+      if (g && g[1] && el && S.name && !el.textContent.includes(g[1].trim())) { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const i = n.textContent.indexOf(', '); if (i >= 0) { n.textContent = n.textContent.slice(0, i + 2) + g[1] + n.textContent.slice(i + 2); break; } } } } catch (e) {} };
+  new MutationObserver(fixGreet).observe(document.getElementById('app'), { childList: true, subtree: true });
+  /* ---------- background sounds while you practice (made live in code, like Atom Reading) ---------- */
+  LOCKER.amb = { name: 'Background sound', items: [['none', 'Off', null], ['rain', 'Rain', null], ['waves', 'Ocean waves', 'Bronze I'], ['harbor', 'Harbor', 'Silver II'], ['campfire', 'Campfire', 'Gold I'], ['desert', 'Desert wind', 'Platinum I'], ['storm', 'Storm', 'Emerald I'], ['wild', 'Wild woods', 'Diamond I']] };
+  if (typeof CAT_LABEL !== 'undefined') CAT_LABEL.amb = 'Background sound';
+  ['greet', 'amb'].forEach(c => { const v = window.__lookIn && window.__lookIn[c]; if (v && !S.look[c]) S.look[c] = v; if (!S.look[c]) S.look[c] = 'none'; });
+  let A = null; const AMB = { node: null, timer: null, buf: {}, id: '' };
+  const ctx = () => { if (!A) { try { A = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (A && A.state === 'suspended') A.resume().catch(() => {}); return A; };
+  addEventListener('pointerdown', () => { if (A && A.state === 'suspended') A.resume().catch(() => {}); }, true);
+  function noise(kind) { if (AMB.buf[kind]) return AMB.buf[kind]; const n = A.sampleRate * 3, b = A.createBuffer(1, n, A.sampleRate), d = b.getChannelData(0); let last = 0;
+    for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; if (kind === 'brown') { last = (last + .02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; } return (AMB.buf[kind] = b); }
+  function stop() { clearInterval(AMB.timer); AMB.timer = null; const n = AMB.node; AMB.node = null; AMB.id = ''; if (!n || !A) return;
+    try { const t = A.currentTime; n.gain.cancelScheduledValues(t); n.gain.setValueAtTime(n.gain.value, t); n.gain.linearRampToValueAtTime(.0001, t + .5); setTimeout(() => { try { n.disconnect(); } catch (e) {} }, 600); } catch (e) {} }
+  function start(id) {
+    if (!ctx()) return; stop();
+    const out = A.createGain(); out.gain.setValueAtTime(.0001, A.currentTime); out.gain.linearRampToValueAtTime(.22, A.currentTime + 1.5); out.connect(A.destination);
+    const src = (kind, f) => { const s = A.createBufferSource(); s.buffer = noise(kind || 'white'); s.loop = true; s.start(); return f ? (s.connect(f), f) : s; };
+    const filt = (type, f, q) => { const x = A.createBiquadFilter(); x.type = type; x.frequency.value = f; if (q) x.Q.value = q; return x; };
+    const gain = g => { const x = A.createGain(); x.gain.value = g; return x; };
+    const lfo = (rate, depth, param) => { const o = A.createOscillator(), g = gain(depth); o.frequency.value = rate; o.connect(g); g.connect(param); o.start(); };
+    const chain = (...ns) => { for (let i = 0; i < ns.length - 1; i++) ns[i].connect(ns[i + 1]); return ns[ns.length - 1]; };
+    const blip = (f, t, d, g, type, f2) => { const o = A.createOscillator(), v = A.createGain(); o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d); v.gain.setValueAtTime(.0001, t); v.gain.linearRampToValueAtTime(g, t + .01); v.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(v); v.connect(out); o.start(t); o.stop(t + d + .05); };
+    const burst = (t, d, g, f) => { const s = A.createBufferSource(); s.buffer = noise('white'); const hp = filt('bandpass', f, 1.2), v = A.createGain(); v.gain.setValueAtTime(g, t); v.gain.exponentialRampToValueAtTime(.0001, t + d); s.connect(hp); hp.connect(v); v.connect(out); s.start(t); s.stop(t + d + .05); };
+    const waves = (g, lp) => { const w = gain(g * .55); chain(src('brown'), filt('lowpass', lp || 700), w, out); lfo(.07, g * .45, w.gain); const sp = gain(g * .12); chain(src('white'), filt('bandpass', 2200, .6), sp, out); lfo(.07, g * .1, sp.gain); };
+    const wind = (g, f, q, rate) => { const bp = filt('bandpass', f, q), w = gain(g * .6); chain(src('white'), bp, w, out); lfo(rate || .05, f * .45, bp.frequency); lfo((rate || .05) * 1.7, g * .4, w.gain); };
+    let ev = () => {};
+    if (id === 'rain') { chain(src('white'), filt('highpass', 500), filt('lowpass', 5000), gain(.22), out); chain(src('brown'), filt('lowpass', 400), gain(.25), out); ev = t => { if (Math.random() < .7) blip(1800 + Math.random() * 2600, t + Math.random() * .1, .05, .025, 'sine', 900); }; }
+    else if (id === 'waves') waves(.65);
+    else if (id === 'harbor') { waves(.7, 500); chain(src('brown'), filt('lowpass', 160), gain(.25), out); let nx = 0; ev = t => { if (t > nx) { nx = t + 6 + Math.random() * 5; const f = Math.random() < .5 ? 330 : 294; blip(f, t, 3, .07); blip(f * 2.76, t, 1.4, .02); } }; }
+    else if (id === 'campfire') { chain(src('brown'), filt('lowpass', 260), gain(.5), out); let nc = 0; ev = t => { if (Math.random() < .55) burst(t + Math.random() * .1, .015 + Math.random() * .04, .08 + Math.random() * .18, 1500 + Math.random() * 3500); if (t > nc) { nc = t + .9 + Math.random() * .6; for (let k = 0; k < 3; k++) blip(4300, t + k * .07, .045, .008); } }; }
+    else if (id === 'desert') { wind(.9, 500, 2.2, .045); wind(.35, 1400, 6, .03); chain(src('brown'), filt('lowpass', 200), gain(.2), out); }
+    else if (id === 'storm') { wind(1.1, 700, 1.4, .09); wind(.4, 1900, 9, .06); chain(src('white'), filt('highpass', 3000), gain(.04), out); }
+    else if (id === 'wild') { wind(.8, 450, 1.2, .04); chain(src('brown'), filt('lowpass', 300), gain(.15), out); let nb = 1; ev = t => { if (t > nb) { nb = t + 2 + Math.random() * 4; const n = 2 + Math.floor(Math.random() * 4), f = 2400 + Math.random() * 1600; for (let k = 0; k < n; k++) blip(f, t + k * .13, .09, .02, 'sine', f * (1.3 + Math.random() * .3)); } }; }
+    else { out.disconnect(); return; }
+    AMB.node = out; AMB.id = id; AMB.timer = setInterval(() => { try { if (A.state === 'running') ev(A.currentTime + .05); } catch (e) {} }, 100);
+  }
+  // plays while practicing, if sound is on
+  function sync() { let want = ''; try { const id = lkId('amb'); if (id !== 'none' && S.sound !== false && st.screen === 'practice' && !document.hidden) want = id; } catch (e) {}
+    if (want === AMB.id) return; if (want) start(want); else stop(); }
+  setInterval(sync, 700); document.addEventListener('visibilitychange', sync);
+  window.__mathAmb = { start, stop };
+  // preview a sound when its card is tapped
+  document.addEventListener('click', e => { const c = e.target.closest && e.target.closest('[data-x^="amb:"]'); if (!c) return; const id = c.dataset.x.slice(4); if (id === 'none') { stop(); return; } start(id); setTimeout(() => { if (!(st.screen === 'practice')) stop(); }, 4000); }, true);
+  /* card pictures */
+  const SG = { rain: '<path d="M7 13a4 4 0 0 1 .5-8 5 5 0 0 1 9.3 1.5A3.3 3.3 0 0 1 17 13z"/><path d="M8 16l-1 3M12 16l-1 3M16 16l-1 3" fill="none" stroke-width="1.8"/>', waves: '<path d="M2 10c3 0 3-2 6-2s3 2 6 2 3-2 6-2M2 15c3 0 3-2 6-2s3 2 6 2 3-2 6-2M2 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2" fill="none" stroke-width="2"/>',
+    harbor: '<path d="M10 4h4l.6 2H9.4zM9.6 7h4.8l1.4 11H8.2z"/><path d="M15.5 5l6-2M8.5 5l-6-2M3 21c2 0 2-1.4 4.5-1.4S9.5 21 12 21s2-1.4 4.5-1.4S19 21 21 21" fill="none" stroke-width="1.6"/>', campfire: '<path d="M12 2.5c.8 3 4.6 4.6 4.6 8.6a4.6 4.6 0 0 1-9.2 0c0-1.8.8-3.1 1.8-4 .3 1.2.8 1.8 1.6 2.1C10.4 7 10.8 4.6 12 2.5z"/><path d="M4 20l16-3.5M4 16.5L20 20" fill="none" stroke-width="2.2"/>',
+    desert: '<circle cx="16.5" cy="7" r="3.2"/><path d="M2 18c4-5 8-5 12-2s6 2 8 1v4H2z"/><path d="M3 10h7M5 13h5" fill="none" stroke-width="1.6"/>', storm: '<path d="M7 12a4 4 0 0 1 .5-8 5 5 0 0 1 9.3 1.5A3.3 3.3 0 0 1 17 12z"/><path d="M12 13l-2 4h3l-2 5" fill="none" stroke-width="2"/>',
+    wild: '<path d="M4 20C4 11 9 5 19 4.5c0 9.5-5 15-12.5 15.5z"/><path d="M4 20l9-9" fill="none" stroke="#fff" stroke-width="1.4"/>' };
+  const SC = { rain: '#4f86c6', waves: '#2b8fb0', harbor: '#2b7f8a', campfire: '#e0762a', desert: '#d08a3a', storm: '#5a8fc8', wild: '#4f8a3a' };
+  { const is0 = itemSwatch; itemSwatch = function (cat, it) {
+      if (cat === 'amb' && SG[it[0]]) return `<span class="sw mxth"><svg viewBox="0 0 24 24" width="34" height="34" fill="${SC[it[0]]}" stroke="${SC[it[0]]}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SG[it[0]]}</svg></span>`;
+      if (cat === 'greet' && GREET[it[0]]) return `<span class="sw mxth"><span style="font:700 italic 16px Georgia,serif;color:#ffe9b8;text-shadow:0 2px 6px rgba(0,0,0,.5)">${GREET[it[0]][0][1]}!</span></span>`;
+      if (cat === 'greet') return `<span class="sw mxth"><span style="font:700 italic 15px Georgia,serif;color:#e9edf5">Hello!</span></span>`;
+      return is0.apply(this, arguments); }; }
+  // shared with Atom Reading: same ids both sides
   try { if (window.__atomLook && L) window.__atomLook.take(L.profile()); } catch (e) {}
 })();
 

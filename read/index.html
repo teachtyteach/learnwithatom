@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k2d026a"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k091885"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -1811,7 +1811,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef', 'gr', 'am'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -1887,6 +1887,8 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
   var PAIRS = {
     ce: [['', 'confetti'], ['bubbles', 'bubbles'], ['stars', 'stars'], ['sparks', 'sparks'], ['suns', 'gold'], ['pixels', 'powers'], ['atoms', 'pi'], ['fireworks', 'prism'], ['leaves', ''], ['hearts', '']],
     sd: [['coin', 'classic'], ['bell', 'soft'], ['blip', 'blip'], ['sparkle', 'space'], ['marimba', 'bell'], ['harp', 'harp']],
+    gr: [['', 'none'], ['pirate', 'pirate'], ['western', 'western'], ['space', 'space'], ['spooky', 'spooky'], ['chill', 'chill'], ['fancy', 'fancy']],
+    am: [['', 'none'], ['rain', 'rain'], ['waves', 'waves'], ['harbor', 'harbor'], ['campfire', 'campfire'], ['desert', 'desert'], ['storm', 'storm'], ['wild', 'wild']],
     st: [['', 'none'], ['blueprint', 'm_graph'], ['ssA1', 'm_calc'], ['chalk', 'm_proof'], ['paper', 'm_protractor'], ['neon', 'm_pi'], ['ocean', 'm_fractal'], ['pixel', 'm_score'],
          ['gold', 'm_golden'], ['terminal', 'm_matrix'], ['glass', 'm_tess'], ['stars', 'm_space'], ['ssA2', 'm_master']]
   };
@@ -10298,7 +10300,7 @@ window.AtomStatLooks = (function () {
       if (ch) { try { applyExtras(); renderExtras(); } catch (e) {} } return ch; }
   };
   /* Celebration, sound and stats look: each app has its own versions; picking one picks its partner in the other app */
-  { const PK = { ce: "conf", sd: "chime", st: "stat", bn: "ncard", ef: "afx" }, GR = {};
+  { const PK = { ce: "conf", sd: "chime", st: "stat", bn: "ncard", ef: "afx", gr: "greet", am: "amb" }, GR = {};
     const lm1 = lockMsg; lockMsg = function (kind, id) { for (const f in PK) if (PK[f] === kind && id && GR[f] === id) return ""; return lm1(kind, id); };
     const A = window.__atomLook, m0 = A.mine, t0 = A.take;
     A.mine = () => { const o = m0(); Object.entries(PK).forEach(([f, k]) => { const v = L.pairOut && L.pairOut(f, "read", xGet(k) || ""); if (v) o[f] = v; }); return o; };
@@ -10881,6 +10883,29 @@ window.AtomFX = (function () {
     });
   }
   const g0 = renderGroup; renderGroup = function () { const r = g0.apply(this, arguments); try { dress(); } catch (e) {} return r; };
+})();
+
+/* ===================== From Atom Math, now in Atom Reading: Atom's moods ===================== */
+(function () {
+  const mood = () => { const h = new Date().getHours(); if (h >= 21 || h < 5) return "sleepy"; let si;
+    try { si = streakInfo(); } catch (e) { return ""; }
+    let met = false; try { met = dayW(todayKey(new Date())) >= goalTarget(); } catch (e) {}
+    if (met || si.cur >= 3) return "excited"; if (Object.keys(stats.days || {}).length && si.cur === 0) return "sad"; return ""; };
+  const s = document.createElement("style"); s.id = "atomMoodCss";
+  s.textContent = "@keyframes atomBob{50%{transform:translateY(-6px) rotate(-4deg)}}@keyframes atomZz{0%{opacity:0;transform:translate(0,4px)}50%{opacity:1}100%{opacity:0;transform:translate(8px,-10px)}}" +
+    "body[data-mood=excited] #library img.mascot{animation:atomBob 1.4s ease-in-out infinite}" +
+    "body[data-mood=sleepy] #library img.mascot{filter:saturate(.6) brightness(.9);transform:rotate(-8deg)}" +
+    "body[data-mood=sad] #library img.mascot{filter:grayscale(.6);transform:rotate(10deg) translateY(2px)}" +
+    ".atomzz{position:absolute;font:800 14px Georgia,serif;color:var(--muted);pointer-events:none;animation:atomZz 2.4s ease-in-out infinite}" +
+    "@media (prefers-reduced-motion:reduce){body[data-mood] #library img.mascot,.atomzz{animation:none!important}}";
+  document.head.append(s);
+  function apply() { try { const m = settings.motion ? "" : mood(); document.body.dataset.mood = m;
+      document.querySelectorAll("#library .atomzz").forEach(z => z.remove());
+      if (m === "sleepy") document.querySelectorAll("#library img.mascot").forEach(im => { if (!im.offsetParent) return; const p = im.parentElement; if (getComputedStyle(p).position === "static") p.style.position = "relative"; const z = el("span", "atomzz", "z"); z.style.left = (im.offsetLeft + im.offsetWidth * .7) + "px"; z.style.top = (im.offsetTop - 6) + "px"; p.append(z); });
+      document.querySelectorAll("#library img.mascot").forEach(im => { im.title = m === "sleepy" ? "Atom is sleepy" : m === "excited" ? "Atom is excited!" : m === "sad" ? "Atom misses you" : ""; });
+    } catch (e) {} }
+  apply(); setInterval(apply, 60000);
+  try { const r0 = renderLibrary; renderLibrary = function () { const r = r0.apply(this, arguments); setTimeout(apply, 0); return r; }; } catch (e) {}
 })();
 
 
