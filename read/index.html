@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-keb9e86"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-ka19992"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -10761,7 +10761,7 @@ window.AtomFX = (function () {
   };
   const byId = id => BANNERS.find(b => b[0] === id) || EFFECTS.find(e => e[0] === id);
   function thumb(id) {
-    const b = BANNERS.find(x => x[0] === id); if (b) return `<span class="afxth" style="background:${b[4].replace(/"/g, "'")};background-size:cover;background-position:center;color:${b[5]};font-size:12px;font-family:Georgia,serif">Name</span>`;
+    const b = BANNERS.find(x => x[0] === id); if (b) return `<span class="afxth" style="background:${b[4].replace(/"/g, "'")};background-size:cover;background-position:center;color:${b[5]};font-size:15px;font-weight:700;font-family:Georgia,serif;text-shadow:${lum(b[5])>.5?'0 1px 2px rgba(0,0,0,.85),0 0 10px rgba(0,0,0,.6)':'0 1px 2px rgba(255,255,255,.8),0 0 10px rgba(255,255,255,.6)'}">Name</span>`;
     const e = EFFECTS.find(x => x[0] === id); if (e && FXART[id]) return `<span class="afxth"><svg viewBox="0 0 80 56" width="80" height="56" aria-hidden="true">${FXART[id]}</svg></span>`;
     if (e) return `<span class="afxth" style="color:${PAL[id][0]};text-shadow:0 0 8px ${PAL[id][0]}88">${e[4]}</span>`;
     return "";
@@ -10913,6 +10913,93 @@ window.AtomFX = (function () {
   try { const c0 = checkBadges; checkBadges = function () { const r = c0.apply(this, arguments); pub(); return r; }; } catch (e) {}
   pub();
 })();
+
+/* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
+window.AtomPolish = (function () {
+  const parse = c => { const m = /rgba?\(([^)]+)\)/.exec(c || ""); if (!m) return null; const p = m[1].split(",").map(parseFloat); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
+  const lin = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+  const lum = c => c ? .2126 * lin(c.r) + .7152 * lin(c.g) + .0722 * lin(c.b) : null;
+  const ratio = (a, b) => { const x = Math.max(a, b), y = Math.min(a, b); return (x + .05) / (y + .05); };
+  // the colors a piece of lettering is drawn with (plain color, or the stops of a gradient)
+  function inkLums(el) {
+    const cs = getComputedStyle(el), out = [];
+    const fill = parse(cs.webkitTextFillColor) || parse(cs.color);
+    if (cs.webkitTextFillColor && /rgba\(.*,\s*0\)|transparent/.test(cs.webkitTextFillColor) || (cs.backgroundClip === "text" || cs.webkitBackgroundClip === "text")) {
+      const g = cs.backgroundImage || ""; (g.match(/rgba?\([^)]+\)/g) || []).forEach(s => { const c = parse(s); if (c && c.a > .3) out.push(lum(c)); });
+    } else if (fill && fill.a > .3) out.push(lum(fill));
+    return out;
+  }
+  const worst = (L, bg) => L.length ? Math.min.apply(null, L.map(l => ratio(l, bg))) : 21;
+  /* ---- 1. titles: no word is ever cut in half; pale lettering moves to a dark plaque ---- */
+  function fitText(el, min) {
+    el.style.wordBreak = "normal"; el.style.overflowWrap = "normal"; el.style.hyphens = "none";
+    const ttx = el.querySelector(".ttx") || el; let fs = parseFloat(getComputedStyle(ttx).fontSize) || 12, ls = parseFloat(getComputedStyle(ttx).letterSpacing) || 0, n = 0;
+    const bad = () => { const r = document.createRange(); r.selectNodeContents(ttx); const box = el.getBoundingClientRect(), cs = getComputedStyle(el), pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0;
+      return [...r.getClientRects()].some(q => q.right > box.right - pr + .5 || q.left < box.left + pl - .5); };
+    while (bad() && n++ < 24 && fs > (min || 8)) { fs -= .5; ls = ls > 0 ? ls * (fs / (fs + .5)) : ls; ttx.style.fontSize = fs + "px"; if (ls) ttx.style.letterSpacing = ls + "px"; }
+  }
+  function titles(root) {
+    root.querySelectorAll(".xth .mttl:not([data-pl]), .xth .ttl:not([data-pl])").forEach(el => {
+      el.dataset.pl = "1";
+      const t = el.querySelector(".ttx") || el, L = inkLums(t), cream = .78;
+      if (L.length && worst(L, cream) < 2.6) el.classList.add("dk");
+      fitText(el, 7.5);
+    });
+  }
+  /* ---- 2. frames and name styles: readable on whatever they sit on ---- */
+  const TILE = .012; // the dark tile behind them
+  function marks(root) {
+    root.querySelectorAll(".xth .ptitle[data-pf]:not([data-pl])").forEach(el => {
+      el.dataset.pl = "1";
+      const cs = getComputedStyle(el), bgc = parse(cs.backgroundColor), t = el.closest(".xth");
+      const L = inkLums(el); if (!L.length) return;
+      const bg = bgc && bgc.a > .6 ? lum(bgc) : TILE;
+      if (worst(L, bg) < 3) el.style.color = bg > .35 ? "#14161f" : "#f6f1e4", el.style.webkitTextFillColor = el.style.color;
+    });
+    root.querySelectorAll(".xth .nflair:not([data-pl]), .xth .tnf:not([data-pl])").forEach(el => {
+      el.dataset.pl = "1";
+      const L = inkLums(el); if (!L.length) return;
+      const mean = L.reduce((x, y) => x + y, 0) / L.length;
+      if (mean < .22) el.classList.add("lift");   // dark lettering is brightened so it reads on the dark tile
+    });
+    // anything that still runs past its box gets a size where it fits (greetings, long names)
+    root.querySelectorAll(".xth .sw span:not([data-pf]):not(.mttl):not(.ttx):not([data-pl]), .xth .afxth:not([data-pl])").forEach(el => {
+      el.dataset.pl = "1"; let fs = parseFloat(getComputedStyle(el).fontSize), n = 0, w = el.closest(".xth");
+      if (!w || !el.textContent.trim()) return;
+      while (n++ < 16 && fs > 8 && el.scrollWidth > w.clientWidth - 8 && el.children.length === 0) { fs -= .75; el.style.fontSize = fs + "px"; }
+    });
+  }
+  /* ---- 3. one stamp style: older flat stamps become coins that match the new medallions ---- */
+  const GOLD = ["#fff1b8", "#d9a441", "#7a5412"], SILV = ["#f4f7fb", "#a7b0c2", "#586174"], BRZ = ["#ffd9ae", "#c0793a", "#5e3513"];
+  function coin(svg) {
+    if (!svg || /opacity="\.28"/.test(svg)) return svg;            // already a medallion
+    const m = /^<svg([^>]*)>([\s\S]*)<\/svg>$/.exec(svg.trim()); if (!m) return svg;
+    let inner = m[2], field = "#f1e8d2", post = false;
+    if (/sperf/.test(inner)) {                                      // postage-stamp style: take its color, keep its picture
+      const c = /<rect[^>]*rx="1\.2"[^>]*fill="(#[0-9a-fA-F]{3,8})"/.exec(inner); if (c) { field = c[1]; post = true; }
+      inner = inner.replace(/<rect[^>]*(mask="url\(#sperf\)"|rx="1\.2"|rx="\.8")[^>]*\/?>(<\/rect>)?/g, "");
+    }
+    const rim = GOLD, id = "pc" + (field.slice(1) + (rim === GOLD ? "g" : "s"));
+    const attrs = m[1].replace(/class="[^"]*"/, "").replace(/viewBox="[^"]*"/, "").replace(/\s+/g, " ");
+    return `<svg class="stmp" viewBox="0 0 24 24"${attrs} aria-hidden="true"><defs><linearGradient id="${id}r" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="${rim[0]}"/><stop offset=".45" stop-color="${rim[1]}"/><stop offset="1" stop-color="${rim[2]}"/></linearGradient><radialGradient id="${id}f" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient></defs><circle cx="12" cy="12" r="11.6" fill="url(#${id}r)"/><circle cx="12" cy="12" r="9.9" fill="${field}"/><circle cx="12" cy="12" r="9.9" fill="url(#${id}f)"/><g transform="translate(12 12) scale(${post ? .74 : .8}) translate(-12 -12)">${inner}</g><path d="M5.5 9.5Q12 2.5 18.5 9.5Q12 6.2 5.5 9.5Z" fill="#fff" opacity=".28"/></svg>`;
+  }
+  let q = 0;
+  function run() { q = 0; try { titles(document); marks(document); } catch (e) {} }
+  function watch() { new MutationObserver(() => { if (!q) q = requestAnimationFrame(run); }).observe(document.body, { childList: true, subtree: true }); run(); }
+  if (document.body) watch(); else document.addEventListener("DOMContentLoaded", watch);
+  const sty = document.createElement("style");
+  sty.textContent = `.xth .mttl.dk,.xth .ttl.dk{background:linear-gradient(180deg,#232a3d,#12161f)!important;box-shadow:0 6px 14px -4px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.18)!important}
+.rwsheet .xcard .xth .nflair.lift,#xgDlg .xcard .xth .tnf.lift{filter:brightness(2.1) saturate(1.2) drop-shadow(0 0 6px rgba(255,255,255,.25))!important}
+.xth .mttl,.xth .ttl{overflow:hidden}
+#xgDlg .xcard .xth .afxth{font-size:15px!important;font-weight:700!important}
+.xth .mttl.dk .ttx,.xth .ttl.dk .ttx{filter:brightness(1.45) saturate(1.15)}
+.tsw[style*="url("] b{text-shadow:0 1px 2px rgba(0,0,0,.7),0 0 10px rgba(0,0,0,.45)}
+.ptitle[data-pf="mf_ink"],.ptitle[data-pf="r_spB0"],.ptitle[data-pf="r_wanted"],.ptitle[data-pf="r_spA3"]{color:#1c1a16!important;-webkit-text-fill-color:#1c1a16!important;text-shadow:none!important}`;
+  document.head.appendChild(sty);
+  return { coin, run, lum };
+})();
+try { if (typeof stampSVG === "function") { const s0 = stampSVG; stampSVG = function () { return AtomPolish.coin(s0.apply(this, arguments)); }; } } catch (e) {}
+try { if (typeof stampHtml === "function") { const s1 = stampHtml; stampHtml = function () { return AtomPolish.coin(s1.apply(this, arguments)); }; } } catch (e) {}
 
 
 /*/ATOM-SHARED:JS*/})();
