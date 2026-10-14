@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k7f816d"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k56d2a7"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -10169,6 +10169,12 @@ window.AtomStatLooks = (function () {
     [3, 4, 5].forEach(k => css.push(`.ttx[data-tier="${k}"]{background-image:${TG[k]}!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important}`));
   }
   /* Math's leveling titles (Slope Boss I to VI): show the highest one earned and the next one */
+  /* Season pass rewards for seasons that haven't started yet stay hidden until that season comes */
+  const futureIds = () => { const out = new Set(); try { const cur = seasonNow().idx;
+      S_ITEMS.forEach(([cat, lvl, ids]) => ids.forEach((id, i) => { if (i !== cur && !(seasonBest(i) > 0) && lockMsg(cat, id) && settings[cat] !== id) out.add(cat + ":" + id); })); } catch (e) {} return out; };
+  { const g0 = renderGroup; renderGroup = function () { const F = futureIds(), saved = XCATS.map(c => [c, c.opts]); XCATS.forEach(c => { c.opts = c.opts.filter(o => !F.has(c.k + ":" + o[0])); });
+      try { return g0.apply(this, arguments); } finally { saved.forEach(([c, o]) => { c.opts = o; }); } }; }
+  { const x0 = xTotals; xTotals = function (c) { const F = futureIds(), keep = c.opts; c.opts = keep.filter(o => !F.has(c.k + ":" + o[0])); try { return x0.apply(this, arguments); } finally { c.opts = keep; } }; }
   { const r0 = renderGroup;
     renderGroup = function () { const c = tc, keep = c.opts, lv = keep.filter(o => /^m_sb\d$/.test(o[0])); let top = -1; lv.forEach((o, i) => { if (!lockMsg("title", o[0])) top = i; });
       const hide = new Set(lv.filter((o, i) => i !== top && i !== top + 1 && settings.title !== o[0]).map(o => o[0])); c.opts = keep.filter(o => !hide.has(o[0]));

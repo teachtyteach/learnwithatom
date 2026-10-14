@@ -7317,7 +7317,12 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
     if (NL.defs && !document.getElementById('atomStampDefs')) document.body.insertAdjacentHTML('afterbegin', NL.defs);
     const st = document.createElement('style'); st.id = 'newLookCss'; st.textContent = NL.css.replace(/\.ptitle\[data-pf=/g, '.ptitle.ptitle[data-pf=').replace(/\.nflair\[data-nf=/g, '.nflair.nflair[data-nf='); document.head.appendChild(st); }
   // Slope Boss I to VI: show the highest one earned and the next one
-  { window.atomVis = c => { const a = visItems(c); if (c !== LOCKER.title) return a; const g = a.filter(it => /^sb\d$/.test(it[0])); let top = -1; g.forEach((it, i) => { if (unlocked(it)) top = i; });
+  { const future = it => { if (!it[2] || S.teacher) return false; let m;
+      try { if (unlocked(it)) return false;
+        if ((m = it[2].match(/^SLvl (\d) (\d+)$/))) { const i = +m[1] - 1, cur = seaNow().idx; return i !== cur && !(seaBest(i) > 0); }
+        if ((m = it[2].match(/^Season (\w+) (\d+)$/))) { const st = seasonStateOf(seasonById(m[1])); return st !== 'over' && st !== 'active'; }
+      } catch (e) {} return false; };
+    window.atomVis = c => { const a = visItems(c).filter(it => !future(it) || (S.look && Object.values(S.look).includes(it[0]))); if (c !== LOCKER.title) return a; const g = a.filter(it => /^sb\d$/.test(it[0])); let top = -1; g.forEach((it, i) => { if (unlocked(it)) top = i; });
       const hide = new Set(g.filter((it, i) => i !== top && i !== top + 1 && S.look.title !== it[0]).map(it => it[0])); return a.filter(it => !hide.has(it[0])); }; }
   // remember nights and weekends when practicing (counted from now on)
   let last = (typeof totalSolved === 'function') ? totalSolved() : 0;
@@ -7348,7 +7353,7 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
   const LABEL={mstat:'Stats look',ncard:'Name card',afx:'Answer effect',icon:'Home screen icon',theme:'Theme',title:'Title',pframe:'Title frame',nflair:'Name style',stamp:'Stamp',accent:'Accent color',celeb:'Rank-up effect',hat:'Hat',face:'Glasses',neck:'Neckwear',atomc:'Atom color',sound:'Sound pack'};
   const groupOf=cat=>Object.keys(GROUPS).find(g=>GROUPS[g].cats.includes(cat));
   const has=c=>!!LOCKER[c];
-  const real=c=>visItems(LOCKER[c]).filter(i=>i[0]!=='none'&&!(c==='accent'&&i[0]==='theme'));
+  const real=c=>(window.atomVis||visItems)(LOCKER[c]).filter(i=>i[0]!=='none'&&!(c==='accent'&&i[0]==='theme'));
   const tally=cats=>{let n=0,t=0;cats.filter(has).forEach(c=>{const v=real(c);t+=v.length;n+=v.filter(unlocked).length});return [n,t]};
   const strip=h=>String(h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 
