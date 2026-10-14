@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-kcb7edc"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k73d0ef"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -1828,7 +1828,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef', 'gr', 'am'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef', 'gr', 'am', 'gd', 'ro'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -1984,8 +1984,8 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     },
 
     /* ---------- one teacher mode (lasts 2 hours, like Atom Math) ---------- */
-    teacher: function () { return get().t > Date.now(); },
-    setTeacher: function (on) { var w = get(), t = on ? Date.now() + TEACH_MS : 0; if (!on && !w.t) return; w.t = t; write(w); },
+    teacher: function () { var w = get(); return w.t > Date.now() || (w.p && w.p.ro) === 't'; },   // a teacher who signed on as Teacher stays a teacher on this device
+    setTeacher: function (on) { var w = get(), t = on ? Date.now() + TEACH_MS : 0; if (!on && w.p && w.p.ro === 't') { w.p.ro = ''; w.t = 0; write(w); return; } if (!on && !w.t) return; w.t = t; write(w); },
 
     /* ---------- Atom streak: a school day counts when the streak is kept in BOTH apps ---------- */
     today: today, offDay: function (k) { return offDay(kd(k)); }, prevSchool: prevSchool,
@@ -11230,6 +11230,35 @@ window.ATOM_SHARE_R={"sounds": [["m_classic", "Classic", null, "common"], ["m_so
 
 /* Math titles join the list after the first draw, so redraw the greeting chip */
 setTimeout(function () { try { applyExtras(); } catch (e) {} }, 0);
+
+/* ===================== Grade (6th to 9th): asked when someone picks Student. Saved for all of Atom (Math tracks later) ===================== */
+(function () {
+  const L = window.AtomLocker, mp = document.getElementById("modePick"); if (!L || !mp) return;
+  const G = ["6", "7", "8", "9"], LAB = { 6: "6th", 7: "7th", 8: "8th", 9: "9th" };
+  const st = document.createElement("style");
+  st.textContent = ".gradepick{width:100%;display:grid;gap:10px;margin-top:8px;text-align:left}.gradepick[hidden]{display:none}" +
+    ".gradepick b{font:600 15px system-ui,-apple-system,sans-serif;color:var(--ink)}.gradepick .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}" +
+    ".gradepick button{min-height:50px;border:0;border-radius:14px;background:var(--surface);color:var(--ink);font:600 17px system-ui,-apple-system,sans-serif;box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer}" +
+    ".gradepick button[aria-checked=true]{background:var(--accent);color:#fff;box-shadow:none}";
+  document.head.appendChild(st);
+  const box = document.createElement("div"); box.className = "gradepick"; box.id = "gradePick"; box.hidden = true;
+  box.innerHTML = '<b id="gpL">What grade are you in?</b><div class="g4" role="radiogroup" aria-labelledby="gpL">' + G.map(g => `<button type="button" role="radio" aria-checked="false" data-g="${g}">${LAB[g]}</button>`).join("") + "</div>";
+  mp.after(box);
+  let pick = G.includes(L.profile().gd) ? L.profile().gd : "";
+  const msg = t => { const m = document.getElementById("welcomeMsg"); if (m) m.textContent = t; };
+  const paint = () => box.querySelectorAll("[data-g]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.g === pick)));
+  paint();
+  box.addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (!b) return; pick = b.dataset.g; paint(); try { L.setProfile({ gd: pick }); } catch (x) {} msg(""); });
+  mp.addEventListener("click", e => { const b = e.target.closest(".pick"); if (b) box.hidden = b.dataset.mode !== "student"; }, true);
+  // Next waits for a grade when Student is picked
+  document.addEventListener("click", e => {
+    if (!e.target.closest || !e.target.closest("#welcomeNext")) return;
+    const sl = box.closest(".wslide"); if (box.hidden || (sl && sl.hidden)) return;
+    if (!pick) { e.preventDefault(); e.stopImmediatePropagation(); msg("Pick your grade to continue."); }
+  }, true);
+  const sw = window.showWelcome;
+  if (typeof sw === "function") window.showWelcome = function () { const r = sw.apply(this, arguments); box.hidden = true; return r; };
+})();
 
 /* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
 window.AtomPolish = (function () {
