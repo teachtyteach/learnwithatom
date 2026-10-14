@@ -7439,7 +7439,7 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
 .rw .xtiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .rw .xtile{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr);justify-items:start;align-content:start;gap:3px;text-align:left;padding:14px 14px 16px;border-radius:18px;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .14s ease}
 .rw .xtile:active,.rw .xcard:active,.rw .rwrow:active{transform:scale(.97)}
-.rw .xtile::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%);pointer-events:none}
+.rw .xtile::after{content:"";position:absolute;right:0;top:0;width:120px;height:110px;pointer-events:none;background:linear-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px) -1px -1px/12px 12px,linear-gradient(90deg,color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px) -1px -1px/12px 12px;-webkit-mask:radial-gradient(circle at 100% 0,#000,transparent 70%);mask:radial-gradient(circle at 100% 0,#000,transparent 70%)}
 .rw .xtile .xart{width:44px;height:44px;margin-bottom:6px;display:grid;place-items:center;filter:drop-shadow(0 4px 8px rgba(0,0,0,.18))}
 .rw .xtile .xart svg{width:44px;height:44px}
 .rw .xtile .xart img{width:48px;height:auto}
@@ -7476,10 +7476,59 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
 .rwsheet .xth .sw.hsw img{width:62px;height:59px}
 .rwsheet .xth .sw.hsw img.appic{width:50px;height:50px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .rwsheet .xth .sw.nsw{background:none;border:0;box-shadow:none;transform:none;color:var(--muted);font-size:13px}
-.rwsheet .xcard.locked .xth{filter:grayscale(.7) opacity(.55)}
+.rwsheet .xcard.locked .xth{filter:none}
 .rwsheet .xcard.locked>span:not(.xth){color:var(--muted)}
 .rwsheet .xtag{font-weight:500;font-size:10.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rwsheet .xtag svg{width:12px;height:12px;vertical-align:-2px}
+/* ---- collector cards ---- */
+.rwsheet .xgrid{gap:10px}
+.rwsheet .xcard{--rc:#9aa4b2;--rg:rgba(154,164,178,.30);--ink:#f2f4f8;--muted:#a3adbf;--surface:#1b2236;--bg:#10141f;--line:#2b3450;
+  display:flex;flex-direction:column;gap:0;padding:0;border:0;border-radius:14px;overflow:hidden;text-align:left;color:#f2f4f8;
+  background:linear-gradient(180deg,#161c2c,#111522);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 10px 22px -14px rgba(0,0,0,.75);font:600 12.5px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif}
+.rwsheet .xcard[data-rar=uncommon]{--rc:#46d17f;--rg:rgba(70,209,127,.34)}
+.rwsheet .xcard[data-rar=rare]{--rc:#4aa3ff;--rg:rgba(74,163,255,.38)}
+.rwsheet .xcard[data-rar=epic]{--rc:#b86bff;--rg:rgba(184,107,255,.42)}
+.rwsheet .xcard[data-rar=legendary]{--rc:#ffbf45;--rg:rgba(255,191,69,.44)}
+.rwsheet .xcard[data-rar=limited]{--rc:#ff5fa8;--rg:rgba(255,95,168,.40)}
+.rwsheet .xcard[data-rar=none]{--rc:#3a4460;--rg:rgba(120,130,160,.12)}
+.rwsheet .xcard .xth{position:relative;height:84px;width:100%;border-radius:0;box-shadow:none;flex:none;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(ellipse 72% 85% at 50% 62%,var(--rg),transparent 72%),
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px) -1px -1px/12px 12px,linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px) -1px -1px/12px 12px,
+    linear-gradient(180deg,#1d2640,#0f1320)!important;border-bottom:2px solid var(--rc)}
+.rwsheet .xcard .xth::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 38%),radial-gradient(ellipse 120% 60% at 50% 120%,rgba(0,0,0,.35),transparent 60%)}
+.rwsheet .xcard .xth>.sw,.rwsheet .xcard .xth>.tsw,.rwsheet .xcard .xth>.asw,.rwsheet .xcard .xth>.ttsw{position:relative;z-index:1}
+.rwsheet .xcard .xth .sw.hsw img{width:70px;height:67px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+.rwsheet .xcard .xth .sw.hsw img.appic{width:52px;height:52px;border-radius:13px;box-shadow:0 6px 14px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.12)}
+.rwsheet .xcard .xth .tsw{width:100%;height:100%;box-shadow:inset 0 -24px 30px -20px rgba(0,0,0,.5)}
+.rwsheet .xcard .xth .sw.mxth{background:none!important}
+.rwsheet .xcard .xth .sw.mxth svg{filter:drop-shadow(0 0 10px var(--rg)) drop-shadow(0 3px 4px rgba(0,0,0,.5));transform:scale(1.25)}
+.rwsheet .xcard .xth .stmp{width:46px;height:46px;filter:drop-shadow(0 5px 7px rgba(0,0,0,.55))}
+.rwsheet .xcard[data-x^="title:"] .xth .mttl{background:linear-gradient(180deg,#fbf8f0,#e9e1cf);color:#2a2620;padding:9px 8px;border-radius:7px;width:84%;
+  box-shadow:0 6px 14px -4px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.08),inset 0 1px 0 #fff;font-size:12.5px;text-align:center}
+.rwsheet .xcard .xn{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding:8px 10px 0;font-weight:700;font-size:12.5px;line-height:1.25;color:#f2f4f8;letter-spacing:.005em}
+.rwsheet .xcard .xr{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding:3px 10px 10px;font-weight:600;font-size:10.5px;line-height:1.3;color:var(--rc)}
+.rwsheet .xcard .xr .gem{display:inline-block;width:6px;height:6px;margin:0 6px 1px 1px;background:var(--rc);transform:rotate(45deg);box-shadow:0 0 6px var(--rc)}
+.rwsheet .xcard .xr .ureq{display:inline-grid;place-items:center;min-width:16px;height:14px;padding:0 3px;margin-right:4px;border-radius:4px;background:rgba(255,255,255,.12);color:#fff;font-size:9.5px;font-weight:800}
+.rwsheet .xcard .xr svg{width:11px;height:11px;vertical-align:-2px}
+.rwsheet .xcard.locked .xth>:not(.lk){filter:grayscale(.3) brightness(.86)}
+.rwsheet .xcard.locked .xr{color:#97a1b4}
+.rwsheet .xcard.locked .xn{color:#cdd3de}
+.rwsheet .xcard .lk{position:absolute;z-index:2;top:6px;right:6px;display:grid;place-items:center;width:20px;height:20px;border-radius:7px;background:rgba(8,10,18,.7);color:#e9edf5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.rwsheet .xcard .eqp{position:absolute;z-index:2;top:6px;left:6px;padding:2px 7px;border-radius:999px;background:var(--rc);color:#0b0e17;font:800 10px/1.4 system-ui,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.rwsheet .xcard[data-rar=none] .eqp{background:#e9edf5}
+.rwsheet .xcard[aria-pressed=true]{box-shadow:0 0 0 2px var(--rc),0 0 22px -4px var(--rg),0 10px 22px -14px rgba(0,0,0,.75)!important;border:0!important}
+.rwsheet .xcard[aria-pressed=true]::after{content:none!important}
+.rwsheet .xcard[data-rar=legendary]:not(.locked) .xth::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,236,170,.32) 48%,transparent 60%) 0 0/260% 100% no-repeat;animation:lkShine 4.2s ease-in-out infinite}
+.rwsheet .xcard .xth .nflair{font:700 23px/1.1 Georgia,"Iowan Old Style",serif!important;filter:brightness(1.35) saturate(1.2) drop-shadow(0 0 8px rgba(255,255,255,.18))}
+.rwsheet .xcard.locked .xth>.sw:has(.nflair),.rwsheet .xcard.locked .xth>.sw:has(.ptitle){filter:none!important;opacity:1!important}
+.rwsheet .xcard .xth .sw.hsw:has(.nflair),.rwsheet .xcard .xth .sw.hsw:has(.ptitle){background:none!important}
+.rwsheet .xcard .xth .ptitle{font:700 14px Georgia,serif;color:#f2f4f8}
+.rwsheet .xcard .xth .ptitle:not([data-pf]){border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:2px 10px}
+@keyframes lkShine{0%,55%{background-position:140% 0}100%{background-position:-60% 0}}
+.rwsheet .xcard .xth .secq{font:800 34px Georgia,serif;color:#ffbf45!important;text-shadow:0 0 14px rgba(255,191,69,.6)}
+.rwsheet .xcard[data-x^="ncard:"] .xth .afxth{width:100%;height:100%;border-radius:0}
+@media (prefers-reduced-motion:reduce){.rwsheet .xcard .xth::before{animation:none!important}}
+/* ---- /collector cards ---- */
 .rwsheet details.tg{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
 .rwsheet details.tg:first-of-type{border-top:0}
 .rwsheet details.tg>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:14px 2px;font:700 16px Georgia,serif;cursor:pointer}
@@ -7555,13 +7604,32 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
   }
 
   /* ---------- the bottom sheet ---------- */
+  /* ---------- collector cards: every reward gets a rarity, and the card wears it ---------- */
+  const RKN=['Copper','Bronze','Silver','Gold','Platinum','Emerald','Diamond','Champion'];
+  const RARN={common:'Common',uncommon:'Uncommon',rare:'Rare',epic:'Epic',legendary:'Legendary',limited:'Limited',none:'Default'};
+  function rarOf(it){const q=it[2]||'';let m;
+    if(it[0]==='none')return 'none';
+    if(!q)return 'common';
+    if(/^(Secret|Combo)/.test(q)||q==='Master')return 'legendary';
+    if(/^(Event|Season|SLvl|DNWeek|Box|Mystery)/.test(q))return 'limited';
+    if((m=q.match(/^(Copper|Bronze|Silver|Gold|Platinum|Emerald|Diamond|Champion)/))){const k=RKN.indexOf(m[1]);return k<=1?'uncommon':k<=3?'rare':k<=5?'epic':'legendary'}
+    if(/^Perf/.test(q))return 'epic';
+    const n=+((q.match(/(\d+)/)||[])[1]||0);
+    if(/^Units? /.test(q))return n>=8?'epic':'rare';
+    if(/^(Streak|Row)/.test(q))return n>=30?'legendary':n>=14?'epic':n>=7?'rare':'uncommon';
+    if(/^(Solved|TopicQ|UnitQ|QP|LS|Robots|Boss|DoNow|Weekly|Own)/.test(q))return n>=1000?'epic':n>=300?'rare':n>=25?'rare':'uncommon';
+    return 'rare';}
+  window.atomRarity=rarOf;
+  const LOCK='<svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.4" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>';
+  const shortReq=h=>String(h).replace(/Unlock it in Atom Reading/g,'Earn it in Reading').replace(/Unlocks at /g,'Reach ').replace(/Earn the /g,'Earn ').replace(/ badge$/,'');
   function cardHTML(cat,it){
     const on=unlocked(it),eq=(S.look[cat]||'')===it[0]||(it[0]==='none'&&lkId(cat)==='none'&&cat!=='theme');
-    const sec=window.atomSecret&&window.atomSecret(it);
-    const nm=`<span>${sec?'???':hwEsc(it[1])}</span>`;
-    const tag=on?(eq?'In use':''):sec?'<span class="ureq">?</span> Secret reward. Keep playing to find it':reqLabel(it[2]);
-    if(sec)return `<button class="xcard locked secret" type="button" data-x="${cat}:${it[0]}" aria-pressed="false"><span class="xth"><span class="sw mxth secq">?</span></span>${nm}<span class="xtag">${tag}</span></button>`;
-    return `<button class="xcard${on?'':' locked'}" type="button" data-x="${cat}:${it[0]}" aria-pressed="${on&&eq}"><span class="xth">${itemSwatch(cat,it)}</span>${nm}${tag?`<span class="xtag">${tag}</span>`:''}</button>`;
+    const sec=window.atomSecret&&window.atomSecret(it),r=sec?'legendary':rarOf(it);
+    const name=sec?'???':hwEsc(it[1]);
+    const meta=on?(r==='none'?'Default':`<i class="gem"></i>${RARN[r]}`):sec?'Secret · keep playing to find it':shortReq(reqLabel(it[2]));
+    const art=sec?'<span class="sw mxth secq">?</span>':itemSwatch(cat,it);
+    const full=on?'':String(sec?'Secret reward':reqLabel(it[2])).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+    return `<button class="xcard${on?'':' locked'}${sec?' secret':''}" type="button" data-x="${cat}:${it[0]}" data-rar="${r}" aria-pressed="${on&&eq}"${full?` title="${hwEsc(full)}"`:''}><span class="xth">${art}${on?'':`<i class="lk">${LOCK}</i>`}${on&&eq?'<i class="eqp">Equipped</i>':''}</span><span class="xn">${name}</span><span class="xr">${meta}</span></button>`;
   }
   function sectionHTML(cat){
     if(!has(cat))return '';
@@ -8022,10 +8090,24 @@ window.AtomFX = (function () {
     else if (id === "fx_stars") { box.style.left = "0px"; box.style.top = "0px"; for (let k = 0; k < 18; k++) { const sx = Math.random() * innerWidth; add("★", { left: sx + "px", top: "-10px", "--dx": (Math.random() * 40 - 20) + "px", "--dy": (innerHeight * (.5 + Math.random() * .4)) + "px", "--r": (Math.random() * 360) + "deg", color: P[k % 3], "font-size": (12 + Math.random() * 14) + "px", "--t": (1 + Math.random() * .6).toFixed(2) + "s", animation: "afxFall var(--t) ease-in forwards", "animation-delay": (Math.random() * .3).toFixed(2) + "s" }); } }
     document.body.appendChild(box); setTimeout(() => box.remove(), 1900);
   }
+  /* little illustrations of each effect, for reward cards */
+  const st4 = (x, y, r, c, o) => `<path d="M${x} ${y - r}C${x + r * .18} ${y - r * .18} ${x + r * .18} ${y - r * .18} ${x + r} ${y}C${x + r * .18} ${y + r * .18} ${x + r * .18} ${y + r * .18} ${x} ${y + r}C${x - r * .18} ${y + r * .18} ${x - r * .18} ${y + r * .18} ${x - r} ${y}C${x - r * .18} ${y - r * .18} ${x - r * .18} ${y - r * .18} ${x} ${y - r}Z" fill="${c}" opacity="${o || 1}"/>`;
+  const glow = (id, c) => `<defs><radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs><circle cx="40" cy="28" r="26" fill="url(#${id})"/>`;
+  const FXART = {
+    fx_sparkle: glow("fgS", "#ffd166") + st4(40, 28, 15, "#fff6c4") + st4(40, 28, 8, "#ffffff") + st4(18, 14, 6, "#ffd166") + st4(62, 16, 5, "#ffe9a8") + st4(60, 42, 7, "#ffd166") + st4(20, 42, 4, "#fff6c4", .85) + `<circle cx="30" cy="8" r="1.4" fill="#fff"/><circle cx="70" cy="30" r="1.2" fill="#fff"/><circle cx="10" cy="28" r="1.2" fill="#fff"/>`,
+    fx_shapes: glow("fgH", "#4ecdc4") + `<g stroke-linecap="round" stroke-width="1.6" opacity=".55"><path d="M30 20l-8-6M50 20l8-6M50 36l8 6M30 36l-8 6" stroke="#fff"/></g><path d="M40 13l9 15H31z" fill="#ff5a6e"/><circle cx="17" cy="11" r="5" fill="#4ecdc4"/><rect x="58" y="7" width="9" height="9" rx="1.5" fill="#ffd166" transform="rotate(18 62 11)"/><path d="M64 40l5 5-5 5-5-5z" fill="#5a8dee"/><circle cx="16" cy="44" r="3.5" fill="#c77dff"/><rect x="34" y="34" width="12" height="12" rx="2" fill="#5a8dee" transform="rotate(-12 40 40)"/>`,
+    fx_numbers: glow("fgN", "#39ff7a") + `<g font-family="Georgia,serif" font-weight="800" text-anchor="middle"><text x="40" y="36" font-size="26" fill="#39ff7a">7</text><text x="16" y="20" font-size="14" fill="#5fd0ff" transform="rotate(-18 16 20)">3</text><text x="64" y="18" font-size="15" fill="#ffd166" transform="rotate(16 64 18)">1</text><text x="62" y="48" font-size="13" fill="#ff7aa8" transform="rotate(-10 62 48)">9</text><text x="18" y="48" font-size="12" fill="#c8ff7a" transform="rotate(14 18 48)">4</text></g>`,
+    fx_pi: glow("fgP", "#9a7bff") + `<path d="M12 44C20 20 46 8 66 18" fill="none" stroke="#c77dff" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5" opacity=".9"/><path d="M14 48C26 30 48 22 62 30" fill="none" stroke="#ffd166" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="1 4" opacity=".8"/><text x="42" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="30" font-weight="700" fill="#ffd166" stroke="#7a3db8" stroke-width=".8">π</text><text x="64" y="14" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#c77dff">π</text><text x="12" y="20" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#ffd166" opacity=".8">π</text>`,
+    fx_check: glow("fgC", "#2fbf71") + `<circle cx="40" cy="28" r="17" fill="none" stroke="#2fbf71" stroke-width="3"/><circle cx="40" cy="28" r="12.5" fill="none" stroke="#2fbf71" stroke-width="1" stroke-dasharray="2 2.4" opacity=".8"/><path d="M31 28.5l6 6 12-13" fill="none" stroke="#b6ffd4" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>` + R(8, i => { const a = i * Math.PI / 4; return `<circle cx="${(40 + 24 * Math.cos(a)).toFixed(1)}" cy="${(28 + 24 * Math.sin(a)).toFixed(1)}" r="1.6" fill="#2fbf71"/>`; }),
+    fx_ripple: glow("fgR", "#3ef0ff") + `<g fill="none"><circle cx="40" cy="28" r="22" stroke="#ff3ea5" stroke-width="1.5" opacity=".45"/><circle cx="40" cy="28" r="15" stroke="#3ef0ff" stroke-width="2.4" opacity=".8"/><circle cx="40" cy="28" r="8" stroke="#3ef0ff" stroke-width="3"/></g><circle cx="40" cy="28" r="3" fill="#fff"/>`,
+    fx_pages: glow("fgG", "#f2e6c8") + `<g stroke="#b9a77a" stroke-width=".8"><rect x="22" y="12" width="22" height="30" rx="2" fill="#efe4c6" transform="rotate(-18 33 27)"/><rect x="36" y="10" width="22" height="30" rx="2" fill="#f7efd8" transform="rotate(14 47 25)"/><rect x="29" y="14" width="22" height="30" rx="2" fill="#fffdf6"/></g><g stroke="#c9bb94" stroke-width="1.2" stroke-linecap="round"><path d="M33 22h14M33 27h14M33 32h10M33 37h12"/></g>`,
+    fx_stars: glow("fgT", "#c7b8ff") + [[22, 14, 7, "#ffd166"], [48, 24, 9, "#fff6c4"], [64, 10, 5, "#c7b8ff"], [30, 40, 6, "#c7b8ff"], [62, 42, 5, "#ffd166"]].map(([x, y, r, c]) => `<path d="M${x - r * 2.4} ${y - r * 2.4}L${x - r * .5} ${y - r * .5}" stroke="${c}" stroke-width="${(r / 3).toFixed(1)}" stroke-linecap="round" opacity=".45"/>` + `<path d="${R(10, i => { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; return (i ? "L" : "M") + (x + rr * Math.cos(a)).toFixed(1) + " " + (y + rr * Math.sin(a)).toFixed(1); })}Z" fill="${c}"/>`).join("")
+  };
   const byId = id => BANNERS.find(b => b[0] === id) || EFFECTS.find(e => e[0] === id);
   function thumb(id) {
     const b = BANNERS.find(x => x[0] === id); if (b) return `<span class="afxth" style="background:${b[4].replace(/"/g, "'")};background-size:cover;background-position:center;color:${b[5]};font-size:12px;font-family:Georgia,serif">Name</span>`;
-    const e = EFFECTS.find(x => x[0] === id); if (e) return `<span class="afxth" style="color:${PAL[id][0]};text-shadow:0 0 8px ${PAL[id][0]}88">${e[4]}</span>`;
+    const e = EFFECTS.find(x => x[0] === id); if (e && FXART[id]) return `<span class="afxth"><svg viewBox="0 0 80 56" width="80" height="56" aria-hidden="true">${FXART[id]}</svg></span>`;
+    if (e) return `<span class="afxth" style="color:${PAL[id][0]};text-shadow:0 0 8px ${PAL[id][0]}88">${e[4]}</span>`;
     return "";
   }
   function setCard(id) { document.documentElement.dataset.ncard = id || ""; }
@@ -8055,6 +8137,8 @@ window.AtomFX = (function () {
     [['ncard', 'b'], ['afx', 'e']].forEach(([c, p]) => LOCKER[c].items.forEach(it => { const k = p + '~' + it[0]; if (it[2] && !/^Read /.test(it[2]) && MK.has(k) && reqMet(it[2])) ks.push(k); }));
     if (ks.length) L.unlockMany('math', ks); }
   setTimeout(() => { try { publish(); } catch (e) {} }, 1800); setInterval(() => { try { publish(); } catch (e) {} }, 30000);
+  // tapping an effect card shows it
+  document.addEventListener('click', e => { const c = e.target.closest && e.target.closest('[data-x^="afx:"]'); if (!c) return; const id = c.dataset.x.slice(4); if (id === 'none') return; const r = c.getBoundingClientRect(); FX.play(id, r.left + r.width / 2, r.top + 42); }, true);
   mark();
   try { if (window.__atomLook && L) window.__atomLook.take(L.profile()); } catch (e) {}
 })();
