@@ -8533,15 +8533,32 @@ body.still .testcard.utready,body.still .testcard.utready::before,body.still .te
   if (typeof kpRender !== 'function') return;
   let hid = false;
   const sty = document.createElement('style');
-  sty.textContent = `#kpad .kphide{position:absolute;top:-34px;right:12px;display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 13px system-ui,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.25);grid-column:auto}
-#kpad .kphide svg{width:14px;height:14px}
+  sty.textContent = `html:has(body.haskp){overflow-y:auto!important}
+#kpad{gap:5px;padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+#kpad button{height:44px;border-radius:10px;font-size:21px}
+#kpad button.fn{font-size:19px}#kpad button.sm{font-size:13px}#kpad button.go{font-size:16px}
+#kpad .kprow.one button{height:44px}
+body.haskp #app{padding-bottom:calc(var(--kph,230px) + 18px)!important}
+body.haskp .toast{bottom:calc(var(--kph,230px) + 12px)}
+#kpad .kphide{position:absolute;top:-21px;left:50%;transform:translateX(-50%);width:68px;height:21px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;border:1px solid var(--line);border-bottom:0;background:color-mix(in srgb,var(--bg) 92%,var(--ink) 8%);color:var(--muted);box-shadow:0 -3px 8px rgba(0,0,0,.18);grid-column:auto}
+#kpad .kphide svg{width:18px;height:18px}
 #kpshow{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:60;height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 14px system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.35);display:none}
-body.kphidden #kpshow{display:flex;align-items:center;gap:8px}
-body.kphidden:not(.haskp) #kpshow{display:flex}`;
+body.kphidden #kpshow{display:flex;align-items:center;gap:8px}`;
   document.head.appendChild(sty);
+  function reveal() {
+    const k = document.getElementById('kpad'); if (!k || k.hidden) return;
+    document.body.style.setProperty('--kph', k.offsetHeight + 'px');
+    const ae = document.activeElement, a = ae && /^(INPUT|TEXTAREA)$/.test(ae.tagName) ? ae : (typeof kpTarget !== 'undefined' ? kpTarget : null); if (!a || !a.getBoundingClientRect) return;
+    const r = a.getBoundingClientRect(), lim = innerHeight - k.offsetHeight - 16;
+    if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: 'smooth' });
+  }
+  document.addEventListener('focusin', () => setTimeout(reveal, 80));
+  window.addEventListener('resize', () => setTimeout(reveal, 80));
+  try { const p0 = kpPress; kpPress = function () { const r = p0.apply(this, arguments); setTimeout(reveal, 60); return r; }; } catch (e) {}
   const r0 = kpRender;
   kpRender = function () {
     r0.apply(this, arguments);
+    setTimeout(reveal, 60);
     try {
       const ins = kpInputs(), want = coarse() && ins.length > 0 && !(S.pref && S.pref.kpOff);
       let b = document.getElementById('kpshow');
@@ -8549,7 +8566,7 @@ body.kphidden:not(.haskp) #kpshow{display:flex}`;
       if (hid) {
         const k = document.getElementById('kpad'); if (k) k.hidden = true;
         document.body.classList.remove('haskp'); document.body.classList.add('kphidden');
-        ins.forEach(i => i.setAttribute('inputmode', 'decimal'));
+        ins.forEach(i => i.setAttribute('inputmode', 'text'));
         if (!b) { b = document.createElement('button'); b.id = 'kpshow'; b.type = 'button'; b.innerHTML = '123 Number pad'; b.addEventListener('click', () => { hid = false; kpRender(); }); document.body.appendChild(b); }
       } else {
         document.body.classList.remove('kphidden'); if (b) b.remove();
@@ -8557,7 +8574,7 @@ body.kphidden:not(.haskp) #kpshow{display:flex}`;
         const k = document.getElementById('kpad');
         if (k && !k.hidden && !k.querySelector('.kphide')) {
           const h = document.createElement('button'); h.type = 'button'; h.className = 'kphide'; h.setAttribute('aria-label', 'Hide number pad');
-          h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>Hide';
+          h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
           h.addEventListener('click', e => { e.stopPropagation(); hid = true; kpRender(); const i = kpInputs()[0]; try { (kpTarget || i).focus(); } catch (x) {} });
           k.appendChild(h);
         }
