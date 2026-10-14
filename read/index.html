@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-kd299d9"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k7f816d"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -1752,7 +1752,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
    ones at the end, or students' saved rewards will shift.
 */
 (function () {
-  var KEYS = {"read":["h~cap","h~tophat","h~cowboy","h~chef","h~souwester","h~pirate","h~wizard","h~headph","h~crown","h~bellhop","h~halo","h~pumpkin","h~leafcrown","h~earmuffs","h~flowers","h~sgh0","h~sgh1","h~sgh2","h~sgh3","h~sgc0","h~sgc1","h~sgc2","h~sgc3","h~bdayhat","h~bucket","h~viking","h~space","h~goldcrown","h~flamecrown","f~round","f~shades","f~star","f~heart","f~monocle","f~goggles","f~sandgog","f~d3","f~stache","f~sparkle","f~snorkel","f~sgf0","f~sgf1","f~sgf2","f~sgf3","f~tape","f~nerd","f~visor","f~diamond","n~bowtie","n~scarf","n~tie","n~bandana","n~vine","n~medal","n~lei","n~badge","n~vampire","n~heartbow","n~earth","n~sgn0","n~sgn1","n~sgn2","n~sgn3","n~ribbon","t~pager","t~bookworm","t~finisher","t~explorer","t~bronze","t~owl","t~bird","t~sunday","t~keeper","t~silver","t~shelf","t~hunter","t~gold","t~marathon","t~agent","t~platinum","t~warden","t~emerald","t~diamond","t~hundred","t~champ","t~t1","t~t2","t~t3","t~t4","t~tc0","t~tc1","t~tc2","t~tc3","t~trail","t~lkeeper","t~survivor","t~wander","t~caretaker","t~ta30","t~ta100","t~ta365","c~parchment","c~butter","c~mint","c~sky","c~rose","c~lavender","c~newsprint","c~sunset","c~matcha","c~bubblegum","c~midnight","c~forest","c~slate","c~coffee","c~ocean","c~grape","c~terminal","c~frontier","c~overgrown","c~noir","c~synthwave","c~season","c~autumn","c~winter","c~spring","c~summer","c~pumpkin","c~spooky","c~harvest","c~snowfall","c~fireworks","c~valentine","c~blossom","c~earthday","c~beach","c~stem","c~aurora","c~neon","c~goldleaf","c~fog","c~cosmos","c~deepsea","c~peaks","c~city","c~campfire","c~clouds","c~dunes","c~harbor","c~lodge","c~sandsea","c~reclaimed","c~plains","c~rain","c~nlake","c~cherry","c~ember","c~ringed","c~maple","c~lavender2","c~hollow","c~palms","c~lanterns","c~alley","c~pixel","c~manor","c~falls","c~glacier","c~nebula","c~bamboo","c~reef","c~savanna","c~morning","c~storm","c~castle","c~study","c~balloons","c~koi","c~sunflower","c~fsteps","c~rising","c~twist","c~final","i~gold","i~diamond","i~a-blue","i~a-green","i~a-orange","i~a-purple","i~a-pink","i~a-teal","i~fern","i~hat","i~moth","i~stag","i~flame","i~owl","i~ghost","a~coral","a~sky","a~lime","a~rose","a~teal","a~tangerine","a~ice","a~lavender","a~gold","a~magenta","a~navy","a~mint","a~crimson","a~chrome","a~violet","a~bronze","a~shadow","a~midnight","a~sunset","a~rainbow","a~galaxy","a~saA0","a~saA1","a~saA2","a~saA3","a~saB0","a~saB1","a~saB2","a~saB3","a~saC0","a~saC1","a~saC2","a~saC3","y~kcopper","y~gold","y~kbronze","y~mint","y~brass","y~rose","y~seaglass","y~ksilver","y~galaxy","y~ocean","y~lava","y~moss","y~kgold","y~fire","y~dsun","y~kplat","y~rainbow","y~holo","y~neon","y~frost","y~kemer","y~sparkle","y~kdiam","y~kchamp","y~sfA0","y~sfA1","y~sfA2","y~sfA3","y~sfB0","y~sfB1","y~sfB2","y~sfB3","p~kcopper","p~line","p~ticket","p~kbronze","p~double","p~wanted","p~dotted","p~lantern","p~ksilver","p~gold","p~leafy","p~kgold","p~pixel","p~ribbon","p~dune","p~kplat","p~corners","p~frost","p~kemer","p~neon","p~banner","p~kdiam","p~kchamp","p~spA0","p~spA1","p~spA2","p~spA3","p~spB0","p~spB1","p~spB2","p~spB3","p~spC0","p~spC1","p~spC2","p~spC3","s~kbronze","s~horseshoe","s~flame","s~ksilver","s~anchor","s~book","s~kgold","s~ivy","s~kplat","s~dsun","s~star","s~kemer","s~flake","s~kdiam","s~kchamp","s~e_patch","s~e_spooky","s~e_thanks","s~e_snow","s~e_fresh","s~e_hearts","s~e_bloom","s~e_earth","s~e_summer","s~s1","s~s2","s~s3","s~s4","s~stB0","s~stB1","s~stB2","s~stB3","s~h_lunch","s~h_after","s~h_bed","s~h_holiday","k~blue","k~green","k~orange","k~purple","k~pink","t~pt1","t~pt2","t~pt3","t~pt4","t~pt5","t~pt6","t~speedread","t~marathoner"],"math":["h~h_u1","h~h_u2","h~h_u3","h~h_u4","h~h_u5","h~h_u6","h~h_u7","h~h_u7_5","h~h_u8","h~h_u9","h~h_u10","h~grad","h~crown","h~pi","h~e_witch","h~e_acorn","h~e_beanie","h~e_hearts","h~e_bloom","h~sh1","h~sh2","h~sh3","h~sh4","t~cadet","t~recruit","t~specialist","t~veteran","t~elite","t~legend","t~champion","t~unstoppable","t~solver","t~shifter","t~hunter","t~sniper","t~breaker","t~phantom","t~operator","t~prodigy","t~architect","t~detective","t~halfway","t~fullclear","t~grandmaster","t~pilot","t~ninja","t~rocketsci","t~brainiac","t~mathlete","t~pipion","t~whiz","t~calc","t~wizard","t~nolie","t~triple","t~lucky","t~ninelives","t~halloween_m1","t~halloween_s2","t~thanksgiving_m1","t~thanksgiving_s2","t~winter_m1","t~winter_s2","t~piday_m1","t~piday_s2","t~spring_m1","t~spring_s2","t~streaker","t~flame14","t~ironwill","t~zone","t~chall1","t~chall3","t~chall6","t~crusher","t~k1","t~machine","t~sleuth","t~casecracker","t~mastermind","t~bx_cruncher","t~bx_pencil","t~bx_gains","t~bx_whisper","t~bx_prime","t~bx_golden","t~bx_hyp","t~bx_inf","t~bx_unsolv","t~qp15","t~qp25","t~qp35","t~ls15","t~ls30","t~ls50","t~rk3","t~rk6","t~rk10","t~boss1","t~boss4","t~boss10","t~dn5","t~dn20","t~ti_s1","t~ti_s2","t~ti_s3","t~ti_s4","t~ti_w3","t~ti_w9","t~ti_w15","t~ti_w21","t~ti_w27","t~ti_w33","c~sunset","c~mint","c~rose","c~matcha","c~butter","c~newsprint","c~bubblegum","c~sky","c~lavender","c~parchment","c~midnight","c~frontier","c~noir","c~terminal","c~overgrown","c~coffee","c~synthwave","c~forest","c~ocean","c~grape","c~slate","c~winter","c~spring","c~autumn","c~summer","c~season","c~falls","c~stem","c~aurora","c~valentine","c~neon","c~goldleaf","c~earthday","c~prism","c~pumpkin","c~spooky","c~witching","c~harvest","c~cider","c~cranberry","c~snowfall","c~frost","c~evergreen","c~fireworks","c~blueberry","c~midnightpi","c~blossom","c~beach","c~meadow","c~bx_bubble","c~bx_mango","c~bx_aurora","c~bx_royal","c~bx_molten","c~m_sea1","c~m_sea2","c~m_sea3","c~m_sea4","c~th_s1","c~th_s2","c~th_s3","c~th_s4","c~m_balance","c~m_mirror","c~m_rails","c~m_slope","c~m_factory","c~m_cross","c~m_trend","c~m_launch","c~m_pyramid","c~m_vault","c~m_sails","c~m_blueprint","c~m_fractal","c~m_spiral","c~m_pimoon","c~m_honey","c~m_bridge","c~m_neon","c~m_sine","c~m_lowpoly","c~m_circuit","c~m_snow","c~m_planes","c~m_observe","c~m_tangram","a~ac_ice","a~ac_mint","a~ac_rose","a~ac_gold","a~ac_violet","a~ac_shadow","a~ac_rainbow","a~ac_s1","a~ac_s2","a~ac_s3","a~ac_s4","a~ag_s1","a~ag_s2","a~ag_s3","a~ag_s4","a~ac_w4","a~ac_w10","a~ac_w16","a~ac_w22","a~ac_w28","a~ac_w34","y~nf_gold","y~nf_rose","y~nf_ocean","y~nf_fire","y~nf_rainbow","y~nf_neon","y~nf_sparkle","y~nf_s1","y~nf_s2","y~nf_s3","y~nf_s4","y~nf_w2","y~nf_w8","y~nf_w14","y~nf_w20","y~nf_w26","y~nf_w32","p~pf_line","p~pf_double","p~pf_dotted","p~pf_gold","p~pf_ribbon","p~pf_corners","p~pf_neon","p~pf_s1","p~pf_s2","p~pf_s3","p~pf_s4","p~pf_w6","p~pf_w12","p~pf_w18","p~pf_w24","p~pf_w30","p~pf_w36","s~st_flame","s~st_star","s~st_bolt","s~st_heart","s~st_robot","s~st_boss","s~st_e_patch","s~st_e_spooky","s~st_e_thanks","s~st_e_snow","s~st_e_fresh","s~st_e_hearts","s~st_e_piday","s~st_e_bloom","s~st_e_earth","s~st_e_summer","s~st_s1","s~st_s2","s~st_s3","s~st_s4","s~st_w1","s~st_w7","s~st_w13","s~st_w19","s~st_w25","s~st_w31","s~st_w37","k~a_blue","k~a_green","k~a_orange","k~a_purple","k~a_pink","k~orange","k~master","k~sunset","k~aqua","k~halloween_m3","k~halloween_s3","k~thanksgiving_m3","k~thanksgiving_s3","k~winter_m3","k~winter_s3","k~piday_m3","k~piday_s3","k~spring_m3","k~spring_s3","k~sunrise","k~seafoam","k~plum","k~slate","k~honey","k~cherry","k~noir","k~qpgold","k~lsred","t~sb1","t~sb2","t~sb3","t~sb4","t~sb5","t~sb6","t~pyth","t~angle","t~transformer","t~funcfiend","t~zeromiss","t~comeback","t~nightshift","t~weekend","t~ooo","t~integer","t~firsttry","t~speed","t~tower","t~collector","y~mn_chalk","y~mn_goldleaf","y~mn_holo","y~mn_rain","y~mn_ink","y~mn_neon","p~mf_graph","p~mf_chalk","p~mf_blue","p~mf_neon","p~mf_golden","p~mf_pixel","s~ms_protractor","s~ms_compass","s~ms_pi","s~ms_infinity","s~ms_pythag","s~ms_shell","s~ms_dice","s~ms_calc","s~ms_graph","s~ms_u1","s~ms_u2","s~ms_u3","s~ms_u4","s~ms_u5","s~ms_u6","s~ms_u7","s~ms_u8","s~ms_u9","s~ms_u10"]};
+  var KEYS = {"read":["h~cap","h~tophat","h~cowboy","h~chef","h~souwester","h~pirate","h~wizard","h~headph","h~crown","h~bellhop","h~halo","h~pumpkin","h~leafcrown","h~earmuffs","h~flowers","h~sgh0","h~sgh1","h~sgh2","h~sgh3","h~sgc0","h~sgc1","h~sgc2","h~sgc3","h~bdayhat","h~bucket","h~viking","h~space","h~goldcrown","h~flamecrown","f~round","f~shades","f~star","f~heart","f~monocle","f~goggles","f~sandgog","f~d3","f~stache","f~sparkle","f~snorkel","f~sgf0","f~sgf1","f~sgf2","f~sgf3","f~tape","f~nerd","f~visor","f~diamond","n~bowtie","n~scarf","n~tie","n~bandana","n~vine","n~medal","n~lei","n~badge","n~vampire","n~heartbow","n~earth","n~sgn0","n~sgn1","n~sgn2","n~sgn3","n~ribbon","t~pager","t~bookworm","t~finisher","t~explorer","t~bronze","t~owl","t~bird","t~sunday","t~keeper","t~silver","t~shelf","t~hunter","t~gold","t~marathon","t~agent","t~platinum","t~warden","t~emerald","t~diamond","t~hundred","t~champ","t~t1","t~t2","t~t3","t~t4","t~tc0","t~tc1","t~tc2","t~tc3","t~trail","t~lkeeper","t~survivor","t~wander","t~caretaker","t~ta30","t~ta100","t~ta365","c~parchment","c~butter","c~mint","c~sky","c~rose","c~lavender","c~newsprint","c~sunset","c~matcha","c~bubblegum","c~midnight","c~forest","c~slate","c~coffee","c~ocean","c~grape","c~terminal","c~frontier","c~overgrown","c~noir","c~synthwave","c~season","c~autumn","c~winter","c~spring","c~summer","c~pumpkin","c~spooky","c~harvest","c~snowfall","c~fireworks","c~valentine","c~blossom","c~earthday","c~beach","c~stem","c~aurora","c~neon","c~goldleaf","c~fog","c~cosmos","c~deepsea","c~peaks","c~city","c~campfire","c~clouds","c~dunes","c~harbor","c~lodge","c~sandsea","c~reclaimed","c~plains","c~rain","c~nlake","c~cherry","c~ember","c~ringed","c~maple","c~lavender2","c~hollow","c~palms","c~lanterns","c~alley","c~pixel","c~manor","c~falls","c~glacier","c~nebula","c~bamboo","c~reef","c~savanna","c~morning","c~storm","c~castle","c~study","c~balloons","c~koi","c~sunflower","c~fsteps","c~rising","c~twist","c~final","i~gold","i~diamond","i~a-blue","i~a-green","i~a-orange","i~a-purple","i~a-pink","i~a-teal","i~fern","i~hat","i~moth","i~stag","i~flame","i~owl","i~ghost","a~coral","a~sky","a~lime","a~rose","a~teal","a~tangerine","a~ice","a~lavender","a~gold","a~magenta","a~navy","a~mint","a~crimson","a~chrome","a~violet","a~bronze","a~shadow","a~midnight","a~sunset","a~rainbow","a~galaxy","a~saA0","a~saA1","a~saA2","a~saA3","a~saB0","a~saB1","a~saB2","a~saB3","a~saC0","a~saC1","a~saC2","a~saC3","y~kcopper","y~gold","y~kbronze","y~mint","y~brass","y~rose","y~seaglass","y~ksilver","y~galaxy","y~ocean","y~lava","y~moss","y~kgold","y~fire","y~dsun","y~kplat","y~rainbow","y~holo","y~neon","y~frost","y~kemer","y~sparkle","y~kdiam","y~kchamp","y~sfA0","y~sfA1","y~sfA2","y~sfA3","y~sfB0","y~sfB1","y~sfB2","y~sfB3","p~kcopper","p~line","p~ticket","p~kbronze","p~double","p~wanted","p~dotted","p~lantern","p~ksilver","p~gold","p~leafy","p~kgold","p~pixel","p~ribbon","p~dune","p~kplat","p~corners","p~frost","p~kemer","p~neon","p~banner","p~kdiam","p~kchamp","p~spA0","p~spA1","p~spA2","p~spA3","p~spB0","p~spB1","p~spB2","p~spB3","p~spC0","p~spC1","p~spC2","p~spC3","s~kbronze","s~horseshoe","s~flame","s~ksilver","s~anchor","s~book","s~kgold","s~ivy","s~kplat","s~dsun","s~star","s~kemer","s~flake","s~kdiam","s~kchamp","s~e_patch","s~e_spooky","s~e_thanks","s~e_snow","s~e_fresh","s~e_hearts","s~e_bloom","s~e_earth","s~e_summer","s~s1","s~s2","s~s3","s~s4","s~stB0","s~stB1","s~stB2","s~stB3","s~h_lunch","s~h_after","s~h_bed","s~h_holiday","k~blue","k~green","k~orange","k~purple","k~pink","t~pt1","t~pt2","t~pt3","t~pt4","t~pt5","t~pt6","t~speedread","t~marathoner","b~b_shelves","b~b_night","b~b_fire","b~b_rain","b~b_ocean","b~b_map","e~fx_check","e~fx_ripple","e~fx_pages","e~fx_stars"],"math":["h~h_u1","h~h_u2","h~h_u3","h~h_u4","h~h_u5","h~h_u6","h~h_u7","h~h_u7_5","h~h_u8","h~h_u9","h~h_u10","h~grad","h~crown","h~pi","h~e_witch","h~e_acorn","h~e_beanie","h~e_hearts","h~e_bloom","h~sh1","h~sh2","h~sh3","h~sh4","t~cadet","t~recruit","t~specialist","t~veteran","t~elite","t~legend","t~champion","t~unstoppable","t~solver","t~shifter","t~hunter","t~sniper","t~breaker","t~phantom","t~operator","t~prodigy","t~architect","t~detective","t~halfway","t~fullclear","t~grandmaster","t~pilot","t~ninja","t~rocketsci","t~brainiac","t~mathlete","t~pipion","t~whiz","t~calc","t~wizard","t~nolie","t~triple","t~lucky","t~ninelives","t~halloween_m1","t~halloween_s2","t~thanksgiving_m1","t~thanksgiving_s2","t~winter_m1","t~winter_s2","t~piday_m1","t~piday_s2","t~spring_m1","t~spring_s2","t~streaker","t~flame14","t~ironwill","t~zone","t~chall1","t~chall3","t~chall6","t~crusher","t~k1","t~machine","t~sleuth","t~casecracker","t~mastermind","t~bx_cruncher","t~bx_pencil","t~bx_gains","t~bx_whisper","t~bx_prime","t~bx_golden","t~bx_hyp","t~bx_inf","t~bx_unsolv","t~qp15","t~qp25","t~qp35","t~ls15","t~ls30","t~ls50","t~rk3","t~rk6","t~rk10","t~boss1","t~boss4","t~boss10","t~dn5","t~dn20","t~ti_s1","t~ti_s2","t~ti_s3","t~ti_s4","t~ti_w3","t~ti_w9","t~ti_w15","t~ti_w21","t~ti_w27","t~ti_w33","c~sunset","c~mint","c~rose","c~matcha","c~butter","c~newsprint","c~bubblegum","c~sky","c~lavender","c~parchment","c~midnight","c~frontier","c~noir","c~terminal","c~overgrown","c~coffee","c~synthwave","c~forest","c~ocean","c~grape","c~slate","c~winter","c~spring","c~autumn","c~summer","c~season","c~falls","c~stem","c~aurora","c~valentine","c~neon","c~goldleaf","c~earthday","c~prism","c~pumpkin","c~spooky","c~witching","c~harvest","c~cider","c~cranberry","c~snowfall","c~frost","c~evergreen","c~fireworks","c~blueberry","c~midnightpi","c~blossom","c~beach","c~meadow","c~bx_bubble","c~bx_mango","c~bx_aurora","c~bx_royal","c~bx_molten","c~m_sea1","c~m_sea2","c~m_sea3","c~m_sea4","c~th_s1","c~th_s2","c~th_s3","c~th_s4","c~m_balance","c~m_mirror","c~m_rails","c~m_slope","c~m_factory","c~m_cross","c~m_trend","c~m_launch","c~m_pyramid","c~m_vault","c~m_sails","c~m_blueprint","c~m_fractal","c~m_spiral","c~m_pimoon","c~m_honey","c~m_bridge","c~m_neon","c~m_sine","c~m_lowpoly","c~m_circuit","c~m_snow","c~m_planes","c~m_observe","c~m_tangram","a~ac_ice","a~ac_mint","a~ac_rose","a~ac_gold","a~ac_violet","a~ac_shadow","a~ac_rainbow","a~ac_s1","a~ac_s2","a~ac_s3","a~ac_s4","a~ag_s1","a~ag_s2","a~ag_s3","a~ag_s4","a~ac_w4","a~ac_w10","a~ac_w16","a~ac_w22","a~ac_w28","a~ac_w34","y~nf_gold","y~nf_rose","y~nf_ocean","y~nf_fire","y~nf_rainbow","y~nf_neon","y~nf_sparkle","y~nf_s1","y~nf_s2","y~nf_s3","y~nf_s4","y~nf_w2","y~nf_w8","y~nf_w14","y~nf_w20","y~nf_w26","y~nf_w32","p~pf_line","p~pf_double","p~pf_dotted","p~pf_gold","p~pf_ribbon","p~pf_corners","p~pf_neon","p~pf_s1","p~pf_s2","p~pf_s3","p~pf_s4","p~pf_w6","p~pf_w12","p~pf_w18","p~pf_w24","p~pf_w30","p~pf_w36","s~st_flame","s~st_star","s~st_bolt","s~st_heart","s~st_robot","s~st_boss","s~st_e_patch","s~st_e_spooky","s~st_e_thanks","s~st_e_snow","s~st_e_fresh","s~st_e_hearts","s~st_e_piday","s~st_e_bloom","s~st_e_earth","s~st_e_summer","s~st_s1","s~st_s2","s~st_s3","s~st_s4","s~st_w1","s~st_w7","s~st_w13","s~st_w19","s~st_w25","s~st_w31","s~st_w37","k~a_blue","k~a_green","k~a_orange","k~a_purple","k~a_pink","k~orange","k~master","k~sunset","k~aqua","k~halloween_m3","k~halloween_s3","k~thanksgiving_m3","k~thanksgiving_s3","k~winter_m3","k~winter_s3","k~piday_m3","k~piday_s3","k~spring_m3","k~spring_s3","k~sunrise","k~seafoam","k~plum","k~slate","k~honey","k~cherry","k~noir","k~qpgold","k~lsred","t~sb1","t~sb2","t~sb3","t~sb4","t~sb5","t~sb6","t~pyth","t~angle","t~transformer","t~funcfiend","t~zeromiss","t~comeback","t~nightshift","t~weekend","t~ooo","t~integer","t~firsttry","t~speed","t~tower","t~collector","y~mn_chalk","y~mn_goldleaf","y~mn_holo","y~mn_rain","y~mn_ink","y~mn_neon","p~mf_graph","p~mf_chalk","p~mf_blue","p~mf_neon","p~mf_golden","p~mf_pixel","s~ms_protractor","s~ms_compass","s~ms_pi","s~ms_infinity","s~ms_pythag","s~ms_shell","s~ms_dice","s~ms_calc","s~ms_graph","s~ms_u1","s~ms_u2","s~ms_u3","s~ms_u4","s~ms_u5","s~ms_u6","s~ms_u7","s~ms_u8","s~ms_u9","s~ms_u10","b~b_chalk","b~b_graph","b~b_blue","b~b_galaxy","b~b_sunset","b~b_spiral","e~fx_sparkle","e~fx_shapes","e~fx_numbers","e~fx_pi"]};
   // Home screen icons live on the Reading site; every site uses the student's pick.
   var ICONS = {"classic":"apple-touch-icon.png","cream":"ico-cream.png","coral":"ico-coral.png","robot":"ico-robot.png","gold":"ico-gold.png","diamond":"ico-diamond.png","a-blue":"ico-a-blue.png","a-green":"ico-a-green.png","a-orange":"ico-a-orange.png","a-purple":"ico-a-purple.png","a-pink":"ico-a-pink.png","a-teal":"ico-a-teal.png","fern":"ico-fern.png","hat":"ico-hat.png","moth":"ico-moth.png","stag":"ico-stag.png","flame":"ico-flame.png","owl":"ico-owl.png","ghost":"ico-ghost.png"}, ICON_BASE = 'https://learnwithatom.org/read/';
   var MPOOL = {"read":{"min10":"Read for 10 minutes","min20":"Read for 20 minutes","w1500":"Read 1,500 words","goal":"Hit your daily reading goal","chap":"Finish a chapter","run3":"Read 3 minutes without pausing","define":"Look up a word with Define","two":"Read from 2 different books","bm":"Bookmark a spot in a book","hear":"Hear how a word sounds"},"math":{"major":"Get 10 right on core skills","correct":"Get 15 answers right","streak":"Hit a 5-answer streak","rapid":"Score 12+ in one Quick Play","surv":"Reach 8 in one Tower Run run","units":"Practice in 2 different units","clean":"Get 8 right with no hints"}};   // daily mission text for each app: {read:{id:text}, math:{id:text}}
@@ -1811,7 +1811,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st', 'bn', 'ef'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -10232,7 +10232,7 @@ window.AtomStatLooks = (function () {
       if (ch) { try { applyExtras(); renderExtras(); } catch (e) {} } return ch; }
   };
   /* Celebration, sound and stats look: each app has its own versions; picking one picks its partner in the other app */
-  { const PK = { ce: "conf", sd: "chime", st: "stat" }, GR = {};
+  { const PK = { ce: "conf", sd: "chime", st: "stat", bn: "ncard", ef: "afx" }, GR = {};
     const lm1 = lockMsg; lockMsg = function (kind, id) { for (const f in PK) if (PK[f] === kind && id && GR[f] === id) return ""; return lm1(kind, id); };
     const A = window.__atomLook, m0 = A.mine, t0 = A.take;
     A.mine = () => { const o = m0(); Object.entries(PK).forEach(([f, k]) => { const v = L.pairOut && L.pairOut(f, "read", xGet(k) || ""); if (v) o[f] = v; }); return o; };
@@ -10536,6 +10536,153 @@ window.AtomStatLooks = (function () {
     return xt0.apply(this, arguments);
   };
   try { applyLockUI(); renderExtras(); } catch (e) {}
+})();
+
+/* ===================== Atom name cards and answer effects (shared by Reading, Math and learnwithatom.org) =====================
+   Name card: art behind your name on the home screen and in Rewards.
+   Effects: a burst that plays when you get a question right (Math) or hit a goal (Reading).
+   Same ids everywhere. Each item is earned in one app and can be used in all three. */
+window.AtomFX = (function () {
+  const U = s => `url("data:image/svg+xml,${encodeURIComponent(s.replace(/\s+/g, " "))}")`;
+  const V = (inner, vb) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb || "0 0 400 120"}" preserveAspectRatio="xMidYMid slice">${inner}</svg>`;
+  const R = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join("");
+  const STARS = (n, w, h, seed) => R(n, i => `<circle cx="${(i * 73 + seed) % w}" cy="${(i * 131 + seed * 3) % h}" r="${((i * 7) % 4) * .35 + .45}" fill="#fff" opacity="${(.35 + (i % 5) / 8).toFixed(2)}"/>`);
+
+  /* [id, name, app, req, background, ink, muted, border] — req: a Math requirement, or a Reading level */
+  const BANNERS = [
+    ["b_chalk", "Chalkboard", "math", "Bronze I",
+      `${U(V(`<g font-family="Chalkboard SE,Bradley Hand,cursive" fill="#f4f0e2" fill-opacity=".13" font-size="20"><text x="12" y="34">a²+b²=c²</text><text x="250" y="30">y = mx + b</text><text x="150" y="80">π r²</text><text x="300" y="104">∠A = 90°</text><text x="26" y="104">3x − 7 = 11</text></g>`))},radial-gradient(ellipse 60% 80% at 25% 30%,rgba(255,255,255,.1),transparent 70%),linear-gradient(#26402f,#1d3326)`,
+      "#f4f0e2", "#c9cdb8", "4px solid #7a4f26"],
+    ["b_graph", "Graph Paper", "math", "Bronze IV",
+      `${U(V(`<path d="M20 100Q120 96 190 60T380 14" fill="none" stroke="#e8513a" stroke-width="3" stroke-linecap="round" opacity=".55"/><g fill="#2c5aa0" opacity=".55"><circle cx="120" cy="90" r="4"/><circle cx="250" cy="44" r="4"/></g>`))},linear-gradient(rgba(44,90,160,.2) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(44,90,160,.2) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(rgba(44,90,160,.08) 1px,transparent 1px) 0 0/6px 6px,linear-gradient(90deg,rgba(44,90,160,.08) 1px,transparent 1px) 0 0/6px 6px,#fbfdff`,
+      "#16233d", "#4a5b7a", "1.5px solid #2c5aa0"],
+    ["b_blue", "Blueprint", "math", "Silver III",
+      `${U(V(`<g fill="none" stroke="#dff3ff" stroke-opacity=".35" stroke-width="1.4"><circle cx="330" cy="60" r="44"/><circle cx="330" cy="60" r="28" stroke-dasharray="4 4"/><path d="M286 60h88M330 16v88M300 30l60 60"/><path d="M30 96h140M30 96V40l140 56" /></g>`))},linear-gradient(rgba(190,225,255,.16) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(90deg,rgba(190,225,255,.16) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(135deg,#123a80,#0b2558)`,
+      "#eaf6ff", "#a9c7ee", "1.5px solid rgba(190,225,255,.6)"],
+    ["b_galaxy", "Galaxy", "math", "Gold II",
+      `${U(V(STARS(70, 400, 120, 11) + `<circle cx="340" cy="30" r="2.2" fill="#fff"/><circle cx="340" cy="30" r="7" fill="#c7b8ff" opacity=".25"/>`))},radial-gradient(ellipse 50% 90% at 75% 40%,rgba(255,106,213,.35),transparent 70%),radial-gradient(ellipse 60% 100% at 20% 80%,rgba(95,157,255,.35),transparent 70%),linear-gradient(135deg,#150826,#0b0f2e)`,
+      "#ffffff", "#cfc3f0", "1px solid rgba(199,184,255,.4)"],
+    ["b_sunset", "Sunset Grid", "math", "Platinum III",
+      `linear-gradient(transparent 58%,rgba(255,62,165,.0) 58%),repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,62,165,.55) 38px 40px) 0 100%/100% 42% no-repeat,repeating-linear-gradient(transparent 0 9px,rgba(255,62,165,.55) 9px 11px) 0 100%/100% 42% no-repeat,radial-gradient(circle 44px at 78% 58%,#ffd166 0 40%,#ff7a3e 70%,transparent 72%),linear-gradient(#2a0a52 0%,#7a1f6e 55%,#12052a 58%)`,
+      "#ffffff", "#ffc6e8", "1.5px solid #ff3ea5"],
+    ["b_spiral", "Golden Spiral", "math", "Diamond III",
+      `${U(V(`<g fill="none" stroke="#e0b13a" stroke-opacity=".55" stroke-width="1.6"><rect x="150" y="2" width="245" height="116"/><path d="M297 2v116M297 79h98M358 79v39M297 98h61"/><path d="M297 118A116 116 0 0 1 181 2M297 2A79 79 0 0 1 376 79M376 79A39 39 0 0 1 337 118"/></g>`))},radial-gradient(ellipse 70% 120% at 80% 50%,rgba(224,177,58,.22),transparent 70%),linear-gradient(135deg,#19150d,#0e0c08)`,
+      "#fbf1d8", "#cdb98a", "2px solid #b8860b"],
+    ["b_shelves", "Library Shelves", "read", 4,
+      `${U(V(R(2, r => `<rect x="0" y="${r * 60 + 52}" width="400" height="8" fill="#4a2c14"/>` + R(26, i => { const h = 30 + ((i * 7 + r * 5) % 16), w = 9 + ((i * 3 + r) % 7), x = i * 16 + (r * 5) % 9; const c = ["#b8322a", "#2b5d7a", "#c9962a", "#4f7d3a", "#7a3db8", "#c4561f", "#1f6f78"][(i + r * 3) % 7]; return `<rect x="${x}" y="${r * 60 + 52 - h}" width="${w}" height="${h}" rx="1.5" fill="${c}" opacity=".8"/><rect x="${x}" y="${r * 60 + 52 - h + 6}" width="${w}" height="2" fill="#f2c230" opacity=".5"/>`; }))))},linear-gradient(rgba(20,10,4,.55),rgba(20,10,4,.75)),#3a2312`,
+      "#fff6e6", "#e6cfa8", "2px solid #7a4f26"],
+    ["b_night", "Starry Night", "read", 8,
+      `${U(V(STARS(60, 400, 120, 5) + `<circle cx="352" cy="34" r="18" fill="#fff4c4"/><circle cx="360" cy="28" r="16" fill="#1a2350"/>`))},radial-gradient(ellipse 80% 60% at 50% 120%,rgba(95,157,255,.35),transparent 70%),linear-gradient(#0b1030,#1a2350)`,
+      "#ffffff", "#b9c3f0", "1px solid rgba(185,195,240,.35)"],
+    ["b_fire", "Cozy Fireplace", "read", 14,
+      `${U(V(R(10, i => `<circle cx="${30 + i * 38}" cy="${100 - (i * 17) % 50}" r="${1 + (i % 3) * .6}" fill="#ffb703" opacity=".7"/>`)))},radial-gradient(ellipse 70% 70% at 50% 130%,rgba(255,122,30,.75),rgba(200,60,10,.35) 45%,transparent 75%),linear-gradient(#2a140a,#160a05)`,
+      "#fff1dc", "#f2c08a", "2px solid #7a3a14"],
+    ["b_rain", "Rainy Window", "read", 20,
+      `${U(V(R(40, i => `<path d="M${(i * 41) % 400} ${(i * 29) % 120}l-4 14" stroke="#cfe8ff" stroke-opacity="${(.2 + (i % 4) / 10).toFixed(2)}" stroke-width="1.2" stroke-linecap="round"/>`) + R(12, i => `<circle cx="${(i * 67) % 400}" cy="${(i * 53) % 120}" r="${2 + i % 3}" fill="#e6f3ff" opacity=".22"/>`)))},radial-gradient(ellipse 50% 70% at 20% 30%,rgba(255,214,140,.25),transparent 70%),linear-gradient(#3a4a5c,#1e2a38)`,
+      "#f2f7ff", "#c2d0e0", "1px solid rgba(207,232,255,.35)"],
+    ["b_ocean", "Ocean Horizon", "read", 26,
+      `linear-gradient(transparent 58%,rgba(255,214,140,.45) 58% 59%,transparent 59%),radial-gradient(ellipse 12% 40% at 72% 62%,rgba(255,230,160,.7),transparent 70%),radial-gradient(circle 26px at 72% 52%,#ffe6a0,#ffb36b 60%,transparent 64%),linear-gradient(#ff9a6b 0%,#f2687a 35%,#6a4a9a 57%,#1b4f7a 59%,#0b2a4a 100%)`,
+      "#ffffff", "#ffe2cf", "1px solid rgba(255,214,180,.5)"],
+    ["b_map", "Old Map", "read", 32,
+      `${U(V(`<path d="M20 96C80 70 110 104 170 76S270 30 330 52" fill="none" stroke="#8a3a1c" stroke-width="2.2" stroke-dasharray="6 6" opacity=".7"/><path d="M322 44l14 14M336 44l-14 14" stroke="#b8322a" stroke-width="3.2" stroke-linecap="round"/><g transform="translate(372 24)" opacity=".75"><circle r="14" fill="none" stroke="#5a3a1c" stroke-width="1.2"/><path d="M0-14L3 0 0 14-3 0Z" fill="#5a3a1c"/></g>`))},radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(120,80,30,.35)),linear-gradient(135deg,#f3e2b8,#e2c88e)`,
+      "#3b2510", "#6e5232", "2px solid #9a7440"]
+  ];
+
+  /* [id, name, app, req, icon] */
+  const EFFECTS = [
+    ["fx_sparkle", "Sparkle Burst", "math", "Bronze I", "✦"],
+    ["fx_shapes", "Shape Pop", "math", "Silver I", "▲"],
+    ["fx_numbers", "Number Confetti", "math", "Gold I", "7"],
+    ["fx_pi", "Pi Swirl", "math", "Units 5", "π"],
+    ["fx_check", "Check Stamp", "read", 6, "✓"],
+    ["fx_ripple", "Ding Ripple", "read", 12, "◎"],
+    ["fx_pages", "Page Flip", "read", 18, "❐"],
+    ["fx_stars", "Star Shower", "read", 24, "★"]
+  ];
+
+  const NC = ":is(#rwPv,#pvCard,#app .greetrow,#library .greetrow,.who)";
+  const css = [
+    `:root[data-ncard]:not([data-ncard=""]):not([data-ncard="none"]) ${NC}{padding:12px 14px!important;border-radius:18px!important;background-size:cover!important;background-position:center!important;box-shadow:0 10px 26px -14px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12)!important;position:relative}`,
+    `:root[data-ncard]:not([data-ncard=""]):not([data-ncard="none"]) #app .greetrow::before{display:none!important}`,
+    `:root[data-ncard]:not([data-ncard=""]):not([data-ncard="none"]) .greetrow .mini{color:var(--ink)!important}`,
+    `:root[data-ncard]:not([data-ncard=""]):not([data-ncard="none"]) :is(#app .greetrow,#library .greetrow) :is(.greet,.titleline,.fine,h1,h2){text-shadow:0 1px 2px rgba(0,0,0,.35)}`
+  ];
+  BANNERS.forEach(([id, , , , bg, ink, muted, border]) => css.push(`:root[data-ncard="${id}"] ${NC}{background:${bg}!important;border:${border}!important;color:${ink}!important}`,
+    `:root[data-ncard="${id}"] ${NC} :is(.greet,.pvn,.pvname,#pvGreet,.greet b,h1,.who b){color:${ink}!important}`,
+    `:root[data-ncard="${id}"] ${NC} :is(.pvk,.pvlab,.tlrest,.rp,#rwPv>.pvl>.fine,.who>.fine){color:${muted}!important}`));
+  // effects
+  css.push(`.afx{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:2147483000}`,
+    `.afx i{position:absolute;left:0;top:0;font-style:normal;font-weight:800;line-height:1;transform:translate(-50%,-50%);animation:afxBurst var(--t,.9s) cubic-bezier(.15,.7,.3,1) forwards;text-shadow:0 0 10px currentColor,0 1px 3px rgba(0,0,0,.3)}`,
+    `@keyframes afxBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--s,1)) rotate(var(--r,0deg))}}`,
+    `.afx .ring{width:26px;height:26px;border-radius:50%;border:4px solid var(--c,#3ef0ff);box-shadow:0 0 14px var(--c,#3ef0ff),inset 0 0 10px var(--c,#3ef0ff);animation:afxRing .8s ease-out forwards}`,
+    `@keyframes afxRing{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(5)}}`,
+    `.afx .stamp{font-size:72px;text-shadow:0 0 16px rgba(47,191,113,.7),0 2px 4px rgba(0,0,0,.3);color:#2fbf71;animation:afxStamp .9s cubic-bezier(.2,1.6,.4,1) forwards}`,
+    `@keyframes afxStamp{0%{opacity:0;transform:translate(-50%,-50%) scale(2.2) rotate(-18deg)}35%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-8deg)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%) scale(1) rotate(-8deg)}}`,
+    `@keyframes afxFall{0%{opacity:0;transform:translate(-50%,-50%)}10%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r))}}`,
+    `@media (prefers-reduced-motion:reduce){.afx{display:none}}`,
+    `.afxth{display:grid;place-items:center;width:100%;height:100%;font:800 24px Georgia,serif;border-radius:inherit}`);
+  const style = document.createElement("style"); style.id = "atomFxCss"; style.textContent = css.join("\n"); (document.head || document.documentElement).appendChild(style);
+
+  const PAL = { fx_sparkle: ["#ffd166", "#fff6c4", "#ffffff", "#ffb703"], fx_shapes: ["#ff5a6e", "#4ecdc4", "#ffd166", "#5a8dee", "#c77dff"], fx_numbers: ["#39ff7a", "#5fd0ff", "#ffd166", "#ff7aa8"],
+    fx_pi: ["#c77dff", "#ffd166", "#9a7bff"], fx_check: ["#2fbf71"], fx_ripple: ["#3ef0ff", "#ff3ea5"], fx_pages: ["#fffdf6", "#f2e6c8", "#e8d8b0"], fx_stars: ["#ffd166", "#fff6c4", "#c7b8ff"] };
+  let lastX = innerWidth / 2, lastY = innerHeight / 2;
+  addEventListener("pointerdown", e => { lastX = e.clientX; lastY = e.clientY; }, true);
+  function play(id, x, y) {
+    if (!id || id === "none" || !PAL[id]) return;
+    try { if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
+    x = x == null ? lastX : x; y = y == null ? lastY : y;
+    const box = document.createElement("div"); box.className = "afx"; box.style.left = x + "px"; box.style.top = y + "px";
+    const P = PAL[id], add = (txt, o) => { const i = document.createElement("i"); i.textContent = txt; Object.entries(o).forEach(([k, v]) => i.style.setProperty(k, v)); box.appendChild(i); return i; };
+    const burst = (n, glyph, size, dist) => { for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2 + Math.random() * .4, d = dist * (.6 + Math.random() * .6);
+      add(typeof glyph === "function" ? glyph(k) : glyph, { "--dx": Math.cos(a) * d + "px", "--dy": Math.sin(a) * d + "px", "--r": (Math.random() * 360 - 180) + "deg", "--s": (.7 + Math.random() * .6).toFixed(2), color: P[k % P.length], "font-size": size + "px", "--t": (.7 + Math.random() * .4).toFixed(2) + "s" }); } };
+    if (id === "fx_sparkle") burst(14, "✦", 26, 110);
+    else if (id === "fx_shapes") burst(14, k => "▲●■◆"[k % 4], 22, 115);
+    else if (id === "fx_numbers") burst(14, () => String(Math.floor(Math.random() * 10)), 24, 115);
+    else if (id === "fx_pi") { for (let k = 0; k < 7; k++) add("π", { "--dx": (Math.random() * 80 - 40) + "px", "--dy": -(60 + Math.random() * 60) + "px", "--r": (Math.random() * 120 - 60) + "deg", color: P[k % 3], "font-size": (24 + k * 3) + "px", "--t": (.8 + k * .06) + "s", "font-family": "Georgia,serif" }); }
+    else if (id === "fx_check") { const i = document.createElement("i"); i.className = "stamp"; i.textContent = "✓"; box.appendChild(i); burst(8, "•", 10, 50); }
+    else if (id === "fx_ripple") { [0, 160].forEach((d, k) => setTimeout(() => { const r = document.createElement("i"); r.className = "ring"; r.style.setProperty("--c", P[k]); box.appendChild(r); }, d)); }
+    else if (id === "fx_pages") burst(10, "▭", 28, 120);
+    else if (id === "fx_stars") { box.style.left = "0px"; box.style.top = "0px"; for (let k = 0; k < 18; k++) { const sx = Math.random() * innerWidth; add("★", { left: sx + "px", top: "-10px", "--dx": (Math.random() * 40 - 20) + "px", "--dy": (innerHeight * (.5 + Math.random() * .4)) + "px", "--r": (Math.random() * 360) + "deg", color: P[k % 3], "font-size": (12 + Math.random() * 14) + "px", "--t": (1 + Math.random() * .6).toFixed(2) + "s", animation: "afxFall var(--t) ease-in forwards", "animation-delay": (Math.random() * .3).toFixed(2) + "s" }); } }
+    document.body.appendChild(box); setTimeout(() => box.remove(), 1900);
+  }
+  const byId = id => BANNERS.find(b => b[0] === id) || EFFECTS.find(e => e[0] === id);
+  function thumb(id) {
+    const b = BANNERS.find(x => x[0] === id); if (b) return `<span class="afxth" style="background:${b[4].replace(/"/g, "'")};background-size:cover;background-position:center;color:${b[5]};font-size:12px;font-family:Georgia,serif">Name</span>`;
+    const e = EFFECTS.find(x => x[0] === id); if (e) return `<span class="afxth" style="color:${PAL[id][0]};text-shadow:0 0 8px ${PAL[id][0]}88">${e[4]}</span>`;
+    return "";
+  }
+  function setCard(id) { document.documentElement.dataset.ncard = id || ""; }
+  // the shared profile uses the same id in every app ("none" when nothing is picked)
+  if (window.AtomLocker && AtomLocker.PAIRS) {
+    AtomLocker.PAIRS.bn = [["", "none"]].concat(BANNERS.map(b => [b[0], b[0]]));
+    AtomLocker.PAIRS.ef = [["", "none"]].concat(EFFECTS.map(e => [e[0], e[0]]));
+  }
+  return { BANNERS, EFFECTS, play, thumb, setCard, byId };
+})();
+
+/* ===================== Name cards and effects in Atom Reading ===================== */
+(function () {
+  const FX = window.AtomFX, L = window.AtomLocker; if (!FX) return;
+  if (!XCATS.some(c => c.k === "ncard")) XCATS.push({ k: "ncard", label: "Name card", opts: FX.BANNERS.map(b => [b[0], b[1]]) }, { k: "afx", label: "Effects", opts: FX.EFFECTS.map(e => [e[0], e[1]]) });
+  { const g = XGROUPS.find(x => x.id === "look"); if (g && !g.keys.includes("ncard")) g.keys.push("ncard"); const s = XGROUPS.find(x => x.id === "sound"); if (s && !s.keys.includes("afx")) s.keys.push("afx"); }
+  UNLOCK.ncard = UNLOCK.ncard || {}; UNLOCK.afx = UNLOCK.afx || {}; EXTRA_SPECIAL.ncard = EXTRA_SPECIAL.ncard || {}; EXTRA_SPECIAL.afx = EXTRA_SPECIAL.afx || {};
+  const own = [];
+  [[FX.BANNERS, "ncard", "b"], [FX.EFFECTS, "afx", "e"]].forEach(([list, k, p]) => list.forEach(x => {
+    if (x[2] === "read") { UNLOCK[k][x[0]] = x[3]; own.push([k, x[0], p + "~" + x[0]]); }
+    else EXTRA_SPECIAL[k][x[0]] = { desc: "Earn it in Atom Math", test: () => !!(L && L.has("math", p + "~" + x[0])) };
+  }));
+  { const xt0 = xThumb; xThumb = function (kind, id) { if (kind === "ncard" || kind === "afx") { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.innerHTML = FX.thumb(id); return t; } return xt0.apply(this, arguments); }; }
+  const mark = () => { try { FX.setCard(xGet("ncard") || ""); } catch (e) {} };
+  { const a0 = applyExtras; applyExtras = function () { const r = a0.apply(this, arguments); mark(); return r; }; }
+  const playMine = () => { try { if (settings.motion) return; const e = xGet("afx"); if (e) FX.play(e, innerWidth / 2, innerHeight * .42); } catch (e) {} };
+  { const t0 = toastQ; toastQ = function (m) { const r = t0.apply(this, arguments); if (/^(Daily goal|Badge earned|Rank up|Weekly challenge|Event badge|Title upgrade)/.test(String(m || ""))) playMine(); return r; }; }
+  { const b = document.getElementById("pvFx"); if (b) b.addEventListener("click", playMine); }
+  // share what this app earned
+  const RK = new Set((L && L.keys && L.keys.read) || []);
+  function publish() { if (!L || isAdult()) return; const ks = own.filter(([k, id, key]) => RK.has(key) && !lockMsg(k, id)).map(x => x[2]); if (ks.length) L.unlockMany("read", ks); }
+  setTimeout(() => { try { publish(); } catch (e) {} }, 1800); setInterval(() => { try { publish(); } catch (e) {} }, 30000);
+  try { if (window.__atomLook && L) window.__atomLook.take(L.profile()); } catch (e) {}
+  mark(); try { applyLockUI(); renderExtras(); } catch (e) {}
 })();
 
 
