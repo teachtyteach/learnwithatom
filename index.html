@@ -206,7 +206,7 @@
 .ttx.lift{filter:brightness(1.9) saturate(1.1) drop-shadow(0 0 5px rgba(255,255,255,.18))}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="474db84007"></head>
+<meta name="atom-build" content="fcdea28ea9"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -919,6 +919,35 @@ window.AtomFX = (function () {
   return { BANNERS, EFFECTS, play, thumb, setCard, byId };
 })();
 </script>
+<script>/* ===================== One fly-in Atom for every app =====================
+   Whichever app draws Atom in your outfit saves one finished picture of him. Every fly-in (Home, Reading, Math)
+   shows that same picture from the first frame, so he looks the same everywhere and his gear can't come loose. */
+window.AtomFly = (function () {
+  var K = 'atom:fly', W = 396, H = 429, busy = '';
+  function key() { try { var p = window.AtomLocker.profile(); return [p.hat || '', p.fc || '', p.nk || '', p.co || ''].join('|'); } catch (e) { return null; } }
+  function get() { try { var o = JSON.parse(localStorage.getItem(K) || 'null'), k = key(); return o && k !== null && o.k === k ? o.u : ''; } catch (e) { return ''; } }
+  function store(k, u) { try { localStorage.setItem(K, JSON.stringify({ k: k, u: u })); } catch (e) {} }
+  // src is a picture of Atom drawn in the shared box (viewBox -4 -40 264 286)
+  function save(src, svgText) {
+    var k = key(); if (k === null || !src || busy === src) return; busy = src;
+    var im = new Image();
+    im.onload = function () {
+      try { var c = document.createElement('canvas'); c.width = W; c.height = H; c.getContext('2d').drawImage(im, 0, 0, W, H);
+        var u = c.toDataURL('image/webp', .9); if (u.indexOf('data:image/webp') !== 0) u = c.toDataURL('image/png');
+        if (u.length < 700000) { store(k, u); return; } } catch (e) {}
+      if (svgText && svgText.length < 700000) store(k, 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText));   // if the picture can't be flattened
+    };
+    im.src = src;
+  }
+  function use(img) {
+    var u = get(); if (!u || !img) return false;
+    img.classList.remove('mascot', 'atall'); img.removeAttribute('data-m'); img.src = u; img.classList.add('atfly');
+    img.style.scale = '1.1626'; img.style.transformOrigin = '50% 100%'; img.style.filter = 'none';
+    return true;
+  }
+  return { key: key, get: get, save: save, use: use };
+})();
+</script>
 <script>
 (function () {
   var L = window.AtomLocker; if (!L) return;
@@ -1013,6 +1042,7 @@ window.AtomFX = (function () {
     t.classList.toggle('lift', !!dark);
   }
   { var hs = document.getElementById('hsplash'), im = hs && hs.querySelector('img');   // the loading Atom wears your outfit too
+    if (im && window.AtomFly && AtomFly.use(im)) im = null;
     if (im) { var d = document.createElement('div'); d.className = 'fig'; d.style.cssText = 'position:relative;left:auto;top:auto;transform:none;width:176px;animation:hsfly .9s cubic-bezier(.2,.9,.25,1.15) both';
       try { d.innerHTML = figure(L.profile()); im.replaceWith(d); } catch (x) {} } }
   function preview() {
