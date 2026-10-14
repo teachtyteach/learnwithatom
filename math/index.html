@@ -102,7 +102,7 @@
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -174,6 +174,15 @@
   function idx(app, key) { return APPS.indexOf(app) > -1 ? KEYS[app].indexOf(String(key)) : -1; }
   function canUnlock(app) { return APPS.indexOf(app) > -1 && (!shared || hereApp === app); }
 
+  /* Settings both apps have in their own versions: [Reading id, Math id]. Picking one in either app picks its partner in the other. */
+  var PAIRS = {
+    ce: [['', 'confetti'], ['bubbles', 'bubbles'], ['stars', 'stars'], ['sparks', 'sparks'], ['suns', 'gold'], ['pixels', 'powers'], ['atoms', 'pi'], ['fireworks', 'prism'], ['leaves', ''], ['hearts', '']],
+    sd: [['coin', 'classic'], ['bell', 'soft'], ['blip', 'blip'], ['sparkle', 'space'], ['marimba', 'bell'], ['harp', 'harp']],
+    st: [['', 'none'], ['blueprint', 'm_graph'], ['ssA1', 'm_calc'], ['chalk', 'm_proof'], ['paper', 'm_protractor'], ['neon', 'm_pi'], ['ocean', 'm_fractal'], ['pixel', 'm_score'],
+         ['gold', 'm_golden'], ['terminal', 'm_matrix'], ['glass', 'm_tess'], ['stars', 'm_space'], ['ssA2', 'm_master']]
+  };
+  function pairOut(f, side, id) { var P = PAIRS[f] || [], i = side === 'read' ? 0 : 1; for (var k = 0; k < P.length; k++) if (P[k][i] === (id || '') && (id || P[k][i] === '')) return P[k][0] + ',' + P[k][1]; return null; }
+  function pairIn(f, side, v) { if (v == null) return null; var a = String(v).split(','); if (a.length !== 2) return null; return side === 'read' ? a[0] : a[1]; }
   window.AtomLocker = {
     keys: KEYS,
     isShared: shared,
@@ -229,6 +238,7 @@
 
     /* ---------- one profile ---------- */
     profile: function () { return get().p; },
+    pairOut: pairOut, pairIn: pairIn, PAIRS: PAIRS,
     // Merge changed fields in; anyone can change the profile.
     setProfile: function (part) {
       var w = get(), p = Object.assign({}, w.p), ch = false;
@@ -7533,6 +7543,17 @@ WHATS.unshift(['A new Rewards look','Rewards now looks like Atom Reading. Tap a 
       if(id==='none'){if(lkId(c)!=='none'&&LOCKER[c].items.some(i=>i[0]==='none')){S.look[c]='none';ch=true}return}
       const it=LOCKER[c].items.find(i=>i[0]===id);if(it&&unlocked(it)&&S.look[c]!==id){S.look[c]=id;ch=true}});return ch}
   };
+  /* Rank-up effect, sound pack and stats look: Atom Reading has its own versions; picking one picks its partner in the other app */
+  {const PK={ce:'celeb',sd:'sound',st:'mstat'},GR={},ORQ={};
+    const grant=(c,id)=>{const it=LOCKER[c]&&LOCKER[c].items.find(i=>i[0]===id);if(!it)return false;
+      if(GR[c]&&GR[c]!==id){const o=LOCKER[c].items.find(i=>i[0]===GR[c]);if(o&&ORQ[c]!==undefined)o[2]=ORQ[c]}
+      if(GR[c]!==id)ORQ[c]=it[2];GR[c]=id;it[2]=null;return true};
+    const A=window.__atomLook,m0=A.mine,t0=A.take;
+    A.mine=()=>{const o=m0();Object.entries(PK).forEach(([f,c])=>{if(!LOCKER[c])return;const v=L.pairOut&&L.pairOut(f,'math',lkId(c));if(v)o[f]=v});return o};
+    A.take=p=>{let ch=t0(p);Object.entries(PK).forEach(([f,c])=>{const id=L.pairIn?L.pairIn(f,'math',p[f]):null;if(!id||!LOCKER[c])return;
+        if(grant(c,id)&&S.look[c]!==id){S.look[c]=id;ch=true}});
+      if(ch){try{save();applyLook()}catch(e){}}return ch};
+  }
 
   /* ---------- one look on every page: titles, frames, name styles and stamps drawn the Atom Reading way ---------- */
   {const st=document.createElement('style');st.id='readTitleCss';st.textContent=(LK.tcss||'')+
@@ -7748,6 +7769,8 @@ WHATS.unshift(['Your look, everywhere','Hats, glasses, Atom colors, titles, name
   try { mark(); } catch (e) {}
 })();
 WHATS.unshift(['Stats looks','Restyle your Stats page: Graph paper, Calculator, Proof board, Pi day, Fractal, Scoreboard and more. Earn them by ranking up, passing unit tests and reaching Master. Find them in Rewards › Looks.']);
+/* the stats look list exists now: pick up a stats look chosen in Atom Reading */
+try { if (window.__atomLook && window.AtomLocker) window.__atomLook.take(AtomLocker.profile()); } catch (e) {}
 
 /* ===================== Reward pictures in Atom Math match Atom Reading ===================== */
 (function () {

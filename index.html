@@ -372,7 +372,7 @@
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -444,6 +444,15 @@
   function idx(app, key) { return APPS.indexOf(app) > -1 ? KEYS[app].indexOf(String(key)) : -1; }
   function canUnlock(app) { return APPS.indexOf(app) > -1 && (!shared || hereApp === app); }
 
+  /* Settings both apps have in their own versions: [Reading id, Math id]. Picking one in either app picks its partner in the other. */
+  var PAIRS = {
+    ce: [['', 'confetti'], ['bubbles', 'bubbles'], ['stars', 'stars'], ['sparks', 'sparks'], ['suns', 'gold'], ['pixels', 'powers'], ['atoms', 'pi'], ['fireworks', 'prism'], ['leaves', ''], ['hearts', '']],
+    sd: [['coin', 'classic'], ['bell', 'soft'], ['blip', 'blip'], ['sparkle', 'space'], ['marimba', 'bell'], ['harp', 'harp']],
+    st: [['', 'none'], ['blueprint', 'm_graph'], ['ssA1', 'm_calc'], ['chalk', 'm_proof'], ['paper', 'm_protractor'], ['neon', 'm_pi'], ['ocean', 'm_fractal'], ['pixel', 'm_score'],
+         ['gold', 'm_golden'], ['terminal', 'm_matrix'], ['glass', 'm_tess'], ['stars', 'm_space'], ['ssA2', 'm_master']]
+  };
+  function pairOut(f, side, id) { var P = PAIRS[f] || [], i = side === 'read' ? 0 : 1; for (var k = 0; k < P.length; k++) if (P[k][i] === (id || '') && (id || P[k][i] === '')) return P[k][0] + ',' + P[k][1]; return null; }
+  function pairIn(f, side, v) { if (v == null) return null; var a = String(v).split(','); if (a.length !== 2) return null; return side === 'read' ? a[0] : a[1]; }
   window.AtomLocker = {
     keys: KEYS,
     isShared: shared,
@@ -499,6 +508,7 @@
 
     /* ---------- one profile ---------- */
     profile: function () { return get().p; },
+    pairOut: pairOut, pairIn: pairIn, PAIRS: PAIRS,
     // Merge changed fields in; anyone can change the profile.
     setProfile: function (part) {
       var w = get(), p = Object.assign({}, w.p), ch = false;

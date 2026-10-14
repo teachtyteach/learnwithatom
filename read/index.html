@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k94ce58"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k4e77df"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -1811,7 +1811,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
     o.ic = ICONS[w.ic] ? w.ic : '';
     var p = w.p || {};
     o.p = { at: num(p.at, 9e15) };
-    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
+    ['n', 'th', 'ac', 'f', 'tk', 'hat', 'fc', 'nk', 'co', 'tl', 'nf', 'pf', 'sm', 'tf', 'ce', 'sd', 'st'].forEach(function (k) { if (p[k] != null) o.p[k] = sstr(p[k], k === 'tk' ? 70 : 30); });
     ['sp', 'so'].forEach(function (k) { if (p[k] != null) o.p[k] = p[k] ? 1 : 0; });
     o.t = num(w.t, 9e15);
     var a = w.a || {}; o.a = { d: dstr(a.d), r: a.r ? 1 : 0, m: a.m ? 1 : 0 };
@@ -1883,6 +1883,15 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
   function idx(app, key) { return APPS.indexOf(app) > -1 ? KEYS[app].indexOf(String(key)) : -1; }
   function canUnlock(app) { return APPS.indexOf(app) > -1 && (!shared || hereApp === app); }
 
+  /* Settings both apps have in their own versions: [Reading id, Math id]. Picking one in either app picks its partner in the other. */
+  var PAIRS = {
+    ce: [['', 'confetti'], ['bubbles', 'bubbles'], ['stars', 'stars'], ['sparks', 'sparks'], ['suns', 'gold'], ['pixels', 'powers'], ['atoms', 'pi'], ['fireworks', 'prism'], ['leaves', ''], ['hearts', '']],
+    sd: [['coin', 'classic'], ['bell', 'soft'], ['blip', 'blip'], ['sparkle', 'space'], ['marimba', 'bell'], ['harp', 'harp']],
+    st: [['', 'none'], ['blueprint', 'm_graph'], ['ssA1', 'm_calc'], ['chalk', 'm_proof'], ['paper', 'm_protractor'], ['neon', 'm_pi'], ['ocean', 'm_fractal'], ['pixel', 'm_score'],
+         ['gold', 'm_golden'], ['terminal', 'm_matrix'], ['glass', 'm_tess'], ['stars', 'm_space'], ['ssA2', 'm_master']]
+  };
+  function pairOut(f, side, id) { var P = PAIRS[f] || [], i = side === 'read' ? 0 : 1; for (var k = 0; k < P.length; k++) if (P[k][i] === (id || '') && (id || P[k][i] === '')) return P[k][0] + ',' + P[k][1]; return null; }
+  function pairIn(f, side, v) { if (v == null) return null; var a = String(v).split(','); if (a.length !== 2) return null; return side === 'read' ? a[0] : a[1]; }
   window.AtomLocker = {
     keys: KEYS,
     isShared: shared,
@@ -1938,6 +1947,7 @@ button[data-theme="m_tangram"] .sw{background:var(--sc-m_tangram) center bottom/
 
     /* ---------- one profile ---------- */
     profile: function () { return get().p; },
+    pairOut: pairOut, pairIn: pairIn, PAIRS: PAIRS,
     // Merge changed fields in; anyone can change the profile.
     setProfile: function (part) {
       var w = get(), p = Object.assign({}, w.p), ch = false;
@@ -10186,6 +10196,16 @@ window.AtomStatLooks = (function () {
       if (valid(k, id) && !isLocked(k, id) && settings[k] !== id) { settings[k] = id; ch = true; } });
       if (ch) { try { applyExtras(); renderExtras(); } catch (e) {} } return ch; }
   };
+  /* Celebration, sound and stats look: each app has its own versions; picking one picks its partner in the other app */
+  { const PK = { ce: "conf", sd: "chime", st: "stat" }, GR = {};
+    const lm1 = lockMsg; lockMsg = function (kind, id) { for (const f in PK) if (PK[f] === kind && id && GR[f] === id) return ""; return lm1(kind, id); };
+    const A = window.__atomLook, m0 = A.mine, t0 = A.take;
+    A.mine = () => { const o = m0(); Object.entries(PK).forEach(([f, k]) => { const v = L.pairOut && L.pairOut(f, "read", xGet(k) || ""); if (v) o[f] = v; }); return o; };
+    A.take = p => { let ch = t0(p); Object.entries(PK).forEach(([f, k]) => { const id = L.pairIn ? L.pairIn(f, "read", p[f]) : null; if (id === null) return;
+        if (id === "") { if (f !== "sd" && settings[k]) { settings[k] = ""; ch = true; } return; }
+        if (!valid(k, id)) return; GR[f] = id; if (settings[k] !== id) { settings[k] = id; ch = true; } });
+      if (ch) { try { applyExtras(); renderExtras(); } catch (e) {} } return ch; };
+  }
 
   /* ---------- Atom with his gear: never cut off, and the Atom color tints Atom (not his gear) ---------- */
   // CSS filter list -> SVG filter, so the color goes on Atom's picture only (like Atom Math)
