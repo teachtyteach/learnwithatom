@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k5b4fde"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k294816"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -10956,7 +10956,7 @@ window.AtomFX = (function () {
     "#xgDlg details.tg>summary span::after{content:'⌄';margin-left:8px;display:inline-block;transition:transform .2s}" +
     "#xgDlg details.tg[open]>summary span::after{transform:rotate(180deg)}" +
     "#xgDlg details.tg .xgrid{padding-bottom:14px}" +
-    "#xgDlg .xcard.isnew::before{content:'NEW';position:absolute;left:10px;top:10px;z-index:6;font:800 9px/1 system-ui,sans-serif;letter-spacing:.08em;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);padding:3px 6px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.45)}" +
+    "#xgDlg .xcard .newtag{position:absolute;left:6px;top:6px;z-index:6;font-style:normal;font:800 9px/1 system-ui,sans-serif;letter-spacing:.08em;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);padding:3px 6px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.45)}" +
     "em.newc{font:800 11px system-ui,sans-serif;font-style:normal;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);border-radius:999px;padding:2px 8px;margin-right:8px}" +
     "#xTiles .xtile .newdot{position:absolute;top:10px;right:10px;font:800 11px system-ui,sans-serif;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);border-radius:999px;padding:3px 9px;box-shadow:0 2px 6px -1px rgba(255,176,32,.6)}" +
     "#rdNewBar{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:12px 14px;border:1px solid color-mix(in srgb,#ffb020 60%,var(--line));border-radius:16px;background:var(--surface);color:var(--ink)}" +
@@ -10967,11 +10967,13 @@ window.AtomFX = (function () {
   document.head.append(css);
   const orig = renderGroup, OPEN = new Set();
   function fill(c, body, g, box) {
+    let seen = false;
     const tmp = document.createDocumentFragment(); tmp.append(...box.childNodes);
     const part = Object.create(g, { keys: { value: [c.k] }, __full: { value: g } });
     orig(part); const lab = box.firstChild; if (lab && lab.classList && lab.classList.contains("xlab")) lab.remove();
     body.append(...box.childNodes); box.append(...tmp.childNodes);
-    body.querySelectorAll(".xcard[data-id]").forEach(b => { if (!b.classList.contains("locked") && isNew(c.k, b.dataset.id)) b.classList.add("isnew"); });
+    body.querySelectorAll(".xcard[data-id]").forEach(b => { if (!b.classList.contains("locked") && isNew(c.k, b.dataset.id)) { b.classList.add("isnew"); const th = b.querySelector(".xth") || b; const t = document.createElement("i"); t.className = "newtag"; t.textContent = "NEW"; th.append(t); load().add("r:" + c.k + ":" + b.dataset.id); seen = true; } });
+    if (seen) { save(); const em = body.parentElement.querySelector("summary em.newc"); if (em) em.remove(); try { renderRewardsTab(); } catch (e) {} }
   }
   renderGroup = function (g) {
     if (g.__full) g = g.__full;

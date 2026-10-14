@@ -7486,6 +7486,11 @@ WHATS.unshift(['Rewards from Atom Reading','Hats, glasses, titles and themes you
   const isNewIt=(cat,it)=>it[0]!=='none'&&(!S.teacher||NEWNOW.test(it[0]))&&!seenLoad().has('m:'+cat+':'+it[0])&&unlocked(it)&&!(window.atomSecret&&window.atomSecret(it));
   const newIn=cats=>{let n=0;cats.filter(has).forEach(c=>real(c).forEach(it=>{if(isNewIt(c,it))n++}));return n};
   const seenAdd=(cat,id)=>{seenLoad().add('m:'+cat+':'+id);seenSave()};
+  function newUI(){/* update the counts on the main page without rebuilding it */
+    try{Object.entries(GROUPS).forEach(([k,g])=>{const t=app.querySelector(`.xtile[data-rwg="${k}"]`);if(!t)return;const n=newIn(g.cats);let d=t.querySelector('.newdot');
+        if(!n){if(d)d.remove()}else{if(!d){d=document.createElement('span');d.className='newdot';t.prepend(d)}d.textContent=n+' new'}});
+      const tn=newIn(Object.values(GROUPS).flatMap(g=>g.cats)),bar=app.querySelector('.rwnewbar');
+      if(bar){if(!tn)bar.remove();else{const b=bar.querySelector('b');if(b)b.textContent=tn+' new '+(tn===1?'item':'items')}}}catch(e){}}
   function seenAll(){const S2=seenLoad();Object.values(GROUPS).forEach(g=>g.cats.filter(has).forEach(c=>real(c).forEach(it=>{if(unlocked(it))S2.add('m:'+c+':'+it[0])})));seenSave()}
   const strip=h=>String(h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 
@@ -7643,7 +7648,7 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
 .rwsheet .xcard:hover *,.rwsheet .xcard:hover *::before,.rwsheet .xcard:active *,.rwsheet .xcard[aria-pressed=true] *,.rwsheet .xcard[aria-pressed=true] *::before{animation-play-state:running!important}
 .rwsheet .xgrid{contain:layout style}
 /* new tags */
-.rwsheet .xcard.isnew .xth::after{content:"NEW";position:absolute;left:6px;top:6px;z-index:6;font:800 9px/1 system-ui,sans-serif;letter-spacing:.08em;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);padding:3px 6px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.45)}
+.rwsheet .xcard .xth .newtag{position:absolute;left:6px;top:6px;z-index:6;font-style:normal;font:800 9px/1 system-ui,sans-serif;letter-spacing:.08em;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);padding:3px 6px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.45)}
 .rwsheet em.newc{font:800 11px system-ui,sans-serif;font-style:normal;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);border-radius:999px;padding:2px 8px;margin-right:8px}
 .rwsheet details.tg.sec{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
 .rw .xtile{position:relative}
@@ -7737,7 +7742,7 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
     const meta=on?(r==='none'?'Default':`<i class="gem"></i>${RARN[r]}`):sec?'Secret · keep playing to find it':shortReq(reqLabel(it[2]));
     const art=sec?'<span class="sw mxth secq">?</span>':itemSwatch(cat,it);
     const full=on?'':String(sec?'Secret reward':reqLabel(it[2])).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
-    return `<button class="xcard${on?'':' locked'}${sec?' secret':''}${on&&isNewIt(cat,it)?' isnew':''}" type="button" data-x="${cat}:${it[0]}" data-rar="${r}" aria-pressed="${on&&eq}"${full?` title="${hwEsc(full)}"`:''}><span class="xth">${art}${on?'':`<i class="lk">${LOCK}</i>`}${on&&eq?'<i class="eqp">Equipped</i>':''}</span><span class="xn">${name}</span><span class="xr">${meta}</span></button>`;
+    return `<button class="xcard${on?'':' locked'}${sec?' secret':''}${on&&isNewIt(cat,it)?' isnew':''}" type="button" data-x="${cat}:${it[0]}" data-rar="${r}" aria-pressed="${on&&eq}"${full?` title="${hwEsc(full)}"`:''}><span class="xth">${art}${on?'':`<i class="lk">${LOCK}</i>`}${on&&eq?'<i class="eqp">Equipped</i>':''}${on&&isNewIt(cat,it)?'<i class="newtag">NEW</i>':''}</span><span class="xn">${name}</span><span class="xr">${meta}</span></button>`;
   }
   function sortedItems(cat){const rk=it=>it[0]==='none'?0:isNewIt(cat,it)?1:unlocked(it)?2:3;return (window.atomVis||visItems)(LOCKER[cat]).map((it,i)=>[it,i]).sort((a,b)=>(rk(a[0])-rk(b[0]))||a[1]-b[1]).map(x=>x[0])}
   const gridHTML=(cat,g)=>{const its=sortedItems(cat).filter(i=>g==null||i[3]===g);return its.map(i=>cardHTML(cat,i)).join('')};
@@ -7798,7 +7803,10 @@ body.rwopen .rw .rwpv{position:sticky;top:8px;z-index:5}
     const body=el.querySelector('.shb');
     const fill=()=>{const y=body.scrollTop;body.innerHTML=G?G.cats.map(sectionHTML).join(''):collectHTML();body.scrollTop=y};
     body.addEventListener('toggle',e=>{const d=e.target;if(!d.classList||!d.classList.contains('tg')||!d.dataset.cat)return;const k=d.dataset.cat==='theme'?'theme:'+d.dataset.g:d.dataset.cat,O=openSet();
-      if(d.open){O.add(k);const gr=d.querySelector('.xgrid');if(gr&&!gr.firstChild)gr.innerHTML=gridHTML(d.dataset.cat,d.dataset.cat==='theme'?d.dataset.g:null)}else O.delete(k)},true);
+      if(d.open){O.add(k);const gr=d.querySelector('.xgrid');if(gr&&!gr.firstChild)gr.innerHTML=gridHTML(d.dataset.cat,d.dataset.cat==='theme'?d.dataset.g:null);
+        /* opening a row counts as seeing what is in it: the tags stay while it is open, the counts clear */
+        let any=false;d.querySelectorAll('.xcard.isnew').forEach(c=>{const x=c.dataset.x.split(':');seenAdd(x[0],x.slice(1).join(':'));any=true});
+        if(any){const em=d.querySelector('summary em.newc');if(em)em.remove();newUI()}}else O.delete(k)},true);
     if(focusCat)openSet().add(focusCat);
     fill();
     el.querySelector('.shx').addEventListener('click',e=>{e.stopPropagation();closeSheet()});
