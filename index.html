@@ -206,6 +206,17 @@
 <style id="lookCss"></style>
 </head>
 <body>
+<style>
+#hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
+#hsplash img{width:150px;height:auto;display:block;animation:hsfly .9s cubic-bezier(.2,.9,.25,1.15) both}
+#hsplash b{font:700 34px Georgia,serif;color:var(--ink);opacity:0;animation:hsfade .5s .55s ease-out forwards}#hsplash b i{color:var(--accent);font-style:normal}
+@keyframes hsfly{0%{transform:translate(-60vw,60vh) rotate(-25deg) scale(.6)}70%{transform:translate(6px,-8px) rotate(4deg) scale(1.03)}100%{transform:none}}
+@keyframes hsfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes hsout{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#hsplash{display:none}}
+</style>
+<div id="hsplash" aria-hidden="true"><img src="/atom-hi.webp" alt=""><b>Atom<i>.</i></b></div>
+<script>setTimeout(function(){var e=document.getElementById('hsplash');if(e)e.remove()},1500);document.getElementById('hsplash').addEventListener('click',function(){this.remove()});</script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="gearDefs"></defs></svg>
 <section class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wH" hidden>
   <div class="wbox">

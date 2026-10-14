@@ -1162,7 +1162,7 @@ body.scene .lede,body.scene .eyebrow{background:color-mix(in srgb,var(--paper) 7
 .flyin{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--paper);animation:flyout .35s ease-in .8s forwards;cursor:pointer}
 .flyin img{width:150px;animation:flyup .8s cubic-bezier(.2,.9,.3,1.2) both}
 @keyframes flyup{from{transform:translate(-60vw,60vh) rotate(-30deg) scale(.5)}to{transform:none}}
-@keyframes flyout{to{opacity:0;visibility:hidden}}
+@keyframes flyout{to{opacity:0;visibility:hidden}}.flyin{align-content:center;gap:10px;animation:flyout .4s ease-out 1.1s forwards}.flyin img{width:150px;height:auto;animation:flyup .9s cubic-bezier(.2,.9,.25,1.15) both}@keyframes flyup{0%{transform:translate(-60vw,60vh) rotate(-25deg) scale(.6)}70%{transform:translate(6px,-8px) rotate(4deg) scale(1.03)}100%{transform:none}}.flyname{font:700 34px Georgia,serif;color:var(--ink);opacity:0;animation:flyfade .5s .55s ease-out forwards}.flyname i{color:var(--accent);font-style:normal}@keyframes flyfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .logo{position:relative}
 .logo.mood-excited .mascotimg{animation:botb 1.4s ease-in-out infinite}
 .logo.mood-sleepy .mascotimg{filter:saturate(.6) brightness(.9);transform:rotate(-8deg)}
@@ -4956,7 +4956,7 @@ function startupPopups(){
 
 /* ---- Atom flies in on load ---- */
 const flyMs=(typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)?0:1100;
-function flyIn(){if(!flyMs)return;const d=document.createElement('div');d.className='flyin';d.innerHTML=`<img src="${MASCOT}" alt="">`;document.body.appendChild(d);d.addEventListener('click',()=>d.remove());setTimeout(()=>d.remove(),flyMs)}
+function flyIn(){if(!flyMs)return;const d=document.createElement('div');d.className='flyin';d.innerHTML=`<img src="${MASCOT}" alt=""><b class="flyname">Atom<i>.</i></b>`;document.body.appendChild(d);d.addEventListener('click',()=>d.remove());setTimeout(()=>d.remove(),1500)}
 
 /* ---- robot moods, bedtime nudge, view-as-student chip ---- */
 function moodOf(){
