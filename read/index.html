@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k3d1480"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k7f86f8"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11044,14 +11044,20 @@ window.AtomFX = (function () {
     "@media (prefers-reduced-motion:reduce){#rdNewBar .pls{animation:none}}";
   document.head.append(css);
   const orig = renderGroup, OPEN = new Set();
-  function fill(c, body, g, box) {
+  // re-drawing the badges must not jump the page back to the top
+  function keepScroll(fn) {
+    const els = [document.scrollingElement, ...document.querySelectorAll("*")].filter(e => e && e.scrollTop > 0).map(e => [e, e.scrollTop]);
+    fn(); els.forEach(([e, t]) => { e.scrollTop = t; }); requestAnimationFrame(() => els.forEach(([e, t]) => { if (e.isConnected) e.scrollTop = t; }));
+  }
+  function fill(c, body, g, box) { keepScroll(() => fill0(c, body, g, box)); }
+  function fill0(c, body, g, box) {
     let seen = false;
     const tmp = document.createDocumentFragment(); tmp.append(...box.childNodes);
     const part = Object.create(g, { keys: { value: [c.k] }, __full: { value: g } });
     orig(part); const lab = box.firstChild; if (lab && lab.classList && lab.classList.contains("xlab")) lab.remove();
     body.append(...box.childNodes); box.append(...tmp.childNodes);
     body.querySelectorAll(".xcard[data-id]").forEach(b => { if (!b.classList.contains("locked") && isNew(c.k, b.dataset.id)) { b.classList.add("isnew"); const th = b.querySelector(".xth") || b; const t = document.createElement("i"); t.className = "newtag"; t.textContent = "NEW"; th.append(t); load().add("r:" + c.k + ":" + b.dataset.id); seen = true; } });
-    if (seen) { save(); const em = body.parentElement.querySelector("summary em.newc"); if (em) em.remove(); try { renderRewardsTab(); } catch (e) {} }
+    if (seen) { save(); const em = body.parentElement.querySelector("summary em.newc"); if (em) em.remove(); keepScroll(() => { try { renderRewardsTab(); } catch (e) {} }); }
   }
   renderGroup = function (g) {
     if (g.__full) g = g.__full;
