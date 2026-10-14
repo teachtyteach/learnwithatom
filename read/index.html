@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-kae74cc"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-kfed45e"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -18,7 +18,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Atom. The word reading with its middle letter in red.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f6f4ef">
+<meta name="theme-color" content="#f6f4ef"><script>(function(){try{var w=JSON.parse(localStorage.getItem("atom_locker_copy")||"null"),t=w&&w.p&&w.p.tk;if(!t)return;var c=String(t).split(",")[0];if(/^#[0-9a-fA-F]{3,8}$/.test(c)){var s=document.createElement("style");s.id="atomPreBg";s.textContent="html,body{background:"+c+"}";document.head.appendChild(s);var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=c}}catch(e){}})();</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Atom">
@@ -9992,6 +9992,12 @@ NG.forEach(g=>{GEAR_SVG[g.slot][g.id]=g.svg;const c=XCATS.find(x=>x.k===g.slot);
       if (k !== ME && stale[k]) rec(k, stale[k]);
     }
     location.reload();
+  }
+  if (ME !== 'read') {   // pull down at the top of the page to check for an update, same as Atom Reading
+    var y0 = null, pulled = false;
+    addEventListener('touchstart', function (e) { y0 = (window.scrollY <= 0 && e.touches.length === 1) ? e.touches[0].clientY : null; pulled = false; }, { passive: true });
+    addEventListener('touchmove', function (e) { if (y0 != null && e.touches[0].clientY - y0 > 90) pulled = true; }, { passive: true });
+    addEventListener('touchend', function () { if (pulled && window.scrollY <= 0) check(true); y0 = null; pulled = false; }, { passive: true });
   }
   window.AtomUpd = { check: check, show: show, apply: apply, me: ME };
   setTimeout(function () { check(false); }, 4000);

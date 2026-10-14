@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Learn with Atom</title>
 <meta name="description" content="Atom Reading and Atom Math, made for STEM Launch.">
-<meta name="theme-color" content="#f6f4ef">
+<meta name="theme-color" content="#f6f4ef"><script>(function(){try{var w=JSON.parse(localStorage.getItem("atom_locker_copy")||"null"),t=w&&w.p&&w.p.tk;if(!t)return;var c=String(t).split(",")[0];if(/^#[0-9a-fA-F]{3,8}$/.test(c)){var s=document.createElement("style");s.id="atomPreBg";s.textContent="html,body{background:"+c+"}";document.head.appendChild(s);var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=c}}catch(e){}})();</script>
 <link rel="icon" href="/read/apple-touch-icon.png">
 <link rel="apple-touch-icon" href="/read/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
@@ -206,7 +206,7 @@
 .ttx.lift{filter:brightness(1.9) saturate(1.1) drop-shadow(0 0 5px rgba(255,255,255,.18))}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="a5412e7bf3"></head>
+<meta name="atom-build" content="c33414a893"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -1012,6 +1012,9 @@ window.AtomFX = (function () {
     var dark = cols.length && cols.every(function (c) { var p = c.match(/[\d.]+/g).map(Number); if (p.length > 3 && p[3] < .3) return true; var L = .2126 * lin(p[0]) + .7152 * lin(p[1]) + .0722 * lin(p[2]); return (L + .05) / .08 < 3.2; });
     t.classList.toggle('lift', !!dark);
   }
+  { var hs = document.getElementById('hsplash'), im = hs && hs.querySelector('img');   // the loading Atom wears your outfit too
+    if (im) { var d = document.createElement('div'); d.className = 'fig'; d.style.cssText = 'position:relative;left:auto;top:auto;transform:none;width:176px;animation:hsfly .9s cubic-bezier(.2,.9,.25,1.15) both';
+      try { d.innerHTML = figure(L.profile()); im.replaceWith(d); } catch (x) {} } }
   function preview() {
     var p = L.profile();
     $('pvAtom').innerHTML = figure(p);
@@ -1283,6 +1286,12 @@ window.AtomFX = (function () {
       if (k !== ME && stale[k]) rec(k, stale[k]);
     }
     location.reload();
+  }
+  if (ME !== 'read') {   // pull down at the top of the page to check for an update, same as Atom Reading
+    var y0 = null, pulled = false;
+    addEventListener('touchstart', function (e) { y0 = (window.scrollY <= 0 && e.touches.length === 1) ? e.touches[0].clientY : null; pulled = false; }, { passive: true });
+    addEventListener('touchmove', function (e) { if (y0 != null && e.touches[0].clientY - y0 > 90) pulled = true; }, { passive: true });
+    addEventListener('touchend', function () { if (pulled && window.scrollY <= 0) check(true); y0 = null; pulled = false; }, { passive: true });
   }
   window.AtomUpd = { check: check, show: show, apply: apply, me: ME };
   setTimeout(function () { check(false); }, 4000);
