@@ -206,7 +206,7 @@
 .ttx.lift{filter:brightness(1.9) saturate(1.1) drop-shadow(0 0 5px rgba(255,255,255,.18))}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="c33414a893"></head>
+<meta name="atom-build" content="474db84007"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -285,7 +285,7 @@
     <div class="panel fact" id="boxCard"><b id="boxT">5 days</b><span id="boxS">to a mystery box</span></div>
     <button class="panel fact" type="button" id="lockBtn"><b id="lockT">0</b><span>rewards earned</span><span class="bar split"><i id="sp-read"></i><i id="sp-math"></i></span></button>
   </div>
-  <button class="panel fact" type="button" id="bdgBtn" style="width:100%;margin-top:10px;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:13px 16px"><b id="bdgN" style="font-size:22px">0</b><span style="font-size:14px;color:var(--ink)">badges earned in Reading and Math</span><span aria-hidden="true">&rsaquo;</span></button>
+  <button class="panel fact" type="button" id="bdgBtn" style="width:100%;margin-top:10px;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:13px 16px"><b id="bdgN" style="font-size:22px">0</b><span id="bdgL" style="font-size:14px;color:var(--ink)">badges earned in Reading and Math</span><span aria-hidden="true">&rsaquo;</span></button>
 
   <footer>
     <div class="bk"><button type="button" id="bkSave">Save backup</button><label for="bkFile" role="button" tabindex="0">Restore backup</label><input type="file" id="bkFile" class="vh" tabindex="-1"></div>
@@ -1136,6 +1136,11 @@ window.AtomFX = (function () {
     try {
       if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Atom backup' }); }
       else { var a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); }
+      try {   // Reading and Math stop asking for a backup
+        localStorage.setItem('pace:lastBackup', JSON.stringify(Date.now()));
+        var ms = JSON.parse(localStorage.getItem('launchpad-math-v1') || 'null'), d = new Date();
+        if (ms) { ms.lastBackup = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); localStorage.setItem('launchpad-math-v1', JSON.stringify(ms)); }
+      } catch (x) {}
       say('Saved ' + file.name + '. It has your Reading and Math.');
     } catch (e) { say(e && e.name === 'AbortError' ? '' : "Couldn't save. Try again."); }
   }
@@ -1204,7 +1209,7 @@ window.AtomFX = (function () {
   var $ = function (i) { return document.getElementById(i); }, K = [['read', 'Reading'], ['math', 'Math']];
   function get(k) { try { return JSON.parse(localStorage.getItem('atom:bdg:' + k) || '[]'); } catch (e) { return []; } }
   function count() { var n = 0; K.forEach(function (k) { get(k[0]).forEach(function (b) { if (b[3]) n++; }); }); return n; }
-  function paint() { var n = count(); $('bdgN').textContent = n; $('bdgBtn').style.display = (get('read').length + get('math').length) ? '' : 'none'; }
+  function paint() { var n = count(); $('bdgN').textContent = n; $('bdgL').textContent = (n === 1 ? 'badge' : 'badges') + ' earned in Reading and Math'; $('bdgBtn').style.display = (get('read').length + get('math').length) ? '' : 'none'; }
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function show() {
     var h = '<div class="bh"><h2>Badges</h2><button class="bx" type="button" aria-label="Close">&#10005;</button></div>';

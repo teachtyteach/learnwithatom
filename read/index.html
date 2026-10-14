@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-kfed45e"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k381d73"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11129,11 +11129,11 @@ window.ATOM_SHARE_R={"sounds": [["m_classic", "Classic", null, "common"], ["m_so
     "#xgDlg .xcard .newtag{position:absolute;right:6px;left:auto;top:6px;z-index:6;font-style:normal;font:800 9px/1 system-ui,sans-serif;letter-spacing:.08em;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);padding:3px 6px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.45)}" +
     "em.newc{font:800 11px system-ui,sans-serif;font-style:normal;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);border-radius:999px;padding:2px 8px;margin-right:8px}" +
     "#xTiles .xtile .newdot{position:absolute;top:10px;right:10px;font:800 11px system-ui,sans-serif;color:#1b1200;background:linear-gradient(180deg,#ffd75e,#ffb020);border-radius:999px;padding:3px 9px;box-shadow:0 2px 6px -1px rgba(255,176,32,.6)}" +
-    "#rdNewBar{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:12px 14px;border:1px solid color-mix(in srgb,#ffb020 60%,var(--line));border-radius:16px;background:var(--surface);color:var(--ink)}" +
-    "#rdNewBar .nb{flex:1;display:grid;gap:2px}#rdNewBar .nb b{font:700 16px Georgia,serif}" +
-    "#rdNewBar button{font:700 13px system-ui,sans-serif;border:0;border-radius:999px;padding:9px 14px;background:linear-gradient(180deg,#ffd75e,#ffb020);color:#1b1200;cursor:pointer}" +
-    "#rdNewBar .pls{width:10px;height:10px;border-radius:50%;background:#ffb020;animation:rdpls 2s infinite}@keyframes rdpls{70%{box-shadow:0 0 0 9px rgba(255,176,32,0)}0%{box-shadow:0 0 0 0 rgba(255,176,32,.7)}}" +
-    "@media (prefers-reduced-motion:reduce){#rdNewBar .pls{animation:none}}";
+    "#rdNewBar{display:flex;align-items:center;gap:10px;margin:0 4px 10px;color:var(--ink)}" +
+    "#rdNewBar b{flex:1;font:600 15px system-ui,-apple-system,sans-serif}" +
+    "#rdNewBar button{font:600 14px system-ui,-apple-system,sans-serif;border:0;background:none;color:#ffb020;padding:6px 0;cursor:pointer}" +
+    "#rdNewBar .pls{width:8px;height:8px;border-radius:50%;background:#ffb020;flex:none}" +
+    ".rdsh{margin:22px 4px 8px;font:600 13px system-ui,-apple-system,sans-serif;color:var(--muted)}#rewards #xTiles{margin-bottom:0}";
   document.head.append(css);
   const orig = renderGroup, OPEN = new Set();
   // re-drawing the badges must not jump the page back to the top
@@ -11176,11 +11176,15 @@ window.ATOM_SHARE_R={"sounds": [["m_classic", "Classic", null, "common"], ["m_so
     const r = rt0.apply(this, arguments);
     try {
       const old = document.getElementById("rdNewBar"); if (old) old.remove();
+      { // categories first; missions, boxes and next rank under a small "Progress" heading
+        const xt = document.getElementById("xTiles"), pv = document.getElementById("pvCard"), hd = document.querySelector("#rewards > header");
+        const at = pv && !pv.hidden && pv.offsetParent ? pv : hd; if (xt && at && at.nextElementSibling !== xt) at.after(xt);
+        if (xt && !document.getElementById("rdProg")) { const h = document.createElement("p"); h.id = "rdProg"; h.className = "rdsh"; h.textContent = "Progress"; xt.after(h); } }
       const tiles = [...document.querySelectorAll("#xTiles .xtile")]; let tot = 0;
       XGROUPS.forEach((g, i) => { const n = newIn(g); tot += n; if (n && tiles[i]) { const s = document.createElement("span"); s.className = "newdot"; s.textContent = n + " new"; tiles[i].append(s); } });
       if (tot) {
         const bar = document.createElement("div"); bar.id = "rdNewBar";
-        bar.innerHTML = `<span class="pls"></span><span class="nb"><b>${tot} new ${tot === 1 ? "item" : "items"}</b><span class="fine">Look for the gold NEW tags.</span></span><button type="button">Mark all as seen</button>`;
+        bar.innerHTML = `<span class="pls"></span><b>${tot} new</b><button type="button">Mark all as seen</button>`;
         bar.querySelector("button").onclick = () => { seenAll(); renderRewardsTab(); };
         document.getElementById("xTiles").before(bar);
       }
@@ -11302,6 +11306,13 @@ try { if (typeof themeSwatch === "function") { const SC = new Set(["aurora", "bx
 
 /* a title's shine wraps exactly like the title, so a two-line title never shows a ghost copy */
 (function () { const st = document.createElement('style'); st.id = 'ttxWrap'; st.textContent = '.ttx::after{white-space:inherit!important}'; (document.head || document.documentElement).appendChild(st); })();
+
+/* calmer, cleaner chrome in both apps: sentence-case section headers, softer card edges */
+(function () { const st = document.createElement('style'); st.id = 'atomClean';
+  st.textContent = '.sect{text-transform:none!important;letter-spacing:0!important;font:600 15px/1.3 system-ui,-apple-system,sans-serif!important;color:color-mix(in srgb,var(--ink) 62%,transparent)!important}' +
+    '.clab{text-transform:none!important;letter-spacing:0!important;font-weight:600!important}' +
+    '.card,.rwc{border-color:color-mix(in srgb,var(--line) 55%,transparent)!important}';
+  (document.head || document.documentElement).appendChild(st); })();
 
 
 /*/ATOM-SHARED:JS*/})();
