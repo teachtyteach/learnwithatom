@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k0845b4"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k0bb3b0"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11275,6 +11275,179 @@ setTimeout(function () { try { applyExtras(); } catch (e) {} }, 0);
   if (typeof sw === "function") window.showWelcome = function () { const r = sw.apply(this, arguments); box.hidden = true; return r; };
 })();
 
+/* ===================== Sound icons: one tile per sound, the same in Reading and Math ===================== */
+window.AtomSnd = (function () {
+  const G = { // white glyphs, 24x24
+    note: '<path d="M15 3v11.5a3.5 3.5 0 1 1-2-3.2V6l-5 1.2v9.3a3.5 3.5 0 1 1-2-3.2V5.5z"/>',
+    notes: '<path d="M18 3v10.6a3 3 0 1 1-1.8-2.8V7.4L10 9v7.6a3 3 0 1 1-1.8-2.8V6z"/>',
+    bell: '<path d="M12 3c-3.4 0-5.6 2.7-5.6 6.1v3.6L4.5 16.6h15l-1.9-3.9V9.1C17.6 5.7 15.4 3 12 3z"/><circle cx="12" cy="19" r="2"/>',
+    bells: '<path d="M8.5 5C6.2 5 4.8 6.9 4.8 9.2v2.4L3.5 14.3h10l-1.3-2.7V9.2C12.2 6.9 10.8 5 8.5 5z"/><circle cx="8.5" cy="16.4" r="1.4"/><path d="M16 8.5c-2 0-3.2 1.6-3.2 3.6v2l-1.1 2.3h8.6l-1.1-2.3v-2c0-2-1.2-3.6-3.2-3.6z" opacity=".85"/><circle cx="16" cy="18.6" r="1.2" opacity=".85"/>',
+    gong: '<path d="M3 4h18v2H3z"/><path d="M6 6v2M18 6v2" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="14" r="6.5"/><circle cx="12" cy="14" r="2.6" fill-opacity=".45"/>',
+    coin: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v10M14.6 9.2c-.6-.8-1.6-1.2-2.6-1.2-1.4 0-2.6.8-2.6 2 0 2.6 5.2 1.3 5.2 3.9 0 1.2-1.2 2-2.6 2-1.1 0-2.1-.4-2.6-1.2" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.6" stroke-linecap="round"/>',
+    piano: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7.5 5v14M12 5v14M16.5 5v14" stroke="rgba(0,0,0,.3)" stroke-width="1.2"/><path d="M6 5h2.8v8H6zM10.6 5h2.8v8h-2.8zM15.2 5H18v8h-2.8z" fill="rgba(0,0,0,.55)"/>',
+    guitar: '<path d="M10.2 9.4c-2.6-.6-5.3.7-5.9 3.2-.4 1.5.5 2.5-.6 3.6-1.3 1.3-.8 3.6.8 4.4 1.7.9 3.8.4 4.8-1 .9-1.1 2-.6 3.4-1 2.5-.6 3.8-3.3 3.2-5.9"/><path d="M13.8 10.2l6-6M18.3 2.8l2.9 2.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="9.6" cy="14.4" r="1.4" fill="rgba(0,0,0,.35)"/>',
+    trumpet: '<path d="M3 10h3l9-5v14l-9-5H3z"/><path d="M15 7.5c3 .4 5 2.2 5.6 4.5-.6 2.3-2.6 4.1-5.6 4.5z" opacity=".85"/><rect x="6.5" y="14.5" width="2.2" height="4" rx=".6"/>',
+    sparkle: '<path d="M11 2l1.9 6.1L19 10l-6.1 1.9L11 18l-1.9-6.1L3 10l6.1-1.9z"/><path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
+    horn: '<path d="M3 10.5h4l9.5-5.5v14L7 13.5H3z"/><path d="M18.6 8.6a5 5 0 0 1 0 6.8M20.8 6.4a8 8 0 0 1 0 11.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>',
+    tubes: '<path d="M4 3h16" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><rect x="5" y="5" width="2.6" height="12" rx="1.3"/><rect x="9.2" y="5" width="2.6" height="15" rx="1.3"/><rect x="13.4" y="5" width="2.6" height="10.5" rx="1.3"/><rect x="17.6" y="5" width="2.6" height="13.5" rx="1.3"/>',
+    harp: '<path d="M6 3c4 1.5 8 5.5 12 13.5V20H6z" fill-opacity=".25"/><path d="M5 3h2.2v18H5zM6.2 3c5 1.8 9 6.6 12.6 14.4l.7 3.6H6.2v-2h11L16.6 17C13.4 10.4 10 6.6 6.2 5z"/><path d="M9.5 7v12M12.5 9.5V19M15.3 13v6" stroke="#fff" stroke-width="1"/>',
+    desk: '<path d="M3.5 17.5h17v2h-17zM5 16.5a7 7 0 0 1 14 0z"/><rect x="11" y="6.5" width="2" height="3" rx=".6"/><rect x="9" y="5" width="6" height="1.8" rx=".9"/>',
+    gem: '<path d="M7 4h10l4 5.5L12 21 3 9.5z"/><path d="M3 9.5h18M9.5 4L8 9.5 12 21l4-11.5L14.5 4" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1"/>',
+    trophy: '<path d="M7 3h10v5a5 5 0 0 1-10 0z"/><path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.6 10M17 5h3v1.5A3.5 3.5 0 0 1 16.4 10" fill="none" stroke="#fff" stroke-width="1.8"/><path d="M10.6 13h2.8v3.5H16V20H8v-3.5h2.6z"/>',
+    windchime: '<path d="M12 2v3M5 6.5h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M7 6.5v6M10.3 6.5v9M13.7 6.5v7.5M17 6.5v10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="19.5" r="2"/>',
+    rocket: '<path d="M12 2.5c3.4 2.4 5 6.2 4.8 10.8L15 17.5H9l-1.8-4.2C7 8.7 8.6 4.9 12 2.5z"/><circle cx="12" cy="9.5" r="1.8" fill="rgba(0,0,0,.35)"/><path d="M9 14l-3.5 5 4-1.2M15 14l3.5 5-4-1.2"/><path d="M10.5 18.5L12 22l1.5-3.5z" opacity=".8"/>',
+    drum: '<ellipse cx="12" cy="8" rx="9" ry="3.5"/><path d="M3 8v6c0 2 4 3.5 9 3.5s9-1.5 9-3.5V8c0 2-4 3.5-9 3.5S3 10 3 8z" opacity=".85"/><path d="M8 7.5l2 1M14 6.8l2 1.4M11 9.2l2 .2" stroke="rgba(0,0,0,.3)" stroke-width="1.2" stroke-linecap="round"/>',
+    bird: '<path d="M3 13c3.5 0 5-1.5 6.5-4.5C11 5.5 13.6 4 16.5 4.6c1.2.2 2 .9 2.6 1.8L22 7.5l-2.6.8c.3 4.8-3.4 9.3-8.9 9.7H7L3 13z"/><circle cx="16.6" cy="7" r=".9" fill="rgba(0,0,0,.5)"/><path d="M9 18l-1.5 3M12 18l-.5 3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>',
+    stopwatch: '<circle cx="12" cy="13.5" r="7.5"/><rect x="10" y="2" width="4" height="2.4" rx=".8"/><path d="M12 9v4.5l3 2" stroke="rgba(0,0,0,.4)" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M18 6.5l1.6-1.6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>',
+    popper: '<path d="M3 21l5-12 7 7z"/><path d="M13 4l1 3M18 5l-2 3M20 10l-3 .5M15 2.5l.6.6M21.5 6.5l-.8.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="18.5" cy="13.5" r="1.3"/><circle cx="11" cy="3" r="1"/>',
+    chest: '<path d="M4 10h16v9.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5z"/><path d="M4 10V8.5C4 5.5 7.5 3.5 12 3.5s8 2 8 5V10z" opacity=".85"/><rect x="10.3" y="9" width="3.4" height="4.2" rx=".8" fill="rgba(0,0,0,.45)"/><path d="M4 13.5h16" stroke="rgba(0,0,0,.25)" stroke-width="1.2"/>',
+    pixel: '<path d="M4 14h4v4H4zM8 10h4v4H8zM12 6h4v4h-4zM16 10h4v4h-4z"/><path d="M8 14h4v4H8z" opacity=".6"/>',
+    gamepad: '<path d="M7 7h10c3 0 5 3.5 5 7.5 0 2.2-1 3.5-2.4 3.5-1.6 0-2.4-2-4-2.5H8.4c-1.6.5-2.4 2.5-4 2.5C3 18 2 16.7 2 14.5 2 10.5 4 7 7 7z"/><path d="M6 11v4M4 13h4" stroke="rgba(0,0,0,.4)" stroke-width="1.6" stroke-linecap="round"/><circle cx="16" cy="11.5" r="1.2" fill="rgba(0,0,0,.4)"/><circle cx="18.2" cy="13.8" r="1.2" fill="rgba(0,0,0,.4)"/>',
+    planet: '<circle cx="12" cy="12" r="6"/><ellipse cx="12" cy="12" rx="10.5" ry="3.2" fill="none" stroke="#fff" stroke-width="1.6" transform="rotate(-20 12 12)"/><circle cx="19.5" cy="5" r="1"/><circle cx="4.5" cy="18.5" r=".8"/>',
+    glass: '<path d="M7 3h10l-.6 5.5a4.4 4.4 0 0 1-8.8 0z"/><path d="M12 13v6M8.5 20.5h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M18.5 4.5l2-1.5M19 8h2.4" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>',
+    sprout: '<path d="M12 21V11" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M12 12C12 7.5 9 5 4.5 5c0 4.5 3 7 7.5 7zM12 10.5c0-4 2.6-6.5 7-6.5 0 4-2.6 6.5-7 6.5z"/><path d="M7 21h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+    slope: '<path d="M3 20h18" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M4 18L19 5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M19 5v6h-6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+    curve: '<path d="M4 19c0-8 4-14 10-14 3 0 5 1.5 6 4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M21.5 4.5L20 9.5 15.4 7.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.4" cy="11" r="2.2"/>',
+    flag: '<path d="M5 3v18" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M6 4h12l-2.5 4 2.5 4H6z"/><path d="M9 6h2v2H9zM13 6h2v2h-2zM11 8h2v2h-2zM9 10h2v2H9zM13 10h2v2h-2z" fill="rgba(0,0,0,.35)"/>',
+    buoy: '<path d="M8 6h8l1.4 11H6.6z"/><path d="M7.6 10h8.8M7.2 13.5h9.6" stroke="rgba(0,0,0,.3)" stroke-width="1.6"/><circle cx="12" cy="4" r="1.6"/><path d="M2 20c2 0 2-1.4 4.4-1.4S8.6 20 11 20s2-1.4 4.4-1.4S17.6 20 22 20" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>',
+    marimba: '<rect x="3" y="5" width="3.4" height="13" rx="1.2"/><rect x="7.6" y="6.5" width="3.4" height="10" rx="1.2"/><rect x="12.2" y="8" width="3.4" height="7" rx="1.2"/><rect x="16.8" y="9.5" width="3.4" height="4" rx="1.2"/><path d="M2.5 20.5l7-3M21.5 20.5l-7-3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>'
+  };
+  const P = { // id: [glyph, from, to]
+    coin: ["coin", "#ffd36b", "#c98a0a"], kcopper: ["bell", "#f0a274", "#9a4a22"], bell: ["bell", "#ffcf5a", "#d98a06"], saloon: ["piano", "#c99566", "#6e4220"],
+    kbronze: ["gong", "#e7b673", "#8a5520"], marimba: ["marimba", "#f0a35a", "#a34f1c"], buoy: ["buoy", "#4fc3c9", "#1d6a7a"], ksilver: ["bells", "#dfe6ee", "#7f8b98"],
+    blip: ["pixel", "#5ff0a0", "#1c9a5a"], pluck: ["guitar", "#8bd16a", "#3f7a2a"], kgold: ["trumpet", "#ffe27a", "#c48a06"], sparkle: ["sparkle", "#8fd4ff", "#3a7fe0"],
+    horn: ["horn", "#ffae6b", "#c4561c"], kplat: ["tubes", "#a6eef2", "#2a8f9a"], harp: ["harp", "#d0a8ff", "#7a3fd0"], desk: ["desk", "#8fc2ff", "#2f6fc8"],
+    kemer: ["harp", "#7ff0b0", "#14834a"], kdiam: ["gem", "#d9ecff", "#4a7fe6"], kchamp: ["trophy", "#ffcf6a", "#c43fae"],
+    sdA0: ["windchime", "#b8e2ff", "#4b8ed6"], sdA1: ["rocket", "#ff8a7a", "#c42f4a"], sdA2: ["harp", "#ffb8e6", "#b0409a"], sdA3: ["drum", "#7ee0d0", "#1f8a7a"],
+    sdB0: ["bird", "#a6e37a", "#4c8f2a"], sdB1: ["stopwatch", "#ff9b6b", "#c4401c"], sdB2: ["popper", "#ffd36b", "#e0457b"], sdB3: ["chest", "#e8b46a", "#7a4a1a"],
+    m_classic: ["note", "#8fb0ff", "#4a5fd0"], m_soft: ["notes", "#c7d6ff", "#7088c8"], m_blip: ["gamepad", "#6ff0c8", "#1f8f8a"], m_space: ["planet", "#b09aff", "#3a2a9a"],
+    m_bell: ["glass", "#a8f0ff", "#3a9ac8"], m_harp: ["harp", "#ffb38a", "#c4561c"], m_sd_s1: ["sprout", "#9ce07a", "#3f8a2a"], m_sd_s2: ["slope", "#ffd66b", "#d08a06"],
+    m_sd_s3: ["curve", "#ff8fc8", "#b0306f"], m_sd_s4: ["flag", "#8fc8ff", "#2a4fb0"]
+  };
+  let n = 0;
+  function tile(id, size) {
+    const p = P[id] || ["note", "#9aa7c7", "#4c5778"], g = G[p[0]] || G.note, k = "sd" + (++n), s = size || 46;
+    return `<svg class="sndtile" viewBox="0 0 48 48" width="${s}" height="${s}" aria-hidden="true"><defs><linearGradient id="${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p[1]}"/><stop offset="1" stop-color="${p[2]}"/></linearGradient>` +
+      `<filter id="${k}f" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation=".8" flood-color="#000" flood-opacity=".35"/></filter></defs>` +
+      `<rect x="2" y="2" width="44" height="44" rx="13" fill="url(#${k})"/><rect x="2.5" y="2.5" width="43" height="43" rx="12.5" fill="none" stroke="#fff" stroke-opacity=".35"/>` +
+      `<ellipse cx="24" cy="11" rx="17" ry="6.5" fill="#fff" opacity=".16"/>` +
+      `<g transform="translate(10 10) scale(1.1667)" fill="#fff" filter="url(#${k}f)">${g}</g></svg>`;
+  }
+  return { tile, has: id => !!P[id] };
+})();
+
+/* Math: sound cards */
+(function () {
+  if (typeof itemSwatch !== "function") return;
+  const is0 = itemSwatch;
+  itemSwatch = function (cat, it) { if (cat === "sound" && it && it[0] !== "none") { const k = /^r_/.test(it[0]) ? it[0].slice(2) : "m_" + it[0]; return `<span class="sw mxth">${AtomSnd.tile(k, 50)}</span>`; } return is0.apply(this, arguments); };
+})();
+/* Reading: sound cards */
+(function () {
+  if (typeof xThumb !== "function" || typeof el !== "function") return;
+  const x0 = xThumb;
+  xThumb = function (kind, id) { if (kind === "chime" && id) { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.innerHTML = AtomSnd.tile(id, 50); return t; } return x0.apply(this, arguments); };
+})();
+
+/* ===================== Premium touches for reward cards (both apps) ===================== */
+(function () {
+  const st = document.createElement("style"); st.id = "premiumCards";
+  st.textContent =
+    // rank-up effects and confetti: a soft glow in the card's rarity color, bigger pieces
+    '.rwsheet .xcard[data-x^="celeb:"] .xth,#xgDlg .xcard[data-x="conf"] .xth{background:radial-gradient(60% 70% at 50% 55%,color-mix(in srgb,var(--rc,#8aa) 30%,transparent),transparent 72%),var(--xthbg,transparent)!important}' +
+    '.rwsheet .xcard[data-x^="celeb:"] .xth .sw{background:transparent!important;box-shadow:none!important;border:0!important}.rwsheet .xcard[data-x^="celeb:"] .xth svg{transform:scale(1.08);filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}' +
+    '#xgDlg .xcard[data-x="conf"] .xth canvas{transform:scale(1.2);filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}' +
+    // progress bars: a real bar you can see
+    '#xgDlg .xth .tbar{width:78%!important;height:12px!important;border-radius:7px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 4px 10px -4px rgba(0,0,0,.6)}' +
+    // bookmarks: a touch bigger with a glow
+    '#xgDlg .xcard[data-x="bm"] .xth svg{width:36px;height:36px;filter:drop-shadow(0 0 8px currentColor)}' +
+    // accent colors: glossy orbs
+    '.aorb{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.75),rgba(255,255,255,0) 38%),radial-gradient(circle at 50% 62%,var(--c),color-mix(in srgb,var(--c) 50%,#000));box-shadow:0 0 0 3px rgba(255,255,255,.14),0 8px 16px -5px var(--c)}' +
+    // greetings: the same gold lettering in both apps
+    '.tgr2{font:700 italic 16px Georgia,serif;color:#ffe9b8;text-shadow:0 2px 6px rgba(0,0,0,.55);white-space:nowrap}';
+  (document.head || document.documentElement).appendChild(st);
+  // Math accents
+  if (typeof itemSwatch === "function") { const is0 = itemSwatch;
+    itemSwatch = function (cat, it) { const h = is0.apply(this, arguments);
+      if (cat === "accent" && it && it[0] !== "theme") { const m = /(#[0-9a-fA-F]{6})/.exec(String((it[3] && it[3][0]) || h)); if (m) return `<span class="sw mxth"><span class="aorb" style="--c:${m[1]}"></span></span>`; }
+      return h; }; }
+  // Reading greetings
+  if (typeof xThumb === "function" && typeof GREET !== "undefined") { const x0 = xThumb;
+    xThumb = function (kind, id) { if (kind === "greet" && GREET[id]) { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.append(el("span", "tgr2", GREET[id][0][1] + "!")); return t; } return x0.apply(this, arguments); }; }
+})();
+
+/* ===================== Rank emblems: one premium set for Reading and Math =====================
+   Each tier adds something: metal shield (Copper), laurels (Bronze), wings (Silver), a star (Gold),
+   a cut crest with a crown (Platinum), an emerald (Emerald), a diamond (Diamond), a radiant crown (Champion). */
+window.AtomRank = (function () {
+  const T = [ // light, mid, dark, accent
+    ["#f6c3a0", "#c8703f", "#6a3014", "#ffd9bf"],   // Copper
+    ["#f7dca6", "#b9853c", "#5e3a12", "#fff0cc"],   // Bronze
+    ["#ffffff", "#aeb9c4", "#55616d", "#eef3f8"],   // Silver
+    ["#fff4b0", "#e6ad17", "#8a5a04", "#fff8d6"],   // Gold
+    ["#e6fbff", "#6fd0d8", "#1f6f7a", "#d4fbff"],   // Platinum
+    ["#b6f7d2", "#22b56b", "#0a4f2c", "#d8ffe8"],   // Emerald
+    ["#ffffff", "#8cc8ff", "#2d5fd0", "#e6f3ff"],   // Diamond
+    ["#ffe08a", "#d24fe0", "#4b1590", "#fff2c2"]    // Champion
+  ];
+  let uid = 0;
+  const mirror = s => `<g transform="translate(64 0) scale(-1 1)">${s}</g>`;
+  const wingL = f => `<path d="M17 37C9 36 4 30 2 22C7 26 11 27 17 28Z" fill="${f}"/><path d="M17 30C10 28 6 22 5 14C9 19 13 21 18 23Z" fill="${f}" opacity=".92"/><path d="M18 24C12 21 10 15 10 8C13 13 16 15 20 17Z" fill="${f}" opacity=".84"/>`;
+  const wings = (f, st) => { const w = `<g stroke="${st}" stroke-width=".9" stroke-linejoin="round">${wingL(f)}</g>`; return w + mirror(w); };
+  const leafL = (f, st) => { const P = [[19, 53, -48], [15, 47, -32], [12.5, 40, -16], [11.5, 33, -4], [12, 26, 10], [14, 19.5, 24]];
+    return `<path d="M21 56C13 49 9 38 12 18" fill="none" stroke="${st}" stroke-width="1.1" stroke-linecap="round"/>` + P.map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="2.3" ry="4.6" transform="rotate(${r} ${x} ${y})" fill="${f}" stroke="${st}" stroke-width=".6"/>`).join(""); };
+  const laurel = (f, st) => { const l = leafL(f, st); return l + mirror(l); };
+  const star = (cx, cy, R, r, f, st) => { let d = ""; for (let k = 0; k < 10; k++) { const rr = k % 2 ? r : R, a = -Math.PI / 2 + k * Math.PI / 5; d += (k ? "L" : "M") + (cx + rr * Math.cos(a)).toFixed(1) + " " + (cy + rr * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${f}" stroke="${st}" stroke-width=".8" stroke-linejoin="round"/>`; };
+  const crown = (f, st, y) => `<path d="M21 ${y + 8}L23 ${y}L28 ${y + 5}L32 ${y - 3}L36 ${y + 5}L41 ${y}L43 ${y + 8}Z" fill="${f}" stroke="${st}" stroke-width=".9" stroke-linejoin="round"/><circle cx="32" cy="${y - 3}" r="1.6" fill="#fff" opacity=".9"/>`;
+  const burst = (f) => { let d = ""; for (let k = 0; k < 32; k++) { const r = k % 2 ? 22 : 31, a = -Math.PI / 2 + k * Math.PI / 16; d += (k ? "L" : "M") + (32 + r * Math.cos(a)).toFixed(1) + " " + (33 + r * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${f}" opacity=".75"/>`; };
+  // body shapes (center ~32,33)
+  const SHIELD = "M32 9L50 15V31C50 44 42 52 32 57C22 52 14 44 14 31V15Z";
+  const SHIELD_IN = "M32 13L46 18V31C46 41 40 48 32 52C24 48 18 41 18 31V18Z";
+  const HEX = "M32 8L51 19V43L32 56L13 43V19Z", HEX_IN = "M32 13L46 21V41L32 51L18 41V21Z";
+  const OCT = "M25 9H39L51 21V40L39 54H25L13 40V21Z", OCT_IN = "M27 14H37L46 23V38L37 49H27L18 38V23Z";
+  const DIA = "M32 6L53 30L32 59L11 30Z", DIA_IN = "M32 13L46 30L32 51L18 30Z";
+  function svg(tier, div, size, opt) {
+    tier = Math.max(0, Math.min(7, tier | 0)); opt = opt || {};
+    const [l, c, d, a] = opt.master ? ["#fff6c8", "#c455ff", "#3a148a", "#fff"] : T[tier], id = "ar" + (++uid), g = `url(#${id}m)`, gl = `url(#${id}l)`, sh = `url(#${id}s)`;
+    const defs = `<defs><linearGradient id="${id}m" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${l}"/><stop offset=".48" stop-color="${c}"/><stop offset="1" stop-color="${d}"/></linearGradient>` +
+      `<linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${c}"/></linearGradient>` +
+      `<linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+      (opt.master ? `<linearGradient id="${id}p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6ad5"/><stop offset=".33" stop-color="#ffd166"/><stop offset=".66" stop-color="#5ee0ff"/><stop offset="1" stop-color="#c455ff"/></linearGradient>` : "") +
+      `<filter id="${id}f" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000" flood-opacity=".45"/></filter></defs>`;
+    const [body, inner] = tier <= 3 ? [SHIELD, SHIELD_IN] : tier === 4 ? [HEX, HEX_IN] : tier === 5 ? [OCT, OCT_IN] : tier === 6 ? [DIA, DIA_IN] : [SHIELD, SHIELD_IN];
+    let back = "", front = "";
+    if (tier === 7 || opt.master) back += burst(opt.master ? `url(#${id}p)` : "#ffd166");
+    if (tier === 1) back += laurel(gl, d);
+    if (tier >= 2) back += wings(gl, d);
+    if (tier === 3) front += star(32, 7, 6.2, 2.6, gl, d);
+    if (tier >= 4) front += crown(gl, d, tier === 6 ? 2 : 4);
+    // facets for gems
+    let facets = "";
+    if (tier === 4) facets = `<path d="M32 13V51M18 21L46 41M46 21L18 41" stroke="#fff" stroke-opacity=".28" stroke-width=".8"/>`;
+    if (tier === 5) facets = `<path d="M27 14L32 31L37 14M18 23L32 31L46 23M18 38L32 31L46 38M27 49L32 31L37 49" stroke="#fff" stroke-opacity=".3" stroke-width=".8" fill="none"/>`;
+    if (tier === 6) facets = `<path d="M18 30H46M32 13L25 30L32 51L39 30Z" stroke="#fff" stroke-opacity=".45" stroke-width=".8" fill="none"/><path d="M32 13L25 30H18Z" fill="#fff" opacity=".35"/>`;
+    if (tier === 7 || opt.master) facets = `<path d="M32 13V52" stroke="#fff" stroke-opacity=".25" stroke-width="1"/>`;
+    const cen = tier === 6 ? 33 : 34, big = String(div || "").length > 2;
+    const label = opt.master ? star(32, cen - 1, 8, 3.4, "#fff", d) :
+      div ? `<text x="32" y="${cen + (big ? 4.5 : 5.5)}" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="${big ? 13 : 16}" fill="#fff" stroke="${d}" stroke-width="2.4" paint-order="stroke" letter-spacing="-.5">${div}</text>` : "";
+    const core = `<path d="${body}" fill="${opt.master ? `url(#${id}p)` : g}" stroke="${d}" stroke-width="1.6" stroke-linejoin="round"/>` +
+      `<path d="${inner}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1"/>` + facets +
+      `<path d="${inner}" fill="${sh}" opacity=".55" clip-path="none"/>`;
+    const w = size || 56;
+    return `<svg class="emblem arank" viewBox="0 0 64 64" width="${w}" height="${w}" role="img" aria-label="${opt.label || ""}"${opt.cls ? ` data-t="${tier}"` : ""}>${defs}<g filter="url(#${id}f)">${back}${core}${front}${label}</g></svg>`;
+  }
+  return { svg, tiers: T };
+})();
+
+
+/* Reading: rank emblems and rank stamps */
+(function () {
+  if (!window.AtomRank || typeof rankFam !== "function") return;
+  emblem = function (i, size) { const f = rankFam(i); return AtomRank.svg(f, ROMAN[4 - (i % 5)], size || 24, { label: (RANKS[f] || [0, ""])[1] }); };
+  rankCrest = function (f, n) { return AtomRank.svg(f, "", n || 24, { label: (RANKS[f] || [0, ""])[1] }); };
+  try { RK.forEach((r, f) => { if (typeof STAMP_C !== "undefined") STAMP_C[r.k] = n => rankCrest(f, n); }); } catch (e) {}
+})();
+
 /* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
 window.AtomPolish = (function () {
   const parse = c => { const m = /rgba?\(([^)]+)\)/.exec(c || ""); if (!m) return null; const p = m[1].split(",").map(parseFloat); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
@@ -11334,6 +11507,7 @@ window.AtomPolish = (function () {
   const GOLD = ["#fff1b8", "#d9a441", "#7a5412"], SILV = ["#f4f7fb", "#a7b0c2", "#586174"], BRZ = ["#ffd9ae", "#c0793a", "#5e3513"];
   function coin(svg) {
     if (!svg || /opacity="\.28"/.test(svg)) return svg;            // already a medallion
+    if (/class="emblem arank"/.test(svg)) return svg;               // rank emblems keep their own shape
     const m = /^<svg([^>]*)>([\s\S]*)<\/svg>$/.exec(svg.trim()); if (!m) return svg;
     let inner = m[2], field = "#f1e8d2", post = false;
     if (/sperf/.test(inner)) {                                      // postage-stamp style: take its color, keep its picture

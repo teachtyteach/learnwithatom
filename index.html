@@ -220,7 +220,7 @@
 .sheet .xcard .xrar[data-r=uncommon]{color:#46d17f}.sheet .xcard .xrar[data-r=rare]{color:#4aa3ff}.sheet .xcard .xrar[data-r=epic]{color:#b86bff}.sheet .xcard .xrar[data-r=legendary]{color:#ffbf45}.sheet .xcard .xrar[data-r=limited]{color:#ff5fa8}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="8dcde33f5e"></head>
+<meta name="atom-build" content="84b5051b0e"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -1041,6 +1041,7 @@ window.AtomPolish = (function () {
   const GOLD = ["#fff1b8", "#d9a441", "#7a5412"], SILV = ["#f4f7fb", "#a7b0c2", "#586174"], BRZ = ["#ffd9ae", "#c0793a", "#5e3513"];
   function coin(svg) {
     if (!svg || /opacity="\.28"/.test(svg)) return svg;            // already a medallion
+    if (/class="emblem arank"/.test(svg)) return svg;               // rank emblems keep their own shape
     const m = /^<svg([^>]*)>([\s\S]*)<\/svg>$/.exec(svg.trim()); if (!m) return svg;
     let inner = m[2], field = "#f1e8d2", post = false;
     if (/sperf/.test(inner)) {                                      // postage-stamp style: take its color, keep its picture
