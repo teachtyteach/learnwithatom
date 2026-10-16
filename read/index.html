@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k0bb3b0"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k4a06d2"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11374,6 +11374,20 @@ window.AtomSnd = (function () {
   // Reading greetings
   if (typeof xThumb === "function" && typeof GREET !== "undefined") { const x0 = xThumb;
     xThumb = function (kind, id) { if (kind === "greet" && GREET[id]) { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.append(el("span", "tgr2", GREET[id][0][1] + "!")); return t; } return x0.apply(this, arguments); }; }
+})();
+
+/* ===================== Same names and wording as Atom Math ===================== */
+(function () {
+  const g = id => XGROUPS.find(x => x.id === id);
+  if (g("gear")) g("gear").sub = "Hats, glasses, neckwear, colors";
+  if (g("sound")) { g("sound").name = "Sounds & effects"; g("sound").sub = "Sound packs, confetti and background sounds"; }
+  if (g("look")) g("look").sub = "Titles, frames, stamps, covers";
+  // backup reminder reads the same as Math's
+  if (typeof updateNudge === "function") { const u0 = updateNudge;
+    updateNudge = function () { const r = u0.apply(this, arguments); try { const t = document.getElementById("nudgeTxt"); if (t && !document.getElementById("nudge").hidden && !t.querySelector("b")) {
+      const s = t.textContent; t.innerHTML = '<b style="display:block;font-weight:600;color:var(--ink)">Back up your progress</b><span style="font-size:.88em;color:var(--muted)">' + (/days ago/.test(s) ? s : "So you never lose your rewards.") + "</span>"; } } catch (e) {} return r; };
+    try { updateNudge(); } catch (e) {} }
+  try { renderRewardsTab(); } catch (e) {}
 })();
 
 /* ===================== Rank emblems: one premium set for Reading and Math =====================
