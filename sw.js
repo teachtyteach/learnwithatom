@@ -1,6 +1,6 @@
 /* learnwithatom.org main page offline helper.
    Only handles the main page. Atom Reading (/read/) and Atom Math (/math/) have their own. */
-const CACHE = "atom-home-ed1884ee";
+const CACHE = "atom-home-4b2824ec";
 const FILES = ["/", "/atom.png", "/mascot.png", "/atom-hi.webp", "/manifest.json"];
 self.addEventListener("install", e => { e.waitUntil((async () => { const c = await caches.open(CACHE); for (const f of FILES) { try { await c.add(new Request(f, { cache: "reload" })); } catch (x) {} } await self.skipWaiting(); })()); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("atom-home-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

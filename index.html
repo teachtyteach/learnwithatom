@@ -179,6 +179,67 @@
   .ptitle { display:inline-flex; align-items:center; gap:5px; } .ptitle svg { width:16px; height:16px; } .ttx { font-weight:700; }
   @media (prefers-reduced-motion:reduce) { .arcs .fill, .fact .bar i { transition:none; } .sheet, .scrim { animation:none; } }
 
+
+  /* ===================== Premium pass ===================== */
+  body { background:
+      radial-gradient(120% 60% at 50% -10%, color-mix(in srgb,var(--accent) 10%,transparent), transparent 60%),
+      radial-gradient(90% 50% at 100% 100%, color-mix(in srgb,var(--math) 8%,transparent), transparent 70%),
+      var(--bg); background-attachment:fixed; }
+  .wrap { gap:16px; }
+  header { align-items:flex-end; min-height:56px; padding:4px 2px 2px; }
+  .brand { font:700 34px/1 var(--serif); letter-spacing:-.025em; }
+  .brand::before { content:attr(data-date); display:block; font:600 12.5px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .total { height:32px; padding:0 12px 0 10px; background:color-mix(in srgb,var(--surface) 70%,transparent); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border:1px solid color-mix(in srgb,var(--line) 60%,transparent); box-shadow:0 4px 14px -8px rgba(0,0,0,.4); }
+
+  /* hero */
+  .hero { border-radius:30px; padding:20px 20px 20px 16px; border:1px solid color-mix(in srgb,var(--ink) 8%,transparent);
+    background:linear-gradient(160deg, color-mix(in srgb,var(--surface) 96%,#fff 4%), color-mix(in srgb,var(--surface) 82%,var(--bg)));
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 30px 60px -36px rgba(0,0,0,.65), 0 2px 8px -4px rgba(0,0,0,.2); overflow:hidden; }
+  .hero::before { content:""; position:absolute; left:-30px; top:-40px; width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb,var(--gold) 22%,transparent), transparent 65%); pointer-events:none; }
+  .ring .well { background:radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--surface) 70%,#fff 30%), color-mix(in srgb,var(--bg) 80%,var(--line)) 100%);
+    box-shadow:inset 0 2px 10px rgba(0,0,0,.18), 0 10px 26px -12px rgba(0,0,0,.55); }
+  .arcs .track { stroke-width:7; } .arcs .fill { stroke-width:7; filter:drop-shadow(0 0 5px currentColor); }
+  .arcs .fill.r { color:var(--read); } .arcs .fill.m { color:var(--math); }
+  .side { font:700 11px/1 var(--sans); letter-spacing:.02em; padding:5px 8px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+  .nm { font-size:28px; letter-spacing:-.02em; }
+  .stk b { font-size:48px; }
+  .cz { height:38px; padding:0 16px; background:color-mix(in srgb,var(--ink) 90%,transparent); color:var(--bg); border:0; box-shadow:0 8px 18px -10px rgba(0,0,0,.6); }
+
+  /* app tiles */
+  .apps { gap:14px; }
+  .app { min-height:168px; padding:16px; border-radius:26px; gap:10px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(255,255,255,.22), transparent 55%),
+      linear-gradient(165deg, color-mix(in srgb,var(--c) 70%,#fff 30%) 0%, var(--c) 42%, color-mix(in srgb,var(--c) 62%,#000) 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(0,0,0,.2), 0 22px 40px -22px var(--c), 0 4px 10px -4px rgba(0,0,0,.3); }
+  .app::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.14) 50%, transparent 60%); }
+  .app .art { width:150px; height:150px; right:-30px; bottom:-34px; opacity:.13; }
+  .app h2 { font-size:22px; letter-spacing:-.01em; }
+  .app .rk { display:flex; align-items:center; gap:9px; font-size:16px; }
+  .app .rk .remb svg { width:34px; height:34px; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.35)); }
+  .app .rk small { font-size:11px; letter-spacing:.06em; text-transform:uppercase; opacity:.75; margin-bottom:2px; }
+  .app .open { height:34px; padding:0 14px 0 16px; background:rgba(255,255,255,.95); color:color-mix(in srgb,var(--c) 70%,#000); box-shadow:0 6px 14px -8px rgba(0,0,0,.5); font-size:14px; }
+  .app .open::after { content:"›"; font-size:18px; line-height:1; margin-left:2px; }
+
+  /* missions + facts */
+  .panel { border-radius:24px; border:1px solid color-mix(in srgb,var(--ink) 7%,transparent);
+    background:linear-gradient(180deg, color-mix(in srgb,var(--surface) 96%,#fff 4%), var(--surface)); box-shadow:0 18px 36px -26px rgba(0,0,0,.6), 0 1px 3px -1px rgba(0,0,0,.15); }
+  .missions { padding:14px 16px 8px; }
+  .mh h2 { font:700 18px var(--serif); }
+  .mrow { min-height:50px; }
+  .ck { width:24px; height:24px; }
+  .mrow.done .ck { box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent); }
+  .ma { font-size:11px; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:color-mix(in srgb,var(--c) 14%,transparent); }
+  .facts { gap:12px; }
+  .fact { padding:14px; border-radius:22px; gap:3px; }
+  .fact b { font-size:21px; letter-spacing:-.01em; }
+  .fact .bar { height:5px; margin-top:8px; }
+  #bdgBtn { border-radius:22px!important; }
+  footer { padding-top:6px; gap:8px; }
+  .bk button, .bk label { height:36px; background:color-mix(in srgb,var(--surface) 80%,transparent); border-color:color-mix(in srgb,var(--line) 70%,transparent); font-weight:600; }
   /* ---------- welcome: name once, or bring everything back from a backup ---------- */
   .welcome { position:fixed; inset:0; z-index:90; background:var(--bg); display:grid; place-items:center; overflow:auto; overscroll-behavior:contain;
     padding:max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); }
@@ -220,7 +281,7 @@
 .sheet .xcard .xrar[data-r=uncommon]{color:#46d17f}.sheet .xcard .xrar[data-r=rare]{color:#4aa3ff}.sheet .xcard .xrar[data-r=epic]{color:#b86bff}.sheet .xcard .xrar[data-r=legendary]{color:#ffbf45}.sheet .xcard .xrar[data-r=limited]{color:#ff5fa8}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="84b5051b0e"></head>
+<meta name="atom-build" content="09f005afb3"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -266,7 +327,7 @@
 </section>
 <div class="wrap">
   <header>
-    <h1 class="brand">Atom<span>.</span></h1>
+    <h1 class="brand" id="brandH">Atom<span>.</span></h1><script>try{document.getElementById("brandH").dataset.date=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}catch(e){}</script>
     <span class="total" title="Rewards unlocked in both apps"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg><span id="total">0</span></span>
   </header>
 
@@ -1103,6 +1164,70 @@ try { if (typeof themeSwatch === "function") { const SC = new Set(["aurora", "bx
     '.cal .cgrid{display:grid!important;grid-template-columns:repeat(7,1fr)!important;gap:6px!important;flex-wrap:nowrap!important}.cal .cgrid .cw{text-align:center;font:600 12px system-ui,-apple-system,sans-serif;opacity:.7}.cal .cgrid .cd{width:auto!important}';
   (document.head || document.documentElement).appendChild(st); })();
 </script>
+<script>/* ===================== Rank emblems: one premium set for Reading and Math =====================
+   Each tier adds something: metal shield (Copper), laurels (Bronze), wings (Silver), a star (Gold),
+   a cut crest with a crown (Platinum), an emerald (Emerald), a diamond (Diamond), a radiant crown (Champion). */
+window.AtomRank = (function () {
+  const T = [ // light, mid, dark, accent
+    ["#f6c3a0", "#c8703f", "#6a3014", "#ffd9bf"],   // Copper
+    ["#f7dca6", "#b9853c", "#5e3a12", "#fff0cc"],   // Bronze
+    ["#ffffff", "#aeb9c4", "#55616d", "#eef3f8"],   // Silver
+    ["#fff4b0", "#e6ad17", "#8a5a04", "#fff8d6"],   // Gold
+    ["#e6fbff", "#6fd0d8", "#1f6f7a", "#d4fbff"],   // Platinum
+    ["#b6f7d2", "#22b56b", "#0a4f2c", "#d8ffe8"],   // Emerald
+    ["#ffffff", "#8cc8ff", "#2d5fd0", "#e6f3ff"],   // Diamond
+    ["#ffe08a", "#d24fe0", "#4b1590", "#fff2c2"]    // Champion
+  ];
+  let uid = 0;
+  const mirror = s => `<g transform="translate(64 0) scale(-1 1)">${s}</g>`;
+  const wingL = f => `<path d="M17 37C9 36 4 30 2 22C7 26 11 27 17 28Z" fill="${f}"/><path d="M17 30C10 28 6 22 5 14C9 19 13 21 18 23Z" fill="${f}" opacity=".92"/><path d="M18 24C12 21 10 15 10 8C13 13 16 15 20 17Z" fill="${f}" opacity=".84"/>`;
+  const wings = (f, st) => { const w = `<g stroke="${st}" stroke-width=".9" stroke-linejoin="round">${wingL(f)}</g>`; return w + mirror(w); };
+  const leafL = (f, st) => { const P = [[19, 53, -48], [15, 47, -32], [12.5, 40, -16], [11.5, 33, -4], [12, 26, 10], [14, 19.5, 24]];
+    return `<path d="M21 56C13 49 9 38 12 18" fill="none" stroke="${st}" stroke-width="1.1" stroke-linecap="round"/>` + P.map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="2.3" ry="4.6" transform="rotate(${r} ${x} ${y})" fill="${f}" stroke="${st}" stroke-width=".6"/>`).join(""); };
+  const laurel = (f, st) => { const l = leafL(f, st); return l + mirror(l); };
+  const star = (cx, cy, R, r, f, st) => { let d = ""; for (let k = 0; k < 10; k++) { const rr = k % 2 ? r : R, a = -Math.PI / 2 + k * Math.PI / 5; d += (k ? "L" : "M") + (cx + rr * Math.cos(a)).toFixed(1) + " " + (cy + rr * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${f}" stroke="${st}" stroke-width=".8" stroke-linejoin="round"/>`; };
+  const crown = (f, st, y) => `<path d="M21 ${y + 8}L23 ${y}L28 ${y + 5}L32 ${y - 3}L36 ${y + 5}L41 ${y}L43 ${y + 8}Z" fill="${f}" stroke="${st}" stroke-width=".9" stroke-linejoin="round"/><circle cx="32" cy="${y - 3}" r="1.6" fill="#fff" opacity=".9"/>`;
+  const burst = (f) => { let d = ""; for (let k = 0; k < 32; k++) { const r = k % 2 ? 22 : 31, a = -Math.PI / 2 + k * Math.PI / 16; d += (k ? "L" : "M") + (32 + r * Math.cos(a)).toFixed(1) + " " + (33 + r * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${f}" opacity=".75"/>`; };
+  // body shapes (center ~32,33)
+  const SHIELD = "M32 9L50 15V31C50 44 42 52 32 57C22 52 14 44 14 31V15Z";
+  const SHIELD_IN = "M32 13L46 18V31C46 41 40 48 32 52C24 48 18 41 18 31V18Z";
+  const HEX = "M32 8L51 19V43L32 56L13 43V19Z", HEX_IN = "M32 13L46 21V41L32 51L18 41V21Z";
+  const OCT = "M25 9H39L51 21V40L39 54H25L13 40V21Z", OCT_IN = "M27 14H37L46 23V38L37 49H27L18 38V23Z";
+  const DIA = "M32 6L53 30L32 59L11 30Z", DIA_IN = "M32 13L46 30L32 51L18 30Z";
+  function svg(tier, div, size, opt) {
+    tier = Math.max(0, Math.min(7, tier | 0)); opt = opt || {};
+    const [l, c, d, a] = opt.master ? ["#fff6c8", "#c455ff", "#3a148a", "#fff"] : T[tier], id = "ar" + (++uid), g = `url(#${id}m)`, gl = `url(#${id}l)`, sh = `url(#${id}s)`;
+    const defs = `<defs><linearGradient id="${id}m" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${l}"/><stop offset=".48" stop-color="${c}"/><stop offset="1" stop-color="${d}"/></linearGradient>` +
+      `<linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${c}"/></linearGradient>` +
+      `<linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+      (opt.master ? `<linearGradient id="${id}p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6ad5"/><stop offset=".33" stop-color="#ffd166"/><stop offset=".66" stop-color="#5ee0ff"/><stop offset="1" stop-color="#c455ff"/></linearGradient>` : "") +
+      `<filter id="${id}f" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000" flood-opacity=".45"/></filter></defs>`;
+    const [body, inner] = tier <= 3 ? [SHIELD, SHIELD_IN] : tier === 4 ? [HEX, HEX_IN] : tier === 5 ? [OCT, OCT_IN] : tier === 6 ? [DIA, DIA_IN] : [SHIELD, SHIELD_IN];
+    let back = "", front = "";
+    if (tier === 7 || opt.master) back += burst(opt.master ? `url(#${id}p)` : "#ffd166");
+    if (tier === 1) back += laurel(gl, d);
+    if (tier >= 2) back += wings(gl, d);
+    if (tier === 3) front += star(32, 7, 6.2, 2.6, gl, d);
+    if (tier >= 4) front += crown(gl, d, tier === 6 ? 2 : 4);
+    // facets for gems
+    let facets = "";
+    if (tier === 4) facets = `<path d="M32 13V51M18 21L46 41M46 21L18 41" stroke="#fff" stroke-opacity=".28" stroke-width=".8"/>`;
+    if (tier === 5) facets = `<path d="M27 14L32 31L37 14M18 23L32 31L46 23M18 38L32 31L46 38M27 49L32 31L37 49" stroke="#fff" stroke-opacity=".3" stroke-width=".8" fill="none"/>`;
+    if (tier === 6) facets = `<path d="M18 30H46M32 13L25 30L32 51L39 30Z" stroke="#fff" stroke-opacity=".45" stroke-width=".8" fill="none"/><path d="M32 13L25 30H18Z" fill="#fff" opacity=".35"/>`;
+    if (tier === 7 || opt.master) facets = `<path d="M32 13V52" stroke="#fff" stroke-opacity=".25" stroke-width="1"/>`;
+    const cen = tier === 6 ? 33 : 34, big = String(div || "").length > 2;
+    const label = opt.master ? star(32, cen - 1, 8, 3.4, "#fff", d) :
+      div ? `<text x="32" y="${cen + (big ? 4.5 : 5.5)}" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="${big ? 13 : 16}" fill="#fff" stroke="${d}" stroke-width="2.4" paint-order="stroke" letter-spacing="-.5">${div}</text>` : "";
+    const core = `<path d="${body}" fill="${opt.master ? `url(#${id}p)` : g}" stroke="${d}" stroke-width="1.6" stroke-linejoin="round"/>` +
+      `<path d="${inner}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1"/>` + facets +
+      `<path d="${inner}" fill="${sh}" opacity=".55" clip-path="none"/>`;
+    const w = size || 56;
+    return `<svg class="emblem arank" viewBox="0 0 64 64" width="${w}" height="${w}" role="img" aria-label="${opt.label || ""}"${opt.cls ? ` data-t="${tier}"` : ""}>${defs}<g filter="url(#${id}f)">${back}${core}${front}${label}</g></svg>`;
+  }
+  return { svg, tiers: T };
+})();
+
+</script>
 <script>
 (function () {
   var L = window.AtomLocker; if (!L) return;
@@ -1127,6 +1252,11 @@ try { if (typeof themeSwatch === "function") { const SC = new Set(["aurora", "bx
     $('total').textContent = nr + nm; $('lockT').textContent = nr + nm;
     $('sp-read').style.width = (nr + nm ? 100 * nr / (nr + nm) : 0) + '%'; $('sp-math').style.width = (nr + nm ? 100 * nm / (nr + nm) : 0) + '%';
     if (w.s.read) $('rank-read').textContent = w.s.read; if (w.s.math) $('rank-math').textContent = w.s.math;
+    try { var TN = ['Copper', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Emerald', 'Diamond', 'Champion'];
+      ['read', 'math'].forEach(function (a) { var s = $('rank-' + a), t = s.textContent.trim(), m = t.match(/^(\w+)\s*(I{1,3}|IV|V)?$/), k = m ? TN.indexOf(m[1]) : -1, rk = s.parentNode;
+        var e = rk.querySelector('.remb'); if (k < 0 || !window.AtomRank) { if (e) e.remove(); return; }
+        if (!e) { e = document.createElement('span'); e.className = 'remb'; rk.prepend(e); var w2 = document.createElement('span'); while (e.nextSibling) w2.appendChild(e.nextSibling); rk.appendChild(w2); }
+        e.innerHTML = AtomRank.svg(k, m[2] || '', 34, { label: t }); }); } catch (x) {}
     // Atom streak: a day counts when both apps kept their streak
     var s = L.streak();
     $('stkN').textContent = s.n; $('stkW').textContent = (s.n === 1 ? 'day' : 'days') + ' Atom streak';
