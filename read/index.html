@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k4a06d2"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k1ac362"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11460,6 +11460,60 @@ window.AtomRank = (function () {
   emblem = function (i, size) { const f = rankFam(i); return AtomRank.svg(f, ROMAN[4 - (i % 5)], size || 24, { label: (RANKS[f] || [0, ""])[1] }); };
   rankCrest = function (f, n) { return AtomRank.svg(f, "", n || 24, { label: (RANKS[f] || [0, ""])[1] }); };
   try { RK.forEach((r, f) => { if (typeof STAMP_C !== "undefined") STAMP_C[r.k] = n => rankCrest(f, n); }); } catch (e) {}
+})();
+
+/* ===================== Reading, laid out like Atom Math: rank strip on top, live preview on Rewards ===================== */
+(function () {
+  const $1 = s => document.querySelector(s);
+  const css = document.createElement("style"); css.id = "readTop";
+  css.textContent =
+    // rank strip under the header, like Math
+    "#library > #rankBtn{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;width:100%;margin:2px 0 12px;cursor:pointer}" +
+    "#library > #rankBtn .rk{display:contents}#library > #rankBtn .rkl{display:flex;align-items:center;gap:8px;min-width:0}" +
+    "#library > #rankBtn #rankEmb svg{width:22px;height:22px;display:block}#library > #rankBtn #rankPin{display:none}" +
+    "#library > #rankBtn .clab{font:600 11px system-ui,-apple-system,sans-serif;letter-spacing:.08em;color:var(--muted)}" +
+    "#library > #rankBtn #rankName{font:700 15px system-ui,-apple-system,sans-serif;letter-spacing:.04em;text-transform:uppercase}" +
+    "#library > #rankBtn #rankNext{grid-column:3;font:500 13px system-ui,-apple-system,sans-serif;color:var(--muted);white-space:nowrap}" +
+    "#library > #rankBtn .bar{grid-column:1/-1;height:4px!important;margin:0!important;border-radius:3px}" +
+    "#library .hstat{grid-template-columns:1fr!important}" +
+    // live preview on Rewards, like Math
+    "#rwPv{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:0 0 2px;padding:14px;border-radius:20px;background:var(--surface);border:1px solid color-mix(in srgb,var(--line) 55%,transparent);color:var(--ink)}" +
+    "#rwPv .pvl{display:grid;gap:3px;min-width:0}#rwPv .pvk{font:700 11px system-ui,-apple-system,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}" +
+    "#rwPv .pvn{font:700 19px/1.15 Georgia,'Iowan Old Style',serif}#rwPv .pvt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:14px}#rwPv .pvt:empty{display:none}" +
+    "#rwPv .fine{font-size:13px;color:var(--muted)}#rwPv .pvimg{width:64px;height:62px;object-fit:contain}" +
+    "#rwPv .pvst{grid-column:1/-1;display:flex;align-items:center;gap:10px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:10px;font-size:14px}" +
+    "#rwPv .pvsth{display:block;width:88px;height:46px;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--line)}#rwPv .pvsth .xth{width:100%;height:100%;margin:0}#rwPv .pvst span{display:grid;gap:1px}#rwPv .pvst small{font:700 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}" +
+    "#rewards #pvCard{display:none!important}";
+  document.head.appendChild(css);
+
+  // rank strip
+  const rb = $1("#rankBtn"), gr = $1("#library > .greetrow");
+  if (rb && gr) { gr.before(rb); const l = rb.querySelector(".clab"); if (l) l.textContent = "RANK"; }
+  try { updateRank(true); } catch (e) {}
+
+  // live preview
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function preview() {
+    const host = $1("#rewards"); if (!host) return;
+    let pv = $1("#rwPv"); if (!pv) { pv = document.createElement("div"); pv.id = "rwPv"; const h = host.querySelector(":scope > header"); (h || host.firstChild).after ? (h ? h.after(pv) : host.prepend(pv)) : host.prepend(pv); }
+    let r = null; try { r = rankInfo(metrics().w); } catch (e) {}
+    const f = r ? rankFam(r.i) : 0, emb = r && window.AtomRank ? AtomRank.svg(f, ROMAN[4 - (r.i % 5)], 52, { label: r.name }) : "";
+    const nm = settings.name ? `<span class="nflair">${esc(settings.name)}</span>` : "";
+    const tl = $1("#titleLine"), title = tl ? tl.innerHTML : "";
+    const th = settings.theme || "auto", thn = (($1(`#themeSeg [data-theme="${th}"] .nm`) || {}).textContent) || (th === "auto" ? "Automatic" : th);
+    const rcol = (typeof RK !== "undefined" && RK[f]) ? RK[f].c : "var(--accent)";
+    let stn = ""; try { const s = xGet("stat"); stn = s ? XNAME("stat", s) : "Classic"; } catch (e) {}
+    pv.innerHTML = `${emb}<div class="pvl"><span class="pvk">Live preview</span><b class="pvn">${nm || esc(r ? r.name : "")}</b><span class="pvt">${title}</span>` +
+      `<span class="fine">${r ? `<b style="color:${rcol}">${esc(r.name)}</b> · ` : ""}${esc(thn)} theme</span></div>` +
+      `<img class="pvimg mascot" src="${esc(typeof MASCOT_URL !== "undefined" ? MASCOT_URL : "mascot.png")}" alt="">` +
+      `<div class="pvst"><i class="pvsth"></i><span><small>Stats look</small><b>${esc(stn)}</b></span></div>`;
+    try { const s = xGet("stat"), t = s && xThumb("stat", s), h = pv.querySelector(".pvsth"); if (t && h) h.append(t); else if (h) h.remove(); } catch (e) {}
+  }
+  const rt0 = renderRewardsTab;
+  renderRewardsTab = function () { const out = rt0.apply(this, arguments); try { preview(); const xt = $1("#xTiles"), pv = $1("#rwPv"), nb = $1("#rdNewBar"); if (pv && xt) { (nb || xt).before(pv); if (nb) nb.after(xt); } } catch (e) {} return out; };
+  const ae0 = applyExtras;
+  applyExtras = function () { const out = ae0.apply(this, arguments); try { if ($1("#rwPv")) preview(); } catch (e) {} return out; };
+  try { renderRewardsTab(); } catch (e) {}
 })();
 
 /* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
