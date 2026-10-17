@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="atom-app" content="1">
-<meta name="atom-build" content="atom-v124-k1ac362"><!-- keep the same as CACHE in sw.js -->
+<meta name="atom-build" content="atom-v124-k5e4501"><!-- keep the same as CACHE in sw.js -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atom</title>
 <meta name="description" content="Atom is a free speed reader. Words show up one at a time so your eyes stay still. No account, no ads, works offline. Made for STEM Launch.">
@@ -11376,6 +11376,61 @@ window.AtomSnd = (function () {
     xThumb = function (kind, id) { if (kind === "greet" && GREET[id]) { const t = el("span", "xth"); t.setAttribute("aria-hidden", "true"); t.append(el("span", "tgr2", GREET[id][0][1] + "!")); return t; } return x0.apply(this, arguments); }; }
 })();
 
+/* ===================== Daily login gift: open Atom each day; day 4 and day 7 give a mystery box ===================== */
+(function () {
+  var L = window.AtomLocker; if (!L) return;
+  var K = 'atom:login', BOX = { 4: 1, 7: 1 };
+  function key(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function load() { try { return JSON.parse(localStorage.getItem(K) || 'null') || {}; } catch (e) { return {}; } }
+  function save(o) { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} }
+  function busy() {
+    if (document.querySelector('dialog[open]')) return true;
+    var w = document.getElementById('welcome'), g = document.getElementById('gradeAsk'), o = document.getElementById('overlay'), s = document.getElementById('splash'), h = document.getElementById('hsplash');
+    return (w && !w.hidden) || (g && !g.hidden) || (o && !o.hidden) || !!(h) || (s && getComputedStyle(s).display !== 'none' && getComputedStyle(s).opacity !== '0');
+  }
+  function show(day) {
+    var st = document.createElement('style'); st.textContent =
+      '#atomLogin{position:fixed;inset:0;z-index:400;display:grid;place-items:end center;background:rgba(8,10,16,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:alF .25s ease-out}' +
+      '#atomLogin .b{width:min(100%,460px);margin:0 10px calc(10px + env(safe-area-inset-bottom));padding:22px 18px 18px;border-radius:28px;background:linear-gradient(170deg,#262b3d,#141722);color:#f3f1ea;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.12);text-align:center;font-family:system-ui,-apple-system,sans-serif;animation:alU .35s cubic-bezier(.2,.9,.25,1.1)}' +
+      '#atomLogin h2{margin:4px 0 2px;font:700 26px/1.1 Georgia,serif}#atomLogin p{margin:0 0 16px;color:#b8bccb;font-size:14px}' +
+      '#atomLogin .d{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:18px}' +
+      '#atomLogin .d i{font-style:normal;display:grid;gap:4px;justify-items:center;padding:8px 0 7px;border-radius:14px;background:rgba(255,255,255,.06);font:600 11px system-ui;color:#9aa0b4}' +
+      '#atomLogin .d i b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:13px}' +
+      '#atomLogin .d i.done b{background:linear-gradient(180deg,#5ee09a,#1f9e5c);color:#fff}' +
+      '#atomLogin .d i.now{background:linear-gradient(180deg,#ffd75e,#ffb020);color:#2a1a00;box-shadow:0 8px 20px -8px #ffb020}#atomLogin .d i.now b{background:rgba(255,255,255,.55);color:#2a1a00}' +
+      '#atomLogin .d i.box b{background:linear-gradient(135deg,#b469f0,#6a2fb0);color:#fff}' +
+      '#atomLogin .gift{font-size:15px;font-weight:600;margin:-4px 0 16px;color:#ffd98a}' +
+      '#atomLogin button{width:100%;height:52px;border:0;border-radius:16px;background:#f3f1ea;color:#141722;font:700 17px system-ui;cursor:pointer}' +
+      'body:has(#atomLogin) #atomUpd{display:none!important}' +
+      '@keyframes alF{from{opacity:0}}@keyframes alU{from{transform:translateY(40px);opacity:0}}@media (prefers-reduced-motion:reduce){#atomLogin,#atomLogin .b{animation:none}}';
+    document.head.appendChild(st);
+    var gift = BOX[day] ? 'Today: a mystery box!' : 'Day ' + (day < 4 ? 4 : 7) + ' gives a mystery box.';
+    var cells = ''; for (var i = 1; i <= 7; i++) cells += '<i class="' + (i < day ? 'done' : i === day ? 'now' : '') + (BOX[i] && i >= day ? ' box' : '') + '"><b>' + (i < day ? '✓' : BOX[i] ? '★' : i) + '</b>Day ' + i + '</i>';
+    var d = document.createElement('div'); d.id = 'atomLogin'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Daily login gift');
+    d.innerHTML = '<div class="b"><p style="margin:0;font:700 12px system-ui;letter-spacing:.08em;text-transform:uppercase;color:#ffd98a">Daily login</p><h2>Welcome back!</h2><p>Open Atom every day to fill the week.</p><div class="d">' + cells + '</div><div class="gift">' + gift + '</div><button type="button">' + (BOX[day] ? 'Collect' : 'Nice!') + '</button></div>';
+    document.body.appendChild(d);
+    var btn = d.querySelector('button'); setTimeout(function () { try { btn.focus(); } catch (e) {} }, 50);
+    btn.onclick = function () { d.remove(); };
+  }
+  function run() {
+    try {
+      var p = L.profile(); if (!p.n || L.teacher() || p.ro === 't' || p.ro === 'a') return;
+      var o = load(), t = key(), y = new Date(); y.setDate(y.getDate() - 1);
+      if (o.last === t) return;
+      var day = o.last === key(y) ? (o.day % 7) + 1 : 1;
+      var tries = 0;
+      (function wait() {
+        if (busy() && tries++ < 20) { setTimeout(wait, 1500); return; }
+        var cur = load(); if (cur.last === t) return;          // another app already gave it today
+        save({ last: t, day: day });
+        if (BOX[day]) try { L.addBoxes(1); } catch (e) {}
+        show(day);
+      })();
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 2500); }); else setTimeout(run, 2500);
+})();
+
 /* ===================== Same names and wording as Atom Math ===================== */
 (function () {
   const g = id => XGROUPS.find(x => x.id === id);
@@ -11513,6 +11568,25 @@ window.AtomRank = (function () {
   renderRewardsTab = function () { const out = rt0.apply(this, arguments); try { preview(); const xt = $1("#xTiles"), pv = $1("#rwPv"), nb = $1("#rdNewBar"); if (pv && xt) { (nb || xt).before(pv); if (nb) nb.after(xt); } } catch (e) {} return out; };
   const ae0 = applyExtras;
   applyExtras = function () { const out = ae0.apply(this, arguments); try { if ($1("#rwPv")) preview(); } catch (e) {} return out; };
+  // tiles in the same order as Atom Math: Themes, Looks, Atom, Sounds & effects, Collections, Badges, then Passes
+  const XI = { theme: "<svg viewBox=\"0 0 48 48\" aria-hidden=\"true\"><defs><linearGradient id=\"rwgt\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4fd1c5\"/><stop offset=\".55\" stop-color=\"#3b82f6\"/><stop offset=\"1\" stop-color=\"#7a5cf0\"/></linearGradient></defs><path d=\"M24 6C13 6 5 13.6 5 23c0 8.6 6.4 15 14.4 15 2.6 0 3.6-1.6 3.6-3.4 0-2.2-1.8-3-1.8-5 0-2 1.6-3.4 3.8-3.4h4.6C36.8 26.2 43 21.6 43 15 43 9.4 34.6 6 24 6z\" fill=\"url(#rwgt)\"/><circle cx=\"15\" cy=\"21\" r=\"3.2\" fill=\"#fff\" opacity=\".9\"/><circle cx=\"21\" cy=\"13.5\" r=\"3.2\" fill=\"#ffd84a\"/><circle cx=\"31\" cy=\"13.5\" r=\"3.2\" fill=\"#ff8fb1\"/><circle cx=\"36\" cy=\"20\" r=\"2.8\" fill=\"#fff\" opacity=\".7\"/></svg>", badge: "<svg viewBox=\"0 0 48 48\" aria-hidden=\"true\"><defs><linearGradient id=\"rwgb\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffd86b\"/><stop offset=\"1\" stop-color=\"#e08a1e\"/></linearGradient></defs><path d=\"M17 30l-4 13 7-3 4 6 3-13M31 30l4 13-7-3-4 6-3-13\" fill=\"#c8281f\"/><circle cx=\"24\" cy=\"20\" r=\"14\" fill=\"url(#rwgb)\"/><circle cx=\"24\" cy=\"20\" r=\"9.5\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" opacity=\".6\"/><path d=\"M24 13.5l2 4.1 4.5.6-3.3 3.1.8 4.5-4-2.1-4 2.1.8-4.5-3.3-3.1 4.5-.6z\" fill=\"#fff\"/></svg>" };
+  function tiles() {
+    const box = $1("#xTiles"); if (!box) return;
+    const by = re => [...box.querySelectorAll(":scope > .xtile")].find(t => re.test((t.querySelector("b") || {}).textContent || ""));
+    const mk = (ic, name, sub, count, pct, fn) => { const b = el("button", "xtile xadd"); b.type = "button"; const a = el("span", "xart"); a.innerHTML = XI[ic];
+      const bar = el("span", "bar"), f = el("i"); f.style.width = Math.max(0, Math.min(100, pct)) + "%"; bar.append(f);
+      b.append(a, el("b", "", name), el("span", "fine", sub), el("span", "xcount", count), bar); b.onclick = fn; return b; };
+    box.querySelectorAll(".xadd").forEach(x => x.remove());
+    let tn = 0, tt = 0; document.querySelectorAll("#themeSeg button[data-theme]").forEach(b => { tt++; try { if (!lockMsg("theme", b.dataset.theme)) tn++; } catch (e) {} });
+    const th = mk("theme", "Themes", "Colors and scenes for the whole app", `${tn} of ${tt}`, tt ? 100 * tn / tt : 0, () => { try { openSettings("display"); setTimeout(() => { const s = $1("#themeSeg"); s && s.scrollIntoView({ block: "start" }); }, 250); } catch (e) {} });
+    let bn = 0; try { bn = Object.keys(store.get("pace:badges", {})).length; } catch (e) {}
+    const bt = typeof BADGES !== "undefined" ? BADGES.length : 0;
+    const bg = mk("badge", "Badges", "Earn them by reading", `${bn} of ${bt}`, bt ? 100 * bn / bt : 0, () => { try { $1("#statsBtn").click(); setTimeout(() => { const t = $1('#stTabs [data-st="badge"]') || [...document.querySelectorAll("#stTabs button")].find(x => /Badges/.test(x.textContent)); t && t.click(); }, 120); } catch (e) {} });
+    const order = [th, by(/^Looks/), by(/^Atom/), by(/^Sounds/), by(/^Collections/), bg, by(/^Passes/)].filter(Boolean);
+    order.forEach(t => box.append(t));
+  }
+  const rt1 = renderRewardsTab;
+  renderRewardsTab = function () { const out = rt1.apply(this, arguments); try { tiles(); } catch (e) {} return out; };
   try { renderRewardsTab(); } catch (e) {}
 })();
 

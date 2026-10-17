@@ -281,7 +281,7 @@
 .sheet .xcard .xrar[data-r=uncommon]{color:#46d17f}.sheet .xcard .xrar[data-r=rare]{color:#4aa3ff}.sheet .xcard .xrar[data-r=epic]{color:#b86bff}.sheet .xcard .xrar[data-r=legendary]{color:#ffbf45}.sheet .xcard .xrar[data-r=limited]{color:#ff5fa8}
 </style>
 <style id="lookCss"></style>
-<meta name="atom-build" content="09f005afb3"></head>
+<meta name="atom-build" content="7d24f7bcd3"></head>
 <body>
 <style>
 #hsplash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:10px;background:var(--bg);animation:hsout .4s ease-out 1.1s forwards}
@@ -1041,6 +1041,61 @@ window.AtomFly = (function () {
     return true;
   }
   return { key: key, get: get, save: save, use: use };
+})();
+</script>
+<script>/* ===================== Daily login gift: open Atom each day; day 4 and day 7 give a mystery box ===================== */
+(function () {
+  var L = window.AtomLocker; if (!L) return;
+  var K = 'atom:login', BOX = { 4: 1, 7: 1 };
+  function key(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function load() { try { return JSON.parse(localStorage.getItem(K) || 'null') || {}; } catch (e) { return {}; } }
+  function save(o) { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} }
+  function busy() {
+    if (document.querySelector('dialog[open]')) return true;
+    var w = document.getElementById('welcome'), g = document.getElementById('gradeAsk'), o = document.getElementById('overlay'), s = document.getElementById('splash'), h = document.getElementById('hsplash');
+    return (w && !w.hidden) || (g && !g.hidden) || (o && !o.hidden) || !!(h) || (s && getComputedStyle(s).display !== 'none' && getComputedStyle(s).opacity !== '0');
+  }
+  function show(day) {
+    var st = document.createElement('style'); st.textContent =
+      '#atomLogin{position:fixed;inset:0;z-index:400;display:grid;place-items:end center;background:rgba(8,10,16,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:alF .25s ease-out}' +
+      '#atomLogin .b{width:min(100%,460px);margin:0 10px calc(10px + env(safe-area-inset-bottom));padding:22px 18px 18px;border-radius:28px;background:linear-gradient(170deg,#262b3d,#141722);color:#f3f1ea;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.12);text-align:center;font-family:system-ui,-apple-system,sans-serif;animation:alU .35s cubic-bezier(.2,.9,.25,1.1)}' +
+      '#atomLogin h2{margin:4px 0 2px;font:700 26px/1.1 Georgia,serif}#atomLogin p{margin:0 0 16px;color:#b8bccb;font-size:14px}' +
+      '#atomLogin .d{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:18px}' +
+      '#atomLogin .d i{font-style:normal;display:grid;gap:4px;justify-items:center;padding:8px 0 7px;border-radius:14px;background:rgba(255,255,255,.06);font:600 11px system-ui;color:#9aa0b4}' +
+      '#atomLogin .d i b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:13px}' +
+      '#atomLogin .d i.done b{background:linear-gradient(180deg,#5ee09a,#1f9e5c);color:#fff}' +
+      '#atomLogin .d i.now{background:linear-gradient(180deg,#ffd75e,#ffb020);color:#2a1a00;box-shadow:0 8px 20px -8px #ffb020}#atomLogin .d i.now b{background:rgba(255,255,255,.55);color:#2a1a00}' +
+      '#atomLogin .d i.box b{background:linear-gradient(135deg,#b469f0,#6a2fb0);color:#fff}' +
+      '#atomLogin .gift{font-size:15px;font-weight:600;margin:-4px 0 16px;color:#ffd98a}' +
+      '#atomLogin button{width:100%;height:52px;border:0;border-radius:16px;background:#f3f1ea;color:#141722;font:700 17px system-ui;cursor:pointer}' +
+      'body:has(#atomLogin) #atomUpd{display:none!important}' +
+      '@keyframes alF{from{opacity:0}}@keyframes alU{from{transform:translateY(40px);opacity:0}}@media (prefers-reduced-motion:reduce){#atomLogin,#atomLogin .b{animation:none}}';
+    document.head.appendChild(st);
+    var gift = BOX[day] ? 'Today: a mystery box!' : 'Day ' + (day < 4 ? 4 : 7) + ' gives a mystery box.';
+    var cells = ''; for (var i = 1; i <= 7; i++) cells += '<i class="' + (i < day ? 'done' : i === day ? 'now' : '') + (BOX[i] && i >= day ? ' box' : '') + '"><b>' + (i < day ? '✓' : BOX[i] ? '★' : i) + '</b>Day ' + i + '</i>';
+    var d = document.createElement('div'); d.id = 'atomLogin'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Daily login gift');
+    d.innerHTML = '<div class="b"><p style="margin:0;font:700 12px system-ui;letter-spacing:.08em;text-transform:uppercase;color:#ffd98a">Daily login</p><h2>Welcome back!</h2><p>Open Atom every day to fill the week.</p><div class="d">' + cells + '</div><div class="gift">' + gift + '</div><button type="button">' + (BOX[day] ? 'Collect' : 'Nice!') + '</button></div>';
+    document.body.appendChild(d);
+    var btn = d.querySelector('button'); setTimeout(function () { try { btn.focus(); } catch (e) {} }, 50);
+    btn.onclick = function () { d.remove(); };
+  }
+  function run() {
+    try {
+      var p = L.profile(); if (!p.n || L.teacher() || p.ro === 't' || p.ro === 'a') return;
+      var o = load(), t = key(), y = new Date(); y.setDate(y.getDate() - 1);
+      if (o.last === t) return;
+      var day = o.last === key(y) ? (o.day % 7) + 1 : 1;
+      var tries = 0;
+      (function wait() {
+        if (busy() && tries++ < 20) { setTimeout(wait, 1500); return; }
+        var cur = load(); if (cur.last === t) return;          // another app already gave it today
+        save({ last: t, day: day });
+        if (BOX[day]) try { L.addBoxes(1); } catch (e) {}
+        show(day);
+      })();
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 2500); }); else setTimeout(run, 2500);
 })();
 </script>
 <script>/* ===================== Polish: titles that fit, text you can always read, one stamp style ===================== */
